@@ -1,7 +1,7 @@
 # DBMProject
 
-##
-Stack (so far): Node, React, SQLite, Express??
+## Stack (so far)
+Node, React, SQLite, Express??
 
 ## To-do list for part 1
 - [ ] Login/Logout
