@@ -14,6 +14,11 @@ const GridContainer = styled.div`
 const movies = [
     { id: 1, image: '/path-to-image1.jpg', title: 'Movie Title 1', subtitle: 'Subtitle 1' },
     { id: 2, image: '/path-to-image2.jpg', title: 'Movie Title 2', subtitle: 'Subtitle 2' },
+    { id: 1, image: '/path-to-image1.jpg', title: 'Movie Title 1', subtitle: 'Subtitle 1' },
+    { id: 2, image: '/path-to-image2.jpg', title: 'Movie Title 2', subtitle: 'Subtitle 2' },
+    { id: 1, image: '/path-to-image1.jpg', title: 'Movie Title 1', subtitle: 'Subtitle 1' },
+    { id: 2, image: '/path-to-image2.jpg', title: 'Movie Title 2', subtitle: 'Subtitle 2' },
+    { id: 1, image: '/path-to-image1.jpg', title: 'Movie Title 1', subtitle: 'Subtitle 1' },
     // Add more Movies as needed
 ];
 
@@ -23,7 +28,7 @@ function MoviesPage() {
       <Header mediaType={'Movies'}/>
       <GridContainer>
         {movies.map(movie => (
-            <MovieCard key={movie.id} image={movie.image} title={movie.title} subtitle={movie.subtitle} />
+            <MovieCard key={movie.id} image={movie.image} title={movie.title} subtitle={movie.subtitle}/>
         ))}
       </GridContainer>
     </> );

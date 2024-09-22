@@ -14,6 +14,7 @@ const GridContainer = styled.div`
 const tvshows = [
     { id: 1, image: '/path-to-image1.jpg', title: 'TV Title 1', subtitle: 'Subtitle 1' },
     { id: 2, image: '/path-to-image2.jpg', title: 'TV Title 2', subtitle: 'Subtitle 2' },
+    { id: 2, image: '/path-to-image2.jpg', title: 'TV Title 2', subtitle: 'Subtitle 2' },
     // Add more TV as needed
 ];
 

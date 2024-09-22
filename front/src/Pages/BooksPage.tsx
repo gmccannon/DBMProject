@@ -14,10 +14,13 @@ const GridContainer = styled.div`
 const books = [
     { id: 1, image: '/path-to-image1.jpg', title: 'Book Title 1', subtitle: 'Subtitle 1' },
     { id: 2, image: '/path-to-image2.jpg', title: 'Book Title 2', subtitle: 'Subtitle 2' },
-    { id: 1, image: '/path-to-image1.jpg', title: 'Book Title 1', subtitle: 'Subtitle 1' },
-    { id: 2, image: '/path-to-image2.jpg', title: 'Book Title 2', subtitle: 'Subtitle 2' },
-    { id: 1, image: '/path-to-image1.jpg', title: 'Book Title 1', subtitle: 'Subtitle 1' },
-    { id: 2, image: '/path-to-image2.jpg', title: 'Book Title 2', subtitle: 'Subtitle 2' },
+    { id: 3, image: '/path-to-image1.jpg', title: 'Book Title 1', subtitle: 'Subtitle 1' },
+    { id: 4, image: '/path-to-image2.jpg', title: 'Book Title 2', subtitle: 'Subtitle 2' },
+    { id: 5, image: '/path-to-image1.jpg', title: 'Book Title 1', subtitle: 'Subtitle 1' },
+    { id: 6, image: '/path-to-image2.jpg', title: 'Book Title 2', subtitle: 'Subtitle 2' },
+    { id: 7, image: '/path-to-image1.jpg', title: 'Book Title 1', subtitle: 'Subtitle 1' },
+    { id: 8, image: '/path-to-image2.jpg', title: 'Book Title 2', subtitle: 'Subtitle 2' },
+    { id: 9, image: '/path-to-image1.jpg', title: 'Book Title 1', subtitle: 'Subtitle 1' },
     // Add more books as needed
 ];
 

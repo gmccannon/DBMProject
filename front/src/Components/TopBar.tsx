@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const TopBar = () => {
-  const paths = ['/TVShows', '/', '/Books'];
+  const paths = ['/TVShows', '/Movies', '/Books', '/Games'];
   const navigate = useNavigate();
   const location = useLocation();
   const activetab = location.pathname;
@@ -23,7 +23,7 @@ const TopBar = () => {
             textDecorationColor: activetab === path ? 'rgb(173, 216, 230)' : 'none', // Light blue underline for active tab
           }}
         >
-          {path === '/TVShows' ? 'shows' : path === '/' ? 'movies' : 'books'}
+          {path === '/TVShows' ? 'shows' : path === '/Movies' ? 'movies' : path === '/Books' ? 'books' : 'games'}
         </button>
       ))}
     </div>
@@ -36,7 +36,6 @@ const styles = {
     justifyContent: 'center', // Center the buttons horizontally
     alignItems: 'center',
     backgroundColor: 'white', // White background
-    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)', // Shadow effect
     padding: '30px 0 0 0'
   },
   button: {
