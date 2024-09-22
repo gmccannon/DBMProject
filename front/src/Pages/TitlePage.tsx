@@ -10,10 +10,10 @@ const GridContainer = styled.div`
     padding: 20px;
 `;
 
-function TitlePage() {
+const  TitlePage = () => {
     return (
     <>
-      <GridContainer>Title Page</GridContainer>
+      <GridContainer>Click a button above</GridContainer>
     </> 
     );
 }

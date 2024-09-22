@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 const CardContainer = styled.div`
     width: 350px;
@@ -30,12 +31,19 @@ const GameSubtitle = styled.p`
   padding: 0 15px 15px 15px;
 `;
 
-const GameCard = ({ image, title, subtitle }) => (
-    <CardContainer>
+const GameCard = ({ id, image, title, subtitle }) => {
+    const navigate = useNavigate();
+
+    const handleClick = () => {
+        navigate(`/Games/${id}`);
+    };
+
+    return (
+    <CardContainer onClick={handleClick} role="button" tabIndex={0}>
         <GameImage src={image} alt="Game cover" />
         <GameTitle>{title}</GameTitle>
         <GameSubtitle>{subtitle}</GameSubtitle>
     </CardContainer>
-);
+)};
 
 export default GameCard;

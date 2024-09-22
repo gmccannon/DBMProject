@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 const CardContainer = styled.div`
     width: 350px;
@@ -30,12 +31,19 @@ const MovieSubtitle = styled.p`
   padding: 0 15px 15px 15px;
 `;
 
-const MovieCard = ({ image, title, subtitle }) => (
-    <CardContainer>
+const MovieCard = ({ id, image, title, subtitle }) => {
+    const navigate = useNavigate();
+
+    const handleClick = () => {
+        navigate(`/Movies/${id}`);
+    };
+
+    return (
+    <CardContainer onClick={handleClick} role="button" tabIndex={0}>
         <MovieImage src={image} alt="Movie cover" />
         <MovieTitle>{title}</MovieTitle>
         <MovieSubtitle>{subtitle}</MovieSubtitle>
     </CardContainer>
-);
+)};
 
 export default MovieCard;

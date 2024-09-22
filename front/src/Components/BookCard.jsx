@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 const CardContainer = styled.div`
     width: 350px;
@@ -30,12 +31,19 @@ const BookSubtitle = styled.p`
   padding: 0 15px 15px 15px;
 `;
 
-const BookCard = ({ image, title, subtitle }) => (
-    <CardContainer>
+const BookCard = ({ id, image, title, subtitle }) => {
+    const navigate = useNavigate();
+
+    const handleClick = () => {
+        navigate(`/Books/${id}`);
+    };
+
+    return (
+    <CardContainer onClick={handleClick} role="button" tabIndex={0}>
         <BookImage src={image} alt="Book cover" />
         <BookTitle>{title}</BookTitle>
         <BookSubtitle>{subtitle}</BookSubtitle>
     </CardContainer>
-);
+)};
 
 export default BookCard;
