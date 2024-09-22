@@ -21,13 +21,14 @@ const tvshows = [
 function TVPage() {
     return (
     <>
-      <Header mediaType={'TV'}/>
+      <Header mediaType={'TV Shows'}/>
       <GridContainer>
         {tvshows.map(tvshows => (
             <TVCard key={tvshows.id} image={tvshows.image} title={tvshows.title} subtitle={tvshows.subtitle} />
         ))}
       </GridContainer>
-    </> );
+    </> 
+    );
 }
 
 export default TVPage;

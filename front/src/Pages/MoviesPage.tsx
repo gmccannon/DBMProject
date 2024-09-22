@@ -21,12 +21,12 @@ const movies = [
 function MoviesPage() {
     return (
     <>
-    <Header mediaType={'Movies'}/>
-    <GridContainer>
+      <Header mediaType={'Movies'}/>
+      <GridContainer>
         {movies.map(movie => (
             <MovieCard key={movie.id} image={movie.image} title={movie.title} subtitle={movie.subtitle} />
         ))}
-    </GridContainer>
+      </GridContainer>
     </> );
 }
 

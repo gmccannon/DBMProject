@@ -21,13 +21,14 @@ const books = [
 function BooksPage() {
     return (
     <>
-    <Header mediaType={'Books'}/>
-    <GridContainer>
+      <Header mediaType={'Books'}/>
+      <GridContainer>
         {books.map(book => (
             <BookCard key={book.id} image={book.image} title={book.title} subtitle={book.subtitle} />
         ))}
-    </GridContainer>
-    </> );
+      </GridContainer>
+    </> 
+    );
 }
 
 export default BooksPage;
