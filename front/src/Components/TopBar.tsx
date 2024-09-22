@@ -37,6 +37,7 @@ const styles = {
     backgroundColor: 'white', // White background
     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)', // Shadow effect
     padding: '10px 0', // Padding for better spacing
+    borderBottom: '1px solid black', // Black border
   },
   button: {
     fontWeight: 600,

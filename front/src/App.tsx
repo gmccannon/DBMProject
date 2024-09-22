@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Header from './Components/Header';
 import TopBar from './Components/TopBar';
 import BooksPage from './Pages/BooksPage';
 import TVPage from './Pages/TVPage';
@@ -10,7 +9,6 @@ function App() {
   return (
     <BrowserRouter>
         <TopBar />
-        <Header />
         <Routes>
             <Route path="/" element={<MoviesPage />}/>
             <Route path="/TVShows" element={<TVPage />}/>

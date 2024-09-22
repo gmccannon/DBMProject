@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import Header from '../Components/Header';
 import BookCard from '../Components/BookCard';
-import TopBar from '../Components/TopBar'
 
 const GridContainer = styled.div`
     display: flex;
@@ -20,12 +19,15 @@ const books = [
 ];
 
 function BooksPage() {
-    return ( 
+    return (
+    <>
+    <Header mediaType={'Books'}/>
     <GridContainer>
         {books.map(book => (
             <BookCard key={book.id} image={book.image} title={book.title} subtitle={book.subtitle} />
         ))}
-    </GridContainer> );
+    </GridContainer>
+    </> );
 }
 
 export default BooksPage;

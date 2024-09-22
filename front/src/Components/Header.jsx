@@ -20,10 +20,10 @@ const SearchInput = styled.input`
   font-size: 16px;
 `;
 
-const Header = () => (
+const Header = ({mediaType}) => (
     <HeaderContainer>
-        <Title>Search For Books</Title>
-        <SearchInput type="text" placeholder="Search for books..." />
+        <Title>Search For {mediaType}</Title>
+        <SearchInput type="text" placeholder={`Search for ${mediaType}...`} />
         {/* Add more UI elements if needed */}
     </HeaderContainer>
 );

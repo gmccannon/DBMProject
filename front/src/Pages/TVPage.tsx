@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import Header from '../Components/Header';
 import TVCard from '../Components/TVCard';
-import TopBar from '../Components/TopBar'
 
 const GridContainer = styled.div`
     display: flex;
@@ -20,12 +19,15 @@ const tvshows = [
 ];
 
 function TVPage() {
-    return ( 
-    <GridContainer>
+    return (
+    <>
+      <Header mediaType={'TV'}/>
+      <GridContainer>
         {tvshows.map(tvshows => (
             <TVCard key={tvshows.id} image={tvshows.image} title={tvshows.title} subtitle={tvshows.subtitle} />
         ))}
-    </GridContainer> );
+      </GridContainer>
+    </> );
 }
 
 export default TVPage;

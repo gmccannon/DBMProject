@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import Header from '../Components/Header';
 import MovieCard from '../Components/MovieCard';
-import TopBar from '../Components/TopBar'
 
 const GridContainer = styled.div`
     display: flex;
@@ -20,12 +19,15 @@ const movies = [
 ];
 
 function MoviesPage() {
-    return ( 
+    return (
+    <>
+    <Header mediaType={'Movies'}/>
     <GridContainer>
         {movies.map(movie => (
             <MovieCard key={movie.id} image={movie.image} title={movie.title} subtitle={movie.subtitle} />
         ))}
-    </GridContainer> );
+    </GridContainer>
+    </> );
 }
 
 export default MoviesPage;
