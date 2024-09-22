@@ -20,7 +20,8 @@ const books = [
 ];
 
 function BooksPage() {
-    return ( <GridContainer>
+    return ( 
+    <GridContainer>
         {books.map(book => (
             <BookCard key={book.id} image={book.image} title={book.title} subtitle={book.subtitle} />
         ))}

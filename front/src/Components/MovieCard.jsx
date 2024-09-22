@@ -12,29 +12,29 @@ const CardContainer = styled.div`
     }
 `;
 
-const BookImage = styled.img`
+const MovieImage = styled.img`
     width: 100%;
     height: auto;
 `;
 
-const BookTitle = styled.h3`
+const MovieTitle = styled.h3`
     font-size: 18px;
     padding: 0 15px;
     color: #333;
 `;
 
-const BookSubtitle = styled.p`
+const MovieSubtitle = styled.p`
   font-size: 16px;
   color: #666;
   padding: 0 15px 15px 15px;
 `;
 
-const BookCard = ({ image, title, subtitle }) => (
+const MovieCard = ({ image, title, subtitle }) => (
     <CardContainer>
-        <BookImage src={image} alt="Book cover" />
-        <BookTitle>{title}</BookTitle>
-        <BookSubtitle>{subtitle}</BookSubtitle>
+        <MovieImage src={image} alt="Movie cover" />
+        <MovieTitle>{title}</MovieTitle>
+        <MovieSubtitle>{subtitle}</MovieSubtitle>
     </CardContainer>
 );
 
-export default BookCard;
+export default MovieCard;
