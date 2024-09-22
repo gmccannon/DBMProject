@@ -8,12 +8,14 @@ const HeaderContainer = styled.div`
 `;
 
 const Title = styled.h1`
+    font-family: 'Helvetica';
     font-size: 32px;
     color: #333;
     margin-bottom: 20px;  // Space between title and search bar
 `;
 
 const SearchInput = styled.input`
+  font-family: 'Courier New';
   padding: 10px;
   width: 50%;
   margin-right: 10px;

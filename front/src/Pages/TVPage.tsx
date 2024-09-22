@@ -8,7 +8,6 @@ const GridContainer = styled.div`
     flex-wrap: wrap;
     justify-content: center;
     padding: 20px;
-    background-color: #f0f0f0;
 `;
 
 // Dummy data for demonstration

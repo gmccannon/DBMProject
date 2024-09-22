@@ -37,10 +37,11 @@ const styles = {
     alignItems: 'center',
     backgroundColor: 'white', // White background
     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)', // Shadow effect
-    padding: '10px 0', // Padding for better spacing
+    padding: '30px 0 0 0'
   },
   button: {
-    fontSize: '24px', // Make the text bigger
+    fontFamily: 'Courier New',
+    fontSize: '30px', // Make the text bigger
     fontWeight: 600,
     margin: '0 10px', // Space between buttons
     padding: '10px 20px', // Padding inside buttons
