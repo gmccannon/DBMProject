@@ -12,7 +12,7 @@ const GridContainer = styled.div`
 
 // Define the Movie type based on your schema
 type Movie = {
-  Movie_id: number;
+  movie_id: number;
   title: string;
   subtitle: string;
   release_year: string;
@@ -61,7 +61,7 @@ const MoviesPage = () => {
       <GridContainer>
         {Movies.map(Movie => (
           <MovieCard
-            id={Movie.Movie_id}
+            id={Movie.movie_id}
             image={`/path-to-image-placeholder.jpg`}
             title={Movie.title}
             director={Movie.director}

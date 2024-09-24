@@ -12,7 +12,7 @@ const GridContainer = styled.div`
 
 // Define the Game type based on your schema
 type Game = {
-  Game_id: number;
+  game_id: number;
   title: string;
   subtitle: string;
   release_year: string;
@@ -61,7 +61,7 @@ const GamesPage = () => {
       <GridContainer>
         {Games.map(Game => (
           <GameCard
-            id={Game.Game_id}
+            id={Game.game_id}
             image={`/path-to-image-placeholder.jpg`}
             title={Game.title}
             publisher={Game.publisher}

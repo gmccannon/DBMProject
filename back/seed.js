@@ -39,6 +39,10 @@ db.exec(`
     insert or replace into movies
         (title, director, release_year)
         values ('The Lord of The Rings: The Return of The King', 'Peter Jackson', '2003');
+    
+    insert or replace into movies
+        (title, director, release_year)
+        values ('The Departed', 'Martin Scorsese', '2006');
 
     insert or replace into games
         (title, publisher, release_year)
@@ -54,23 +58,15 @@ db.exec(`
 
     insert or replace into books
         (title, subtitle, author, publisher)
-        values ('Coding Drunk', 'Make Programming Fun Again', 'N.E. Briated', 'ORLY');
-
-    insert or replace into books
-        (title, subtitle, author, publisher)
         values ('Googling the Error Message', 'The internet will make those bad words go away', 'The Practical Dev', 'ORLY');
 
     insert or replace into books
         (title, subtitle, author, publisher)
-        values ('Memorizing Six Git Commands', 'The popular approach to version control', 'The Practical Dev', 'ORLY');
+        values ('Web Development With Assembly', 'You might as well just shoot yourself right now', 'Bob Johnson (with his therapist)', 'ORLY');
 
     insert or replace into books
         (title, subtitle, author, publisher)
-        values ('Web Development With Assembly', 'You might as well just yourself right now', 'Bob Johnson (with his therapist)', 'ORLY');
-
-    insert or replace into books
-        (title, subtitle, author, publisher)
-        values ('Works on My Machine', 'How to convince your manager', 'R. William', 'ORLY');
+        values ('Works on My Machine', 'Every other developer is wrong', 'R. William', 'ORLY');
 
     insert or replace into books
         (title, subtitle, author, publisher)

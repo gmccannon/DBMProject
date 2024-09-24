@@ -12,7 +12,7 @@ const GridContainer = styled.div`
 
 // Define the Show type based on your schema
 type Show = {
-  Show_id: number;
+  show_id: number;
   title: string;
   seasons: string;
   writer: string;
@@ -61,7 +61,7 @@ const ShowsPage = () => {
       <GridContainer>
         {Shows.map(Show => (
           <ShowCard
-            id={Show.Show_id}
+            id={Show.show_id}
             image={`/path-to-image-placeholder.jpg`}
             title={Show.title}
             writer={Show.writer}
