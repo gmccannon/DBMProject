@@ -31,7 +31,7 @@ const GameSubtitle = styled.p`
   padding: 0 15px 15px 15px;
 `;
 
-const GameCard = ({ id, image, title, subtitle }) => {
+const GameCard = ({ id, image, title, publisher, release_year }) => {
     const navigate = useNavigate();
 
     const handleClick = () => {
@@ -42,7 +42,8 @@ const GameCard = ({ id, image, title, subtitle }) => {
     <CardContainer onClick={handleClick} role="button" tabIndex={0}>
         <GameImage src={image} alt="Game cover" />
         <GameTitle>{title}</GameTitle>
-        <GameSubtitle>{subtitle}</GameSubtitle>
+        <GameSubtitle>{publisher}</GameSubtitle>
+        <GameSubtitle>{release_year}</GameSubtitle>
     </CardContainer>
 )};
 

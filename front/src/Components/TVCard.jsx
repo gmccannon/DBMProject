@@ -31,7 +31,7 @@ const TVSubtitle = styled.p`
   padding: 0 15px 15px 15px;
 `;
 
-const TVCard = ({ id, image, title, subtitle }) => {
+const TVCard = ({ id, image, title, seasons, writer, network }) => {
     const navigate = useNavigate();
 
     const handleClick = () => {
@@ -42,7 +42,9 @@ const TVCard = ({ id, image, title, subtitle }) => {
     <CardContainer onClick={handleClick} role="button" tabIndex={0}>
         <TVImage src={image} alt="TV cover" />
         <TVTitle>{title}</TVTitle>
-        <TVSubtitle>{subtitle}</TVSubtitle>
+        <TVSubtitle>{seasons} Seasons</TVSubtitle>
+        <TVSubtitle>{writer}</TVSubtitle>
+        <TVSubtitle>{network}</TVSubtitle>
     </CardContainer>
 )};
 

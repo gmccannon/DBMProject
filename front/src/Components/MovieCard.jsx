@@ -31,7 +31,7 @@ const MovieSubtitle = styled.p`
   padding: 0 15px 15px 15px;
 `;
 
-const MovieCard = ({ id, image, title, subtitle }) => {
+const MovieCard = ({ id, image, title, director, release_year }) => {
     const navigate = useNavigate();
 
     const handleClick = () => {
@@ -42,7 +42,8 @@ const MovieCard = ({ id, image, title, subtitle }) => {
     <CardContainer onClick={handleClick} role="button" tabIndex={0}>
         <MovieImage src={image} alt="Movie cover" />
         <MovieTitle>{title}</MovieTitle>
-        <MovieSubtitle>{subtitle}</MovieSubtitle>
+        <MovieSubtitle>{director}</MovieSubtitle>
+        <MovieSubtitle>{release_year}</MovieSubtitle>
     </CardContainer>
 )};
 

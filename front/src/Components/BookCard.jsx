@@ -31,7 +31,7 @@ const BookSubtitle = styled.p`
   padding: 0 15px 15px 15px;
 `;
 
-const BookCard = ({ id, image, title, subtitle }) => {
+const BookCard = ({ id, image, title, subtitle, author, publisher }) => {
     const navigate = useNavigate();
 
     const handleClick = () => {
@@ -43,6 +43,8 @@ const BookCard = ({ id, image, title, subtitle }) => {
         <BookImage src={image} alt="Book cover" />
         <BookTitle>{title}</BookTitle>
         <BookSubtitle>{subtitle}</BookSubtitle>
+        <BookSubtitle>{author}</BookSubtitle>
+        <BookSubtitle>{publisher}</BookSubtitle>
     </CardContainer>
 )};
 

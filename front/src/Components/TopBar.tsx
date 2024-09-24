@@ -13,7 +13,7 @@ const TopBar = () => {
 
   return (
     <div style={styles.topBar}>
-      {paths.map((path, index) => (
+      {paths.map((path: string, index: number) => (
         <button
           key={index}
           onClick={() => handleNavigate(path)}

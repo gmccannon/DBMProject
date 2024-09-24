@@ -8,8 +8,9 @@ const HeaderContainer = styled.div`
 `;
 
 const Title = styled.h1`
-    font-family: 'Helvetica';
+    font-family: 'Courier New';
     font-size: 32px;
+    font-weight: 500;
     color: #333;
     margin-bottom: 20px;  // Space between title and search bar
 `;
@@ -24,8 +25,8 @@ const SearchInput = styled.input`
 
 const Header = ({mediaType}) => (
     <HeaderContainer>
-        <Title>Search For {mediaType}</Title>
-        <SearchInput type="text" placeholder={`Search for ${mediaType}...`} />
+        <Title>search for {mediaType.toLowerCase()}...</Title>
+        <SearchInput type="text" placeholder={`enter a title or keywords`} />
         {/* Add more UI elements if needed */}
     </HeaderContainer>
 );

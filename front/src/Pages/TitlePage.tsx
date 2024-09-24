@@ -8,7 +8,7 @@ const GridContainer = styled.div`
     padding: 20px;
 `;
 
-const  TitlePage = () => {
+const TitlePage = () => {
     return (
     <>
       <GridContainer>Click a button above</GridContainer>

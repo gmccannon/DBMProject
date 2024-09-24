@@ -9,7 +9,7 @@ const GridContainer = styled.div`
     padding: 20px;
 `;
 
-const BooksPage = () => {
+const BooksReviewPage = () => {
   const { id } = useParams(); // this extract the id from the URL, not any component!!!!
     return (
     <>
@@ -18,4 +18,4 @@ const BooksPage = () => {
     );
 }
 
-export default BooksPage;
+export default BooksReviewPage;
