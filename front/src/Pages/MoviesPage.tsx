@@ -1,7 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import Header from '../Components/Header';
 import MovieCard from '../Components/MovieCard';
+
+const HeaderContainer = styled.div`
+    text-align: center;
+    padding: 20px;
+    background-color: white;
+`;
+
+const Title = styled.h1`
+    font-family: 'Courier New';
+    font-size: 32px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 20px;  // Space between title and search bar
+`;
+
+const SearchInput = styled.input`
+  font-family: 'Courier New';
+  padding: 10px;
+  width: 50%;
+  margin-right: 10px;
+  font-size: 16px;
+`;
 
 const GridContainer = styled.div`
     display: flex;
@@ -43,7 +64,10 @@ const MoviesPage = () => {
     <>
       {loading && <div>Loading...</div>}
       {error && <div>Error sadfadsf: {error.message}</div>}
-      <Header mediaType={'Movies'} />
+      <HeaderContainer>
+        <Title>search for movies...</Title>
+        <SearchInput type="text" placeholder={`enter a title or keywords`} />
+      </HeaderContainer>
       <GridContainer>
         {Movies.map(Movie => (
           <MovieCard
