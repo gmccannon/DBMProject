@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Header from '../Components/Header';
 import GameCard from '../Components/GamesCard';
@@ -10,31 +10,67 @@ const GridContainer = styled.div`
     padding: 20px;
 `;
 
-// Dummy data for demonstration
-const Gameshows = [
-  { "id": 1, "image": "/path-to-image1.jpg", "title": "Game Title 1", "subtitle": "Subtitle 1" },
-  { "id": 2, "image": "/path-to-image2.jpg", "title": "Game Title 2", "subtitle": "Subtitle 2" },
-  { "id": 3, "image": "/path-to-image3.jpg", "title": "Game Title 3", "subtitle": "Subtitle 3" },
-  { "id": 4, "image": "/path-to-image4.jpg", "title": "Game Title 4", "subtitle": "Subtitle 4" },
-  { "id": 5, "image": "/path-to-image5.jpg", "title": "Game Title 5", "subtitle": "Subtitle 5" },
-  { "id": 6, "image": "/path-to-image6.jpg", "title": "Game Title 6", "subtitle": "Subtitle 6" },
-  { "id": 7, "image": "/path-to-image7.jpg", "title": "Game Title 7", "subtitle": "Subtitle 7" },
-  { "id": 8, "image": "/path-to-image8.jpg", "title": "Game Title 8", "subtitle": "Subtitle 8" },
-  { "id": 9, "image": "/path-to-image9.jpg", "title": "Game Title 9", "subtitle": "Subtitle 9" }
-    // Add more Game as needed
-];
+// Define the Game type based on your schema
+type Game = {
+  Game_id: number;
+  title: string;
+  subtitle: string;
+  release_year: string;
+  publisher: string;
+};
 
 const GamesPage = () => {
-    return (
+  const [Games, setGames] = useState<Game[]>([]); // State to store Games data
+  const [loading, setLoading] = useState(true); // State to manage loading status
+  const [error, setError] = useState<Error | null>(null); // State to manage error
+
+  useEffect(() => {
+    const fetchGames = async () => {
+      try {
+        const response = await fetch('http://localhost:3001/games');
+        if (!response.ok) {
+          throw new Error('There was an error fetching the data');
+        }
+        const data = await response.json();
+        setGames(data); // Set the Games data received from the backend
+        setLoading(false); // Data has been fetched, stop loading
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err);
+        } else {
+          setError(new Error('An unknown error occurred')); // Handle unknown error types
+        }
+        setLoading(false); // Stop loading even if there's an error
+      }
+    };
+
+    fetchGames();
+  }, []); // Empty dependency array, runs only on mount
+
+  if (loading) {
+    return <div>Loading...</div>; // Show loading state
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>; // Show error state
+  }
+
+  return (
     <>
-      <Header mediaType={'Games'}/>
+      <Header mediaType={'Games'} />
       <GridContainer>
-        {Gameshows.map(games => (
-            <GameCard id={games.id} image={games.image} title={games.title} subtitle={games.subtitle} />
+        {Games.map(Game => (
+          <GameCard
+            id={Game.Game_id}
+            image={`/path-to-image-placeholder.jpg`}
+            title={Game.title}
+            publisher={Game.publisher}
+            release_year={Game.release_year}
+          />
         ))}
       </GridContainer>
-    </> 
-    );
-}
+    </>
+  );
+};
 
 export default GamesPage;

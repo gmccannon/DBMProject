@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Header from '../Components/Header';
-import TVCard from '../Components/TVCard';
+import ShowCard from '../Components/TVCard';
 
 const GridContainer = styled.div`
     display: flex;
@@ -10,31 +10,68 @@ const GridContainer = styled.div`
     padding: 20px;
 `;
 
-// Dummy data for demonstration
-const tvshows = [
-  { "id": 1, "image": "/path-to-image1.jpg", "title": "TVShow Title 1", "subtitle": "Subtitle 1" },
-  { "id": 2, "image": "/path-to-image2.jpg", "title": "TVShow Title 2", "subtitle": "Subtitle 2" },
-  { "id": 3, "image": "/path-to-image3.jpg", "title": "TVShow Title 3", "subtitle": "Subtitle 3" },
-  { "id": 4, "image": "/path-to-image4.jpg", "title": "TVShow Title 4", "subtitle": "Subtitle 4" },
-  { "id": 5, "image": "/path-to-image5.jpg", "title": "TVShow Title 5", "subtitle": "Subtitle 5" },
-  { "id": 6, "image": "/path-to-image6.jpg", "title": "TVShow Title 6", "subtitle": "Subtitle 6" },
-  { "id": 7, "image": "/path-to-image7.jpg", "title": "TVShow Title 7", "subtitle": "Subtitle 7" },
-  { "id": 8, "image": "/path-to-image8.jpg", "title": "TVShow Title 8", "subtitle": "Subtitle 8" },
-  { "id": 9, "image": "/path-to-image9.jpg", "title": "TVShow Title 9", "subtitle": "Subtitle 9" }
-    // Add more TV as needed
-];
+// Define the Show type based on your schema
+type Show = {
+  Show_id: number;
+  title: string;
+  seasons: string;
+  writer: string;
+  network: string;
+};
 
-const TVPage = () => {
-    return (
+const ShowsPage = () => {
+  const [Shows, setShows] = useState<Show[]>([]); // State to store Shows data
+  const [loading, setLoading] = useState(true); // State to manage loading status
+  const [error, setError] = useState<Error | null>(null); // State to manage error
+
+  useEffect(() => {
+    const fetchShows = async () => {
+      try {
+        const response = await fetch('http://localhost:3001/Shows');
+        if (!response.ok) {
+          throw new Error('There was an error fetching the data');
+        }
+        const data = await response.json();
+        setShows(data); // Set the Shows data received from the backend
+        setLoading(false); // Data has been fetched, stop loading
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err);
+        } else {
+          setError(new Error('An unknown error occurred')); // Handle unknown error types
+        }
+        setLoading(false); // Stop loading even if there's an error
+      }
+    };
+
+    fetchShows();
+  }, []); // Empty dependency array, runs only on mount
+
+  if (loading) {
+    return <div>Loading...</div>; // Show loading state
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>; // Show error state
+  }
+
+  return (
     <>
-      <Header mediaType={'TV Shows'}/>
+      <Header mediaType={'Shows'} />
       <GridContainer>
-        {tvshows.map(tvshows => (
-            <TVCard id={tvshows.id} image={tvshows.image} title={tvshows.title} subtitle={tvshows.subtitle} />
+        {Shows.map(Show => (
+          <ShowCard
+            id={Show.Show_id}
+            image={`/path-to-image-placeholder.jpg`}
+            title={Show.title}
+            writer={Show.writer}
+            seasons={Show.seasons}
+            network={Show.network}
+          />
         ))}
       </GridContainer>
-    </> 
-    );
-}
+    </>
+  );
+};
 
-export default TVPage;
+export default ShowsPage;
