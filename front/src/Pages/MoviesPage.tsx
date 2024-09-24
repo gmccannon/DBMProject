@@ -28,18 +28,11 @@ const MoviesPage = () => {
     const fetchMovies = async () => {
       try {
         const response = await fetch('http://localhost:3001/Movies');
-        if (!response.ok) {
-          throw new Error('There was an error fetching the data');
-        }
         const data = await response.json();
         setMovies(data); // Set the Movies data received from the backend
         setLoading(false); // Data has been fetched, stop loading
       } catch (err: unknown) {
-        if (err instanceof Error) {
-          setError(err);
-        } else {
-          setError(new Error('An unknown error occurred')); // Handle unknown error types
-        }
+        setError(err instanceof Error ? err : new Error('An unknown error occurred'));
         setLoading(false); // Stop loading even if there's an error
       }
     };
