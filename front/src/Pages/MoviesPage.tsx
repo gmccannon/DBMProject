@@ -10,7 +10,6 @@ const GridContainer = styled.div`
     padding: 20px;
 `;
 
-// Define the Movie type based on your schema
 type Movie = {
   movie_id: number;
   title: string;

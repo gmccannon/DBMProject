@@ -10,7 +10,6 @@ const GridContainer = styled.div`
     padding: 20px;
 `;
 
-// Define the Game type based on your schema
 type Game = {
   game_id: number;
   title: string;

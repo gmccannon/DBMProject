@@ -10,7 +10,6 @@ const GridContainer = styled.div`
     padding: 20px;
 `;
 
-// Define the Show type based on your schema
 type Show = {
   show_id: number;
   title: string;

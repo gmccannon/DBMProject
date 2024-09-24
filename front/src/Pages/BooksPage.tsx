@@ -10,7 +10,6 @@ const GridContainer = styled.div`
     padding: 20px;
 `;
 
-// Define the Book type based on your schema
 type Book = {
   book_id: number;
   title: string;
