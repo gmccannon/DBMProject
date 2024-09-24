@@ -40,16 +40,10 @@ const ShowsPage = () => {
     fetchShows();
   }, []); // Empty dependency array, runs only on mount
 
-  if (loading) {
-    return <div>Loading...</div>; // Show loading state
-  }
-
-  if (error) {
-    return <div>Error: {error.message}</div>; // Show error state
-  }
-
   return (
     <>
+      {loading && <div>Loading...</div>}
+      {error && <div>Error sadfadsf: {error.message}</div>}
       <Header mediaType={'Shows'} />
       <GridContainer>
         {Shows.map(Show => (
