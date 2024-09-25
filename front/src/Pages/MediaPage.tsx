@@ -32,8 +32,8 @@ const GridContainer = styled.div`
 `;
 
 // Function to fetch media data with an optional search query
-const fetchmediaData = async (query: string, media: string): Promise<Media[]> => {
-    const response = await fetch(`http://localhost:3001/${media}?search=${encodeURIComponent(query)}`);
+const fetchmediaData = async (query: string, table: string): Promise<Media[]> => {
+    const response = await fetch(`http://localhost:3001/getmedia?table=${table}&search=${encodeURIComponent(query)}`);
     if (!response.ok) {
         throw new Error('Failed to fetch media');
     }
