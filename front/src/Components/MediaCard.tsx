@@ -31,21 +31,25 @@ const BookSubtitle = styled.p`
   padding: 0 15px 15px 15px;
 `;
 
-const BookCard = ({ id, image, title, subtitle, author, publisher }) => {
+const MediaCard: React.FC<MediaCardProps> = ({ content, mediaType }) => {
     const navigate = useNavigate();
 
     const handleClick = () => {
-        navigate(`/Books/${id}`);
+        navigate(`/${mediaType}/${content.id}`);
     };
 
     return (
     <CardContainer onClick={handleClick} role="button" tabIndex={0}>
-        <BookImage src={image} alt="Book cover" />
-        <BookTitle>{title}</BookTitle>
-        <BookSubtitle>{subtitle}</BookSubtitle>
-        <BookSubtitle>{author}</BookSubtitle>
-        <BookSubtitle>{publisher}</BookSubtitle>
+        <BookImage src={content.image} alt="Book cover" />
+        <BookTitle>{content.title}</BookTitle>
+        <BookSubtitle>{content.subtitle}</BookSubtitle>
+        <BookSubtitle>{content.author}</BookSubtitle>
+        <BookSubtitle>{content.publisher}</BookSubtitle>
+        <BookSubtitle>{content.release_year}</BookSubtitle>
+        <BookSubtitle>{content.director}</BookSubtitle>
+        <BookSubtitle>{content.writer}</BookSubtitle>
+        <BookSubtitle>{content.seasons}</BookSubtitle>
     </CardContainer>
 )};
 
-export default BookCard;
+export default MediaCard;

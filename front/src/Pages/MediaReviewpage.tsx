@@ -9,13 +9,13 @@ const GridContainer = styled.div`
     padding: 20px;
 `;
 
-const MoviesReviewPage = () => {
+const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}) => {
   const { id } = useParams(); // this extract the id from the URL, not any component!!!!
     return (
     <>
-      <h1>Review for Movie with ID: {id}</h1>
+      <h1>Review for {mediaType} with ID: {id}</h1>
     </> 
     );
 }
 
-export default MoviesReviewPage;
+export default MediaReviewPage;

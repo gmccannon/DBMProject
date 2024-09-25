@@ -4,15 +4,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import TopBar from './Components/TopBar';
 
 import TitlePage from './Pages/TitlePage';
-import BooksPage from './Pages/BooksPage';
-import TVPage from './Pages/TVPage';
-import MoviesPage from './Pages/MoviesPage';
-import GamesPage from './Pages/GamesPage';
+import MediaPage from './Pages/MediaPage';
+import MediaReviewPage from './Pages/MediaReviewpage'; 
 
-import BooksReviewPage from './Pages/BooksReviewpage'; 
-import MoviesReviewPage from './Pages/MoviesReviewPage';
-import GamesReviewPage from './Pages/GamesReviewPage';
-import TVShowsReviewPage from './Pages/TVShowReviewPage';
 
 function App() {
   return (
@@ -21,15 +15,15 @@ function App() {
         <Routes>
             <Route path="/" element={<TitlePage />}/>
 
-            <Route path="/Movies" element={<MoviesPage />}/>
-            <Route path="/TVShows" element={<TVPage />}/>
-            <Route path="/Books" element={<BooksPage />}/>
-            <Route path="/Games" element={<GamesPage />}/>
+            <Route path="/Movies" element={<MediaPage mediaType={"Movies"} />}/>
+            <Route path="/Shows" element={<MediaPage mediaType={"Shows"} />}/>
+            <Route path="/Books" element={<MediaPage mediaType={"Books"}/>}/>
+            <Route path="/Games" element={<MediaPage mediaType={"Games"} />}/>
 
-            <Route path="/Movies/:id" element={<MoviesReviewPage />}/>
-            <Route path="/TVShows/:id" element={<TVShowsReviewPage />}/>
-            <Route path="/Books/:id" element={<BooksReviewPage />}/>
-            <Route path="/Games/:id" element={<GamesReviewPage />}/>
+            <Route path="/Movies/:id" element={<MediaReviewPage mediaType={"Movie"}/>}/>
+            <Route path="/Shows/:id" element={<MediaReviewPage mediaType={"Show"}/>}/>
+            <Route path="/Books/:id" element={<MediaReviewPage mediaType={"Book"}/>}/>
+            <Route path="/Games/:id" element={<MediaReviewPage mediaType={"Game"}/>}/>
         </Routes>
     </BrowserRouter>
     );

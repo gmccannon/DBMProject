@@ -10,7 +10,10 @@ app.use(cors());
 
 app.get('/books', (req, res) => {
     try {
-        const books = db.prepare('select * from books whrer').all();
+        const searchQuery = req.query.search || ''; // Get the search query from the request
+        const sql = 'SELECT * FROM books WHERE title LIKE ? OR author LIKE ?';  // Prepare the SQL query with a parameter to avoid a SQL injection
+        const books = db.prepare(sql).all(`%${searchQuery}%`, `%${searchQuery}%`); // Use wildcard for searching
+
         res.setHeader('Content-Type', 'application/json');
         res.send(JSON.stringify(books));
     } catch (error) {
