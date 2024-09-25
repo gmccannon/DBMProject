@@ -34,7 +34,15 @@ db.exec(`
 
     insert or replace into shows
         (title, seasons, writer, network)
-        values ('Breaking Bad', '5', 'Vince Giligan', 'AMC');
+        values ('Breaking Bad', '5', 'Vince Giligan', 'Drama');
+
+    insert or replace into shows
+        (title, seasons, writer, network)
+        values ('Better Call Saul', '6', 'Vince Giligan', 'Drama');
+
+    insert or replace into shows
+        (title, seasons, writer, network)
+        values ('Star Trek: The Next Generation', '7', 'Gene Roddenberry', 'Sci-fi');
     
     insert or replace into movies
         (title, director, release_year)

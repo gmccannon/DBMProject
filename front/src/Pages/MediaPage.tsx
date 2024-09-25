@@ -32,7 +32,7 @@ const GridContainer = styled.div`
 `;
 
 // Function to fetch media data with an optional search query
-const fetchmediaData = async (query: string, media: string) => {
+const fetchmediaData = async (query: string, media: string): Promise<Media[]> => {
     const response = await fetch(`http://localhost:3001/${media}?search=${encodeURIComponent(query)}`);
     if (!response.ok) {
         throw new Error('Failed to fetch media');
@@ -61,7 +61,7 @@ const MediaPage: React.FC<MediaPageProps> = ({mediaType}) => {
     // Fetch media on initial load and when searchQuery changes
     React.useEffect(() => {
         fetchMedia(searchQuery, mediaType);
-    }, [searchQuery, mediaType]); // Trigger re-fetch when searchQuery changes
+    }, [searchQuery]); // Trigger re-fetch when searchQuery changes
 
     return (
         <>

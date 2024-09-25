@@ -9,6 +9,7 @@ interface Media {
     director?: string; // Optional if not all media has a director
     writer?: string; // Optional if not all media has a writer
     seasons?: number; // Optional if not all media has a seasons property
+    network?: string;
 }
 
 interface MediaCardProps {

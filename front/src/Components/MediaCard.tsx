@@ -40,15 +40,16 @@ const MediaCard: React.FC<MediaCardProps> = ({ content, mediaType }) => {
 
     return (
     <CardContainer onClick={handleClick} role="button" tabIndex={0}>
-        <BookImage src={content.image} alt="Book cover" />
-        <BookTitle>{content.title}</BookTitle>
-        <BookSubtitle>{content.subtitle}</BookSubtitle>
-        <BookSubtitle>{content.author}</BookSubtitle>
-        <BookSubtitle>{content.publisher}</BookSubtitle>
-        <BookSubtitle>{content.release_year}</BookSubtitle>
-        <BookSubtitle>{content.director}</BookSubtitle>
-        <BookSubtitle>{content.writer}</BookSubtitle>
-        <BookSubtitle>{content.seasons}</BookSubtitle>
+        {content.image &&<BookImage src={content.image} alt="Book cover" />}
+        {content.title &&<BookTitle>{content.title}</BookTitle>}
+        {content.subtitle &&<BookSubtitle>{content.subtitle}</BookSubtitle>}
+        {content.author &&<BookSubtitle>{content.author}</BookSubtitle>}
+        {content.publisher &&<BookSubtitle>{content.publisher}</BookSubtitle>}
+        {content.release_year &&<BookSubtitle>{content.release_year}</BookSubtitle>}
+        {content.director &&<BookSubtitle>{content.director}</BookSubtitle>}
+        {content.writer &&<BookSubtitle>{content.writer}</BookSubtitle>}
+        {content.seasons && <BookSubtitle>{content.seasons} seasons</BookSubtitle>}
+        {content.network && <BookSubtitle>{content.network}</BookSubtitle>}
     </CardContainer>
 )};
 
