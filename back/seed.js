@@ -2,7 +2,7 @@ import Database from 'better-sqlite3';
 const db = new Database('database.db');
 
 db.exec(`
-    create table if not exists books (
+    create table if not exists Book (
         id integer NOT NULL primary key autoincrement,
         title varchar(256) NOT NULL,
         subtitle varchar(256),
@@ -10,7 +10,7 @@ db.exec(`
         publisher varchar(256)
     );
     
-    create table if not exists shows (
+    create table if not exists Show (
         id integer NOT NULL primary key autoincrement,
         title varchar(256) NOT NULL,
         seasons varchar(256),
@@ -18,14 +18,14 @@ db.exec(`
         network varchar(256)
     );
     
-    create table if not exists movies (
+    create table if not exists Movie (
         id integer NOT NULL primary key autoincrement,
         title varchar(256) NOT NULL,
         director varchar(256),
         release_year varchar(256)
     );
 
-    create table if not exists games (
+    create table if not exists Game (
         id integer NOT NULL primary key autoincrement,
         title varchar(256) NOT NULL,
         publisher varchar(256),
