@@ -61,7 +61,7 @@ const MediaPage: React.FC<MediaPageProps> = ({mediaType}) => {
     // Fetch media on initial load and when searchQuery changes
     React.useEffect(() => {
         fetchMedia(searchQuery, mediaType);
-    }, [searchQuery]); // Trigger re-fetch when searchQuery changes
+    }, [searchQuery, mediaType]); // Trigger re-fetch when searchQuery or page changes
 
     return (
         <>
