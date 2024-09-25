@@ -2,11 +2,9 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import TopBar from './Components/TopBar';
-
 import TitlePage from './Pages/TitlePage';
 import MediaPage from './Pages/MediaPage';
 import MediaReviewPage from './Pages/MediaReviewpage'; 
-
 
 function App() {
   return (

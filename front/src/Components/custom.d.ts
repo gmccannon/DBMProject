@@ -10,6 +10,7 @@ interface Media {
     writer?: string; // Optional if not all media has a writer
     seasons?: number; // Optional if not all media has a seasons property
 }
+
 interface MediaCardProps {
     content: MediaContent;
     mediaType: string;

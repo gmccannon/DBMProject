@@ -67,7 +67,7 @@ const MediaPage: React.FC<MediaPageProps> = ({mediaType}) => {
         <>
             {error && <div>Error: {error.message}</div>}
             <HeaderContainer>
-                <Title>Search for media...</Title>
+                <Title>search for {mediaType.toLowerCase()}...</Title>
                 <SearchInput 
                     type="text" 
                     placeholder={`Enter a title or keywords`} 

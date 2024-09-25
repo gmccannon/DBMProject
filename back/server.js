@@ -24,7 +24,10 @@ app.get('/books', (req, res) => {
 
 app.get('/games', (req, res) => {
     try {
-        const games = db.prepare('select * from games').all();
+        const searchQuery = req.query.search || ''; // Get the search query from the request
+        const sql = 'SELECT * FROM games WHERE title LIKE ? OR publisher LIKE ?';  // Prepare the SQL query with a parameter to avoid a SQL injection
+        const games = db.prepare(sql).all(`%${searchQuery}%`, `%${searchQuery}%`); // Use wildcard for searching
+
         res.setHeader('Content-Type', 'application/json');
         res.send(JSON.stringify(games));
     } catch (error) {
@@ -35,7 +38,10 @@ app.get('/games', (req, res) => {
 
 app.get('/movies', (req, res) => {
     try {
-        const movies = db.prepare('select * from movies').all();
+        const searchQuery = req.query.search || ''; // Get the search query from the request
+        const sql = 'SELECT * FROM movies WHERE title LIKE ? OR director LIKE ?';  // Prepare the SQL query with a parameter to avoid a SQL injection
+        const movies = db.prepare(sql).all(`%${searchQuery}%`, `%${searchQuery}%`); // Use wildcard for searching
+
         res.setHeader('Content-Type', 'application/json');
         res.send(JSON.stringify(movies));
     } catch (error) {
@@ -46,7 +52,10 @@ app.get('/movies', (req, res) => {
 
 app.get('/shows', (req, res) => {
     try {
-        const shows = db.prepare('select * from shows').all();
+        const searchQuery = req.query.search || ''; // Get the search query from the request
+        const sql = 'SELECT * FROM shows WHERE title LIKE ? OR writer LIKE ?';  // Prepare the SQL query with a parameter to avoid a SQL injection
+        const shows = db.prepare(sql).all(`%${searchQuery}%`, `%${searchQuery}%`); // Use wildcard for searching
+
         res.setHeader('Content-Type', 'application/json');
         res.send(JSON.stringify(shows));
     } catch (error) {

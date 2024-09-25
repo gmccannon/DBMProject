@@ -34,7 +34,7 @@ db.exec(`
 
     insert or replace into shows
         (title, seasons, writer, network)
-        values ('Breaking Bad', '6', 'Vince Giligan', 'AMC');
+        values ('Breaking Bad', '5', 'Vince Giligan', 'AMC');
     
     insert or replace into movies
         (title, director, release_year)
