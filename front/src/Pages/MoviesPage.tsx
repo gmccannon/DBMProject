@@ -43,6 +43,7 @@ const MoviesPage = () => {
   const [Movies, setMovies] = useState<Movie[]>([]); // State to store Movies data
   const [loading, setLoading] = useState(true); // State to manage loading status
   const [error, setError] = useState<Error | null>(null); // State to manage error
+  const [searchQuery, setSearchQuery] = useState<string>(''); // State to manage search input
 
   useEffect(() => {
     const fetchMovies = async () => {
@@ -60,17 +61,28 @@ const MoviesPage = () => {
     fetchMovies();
   }, []); // Empty dependency array, runs only on mount
 
+    // Filter Movies based on search query
+    const filteredMovies = Movies.filter(Movie => 
+      Movie.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
   return (
     <>
       {loading && <div>Loading...</div>}
       {error && <div>Error sadfadsf: {error.message}</div>}
       <HeaderContainer>
-        <Title>search for movies...</Title>
-        <SearchInput type="text" placeholder={`enter a title or keywords`} />
+        <Title>Search for Movies...</Title>
+        <SearchInput 
+          type="text" 
+          placeholder={`Enter a title or keywords`} 
+          value={searchQuery} // Set the input value to the search query
+          onChange={(e) => setSearchQuery(e.target.value)} // Update search query on input change
+        />
       </HeaderContainer>
       <GridContainer>
-        {Movies.map(Movie => (
+        {filteredMovies.map(Movie => (
           <MovieCard
+            key={Movie.movie_id}
             id={Movie.movie_id}
             image={`/path-to-image-placeholder.jpg`}
             title={Movie.title}

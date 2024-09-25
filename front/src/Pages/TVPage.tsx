@@ -43,6 +43,7 @@ const ShowsPage = () => {
   const [Shows, setShows] = useState<Show[]>([]); // State to store Shows data
   const [loading, setLoading] = useState(true); // State to manage loading status
   const [error, setError] = useState<Error | null>(null); // State to manage error
+  const [searchQuery, setSearchQuery] = useState<string>(''); // State to manage search input
 
   useEffect(() => {
     const fetchShows = async () => {
@@ -60,17 +61,28 @@ const ShowsPage = () => {
     fetchShows();
   }, []); // Empty dependency array, runs only on mount
 
+  // Filter Shows based on search query
+  const filteredShows = Shows.filter(Show => 
+    Show.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <>
       {loading && <div>Loading...</div>}
       {error && <div>Error sadfadsf: {error.message}</div>}
       <HeaderContainer>
-        <Title>search for shows...</Title>
-        <SearchInput type="text" placeholder={`enter a title or keywords`} />
+        <Title>Search for Shows...</Title>
+        <SearchInput 
+          type="text" 
+          placeholder={`Enter a title or keywords`} 
+          value={searchQuery} // Set the input value to the search query
+          onChange={(e) => setSearchQuery(e.target.value)} // Update search query on input change
+        />
       </HeaderContainer>
       <GridContainer>
-        {Shows.map(Show => (
+        {filteredShows.map(Show => (
           <ShowCard
+            key={Show.show_id}
             id={Show.show_id}
             image={`/path-to-image-placeholder.jpg`}
             title={Show.title}

@@ -9,10 +9,8 @@ const port = 3001;
 app.use(cors());
 
 app.get('/books', (req, res) => {
-    const bookTitle = req.params.bookID;
-    const order = req.params.order;
     try {
-        const books = db.prepare('select * from books').all();
+        const books = db.prepare('select * from books whrer').all();
         res.setHeader('Content-Type', 'application/json');
         res.send(JSON.stringify(books));
     } catch (error) {

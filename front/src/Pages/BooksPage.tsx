@@ -43,6 +43,7 @@ const BooksPage = () => {
   const [books, setBooks] = useState<Book[]>([]); // State to store books data
   const [loading, setLoading] = useState(true); // State to manage loading status
   const [error, setError] = useState<Error | null>(null); // State to manage error
+  const [searchQuery, setSearchQuery] = useState<string>(''); // State to manage search input
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -60,17 +61,28 @@ const BooksPage = () => {
     fetchBooks();
   }, []); // Empty dependency array, runs only on mount
 
+  // Filter books based on search query
+  const filteredBooks = books.filter(book => 
+    book.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <>
       {loading && <div>Loading...</div>}
-      {error && <div>Error sadfadsf: {error.message}</div>}
+      {error && <div>Error: {error.message}</div>}
       <HeaderContainer>
-        <Title>search for books...</Title>
-        <SearchInput type="text" placeholder={`enter a title or keywords`} />
+        <Title>Search for books...</Title>
+        <SearchInput 
+          type="text" 
+          placeholder={`Enter a title or keywords`} 
+          value={searchQuery} // Set the input value to the search query
+          onChange={(e) => setSearchQuery(e.target.value)} // Update search query on input change
+        />
       </HeaderContainer>
       <GridContainer>
-        {books.map(book => (
+        {filteredBooks.map(book => (
           <BookCard
+            key={book.book_id} // Added key prop for each BookCard
             id={book.book_id}
             image={`/path-to-image-placeholder.jpg`}
             title={book.title}

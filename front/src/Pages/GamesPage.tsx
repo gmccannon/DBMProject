@@ -43,6 +43,7 @@ const GamesPage = () => {
   const [Games, setGames] = useState<Game[]>([]); // State to store Games data
   const [loading, setLoading] = useState(true); // State to manage loading status
   const [error, setError] = useState<Error | null>(null); // State to manage error
+  const [searchQuery, setSearchQuery] = useState<string>(''); // State to manage search input
 
   useEffect(() => {
     const fetchGames = async () => {
@@ -60,17 +61,28 @@ const GamesPage = () => {
     fetchGames();
   }, []); // Empty dependency array, runs only on mount
 
+    // Filter games based on search query
+    const filteredGames = Games.filter(Game => 
+      Game.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
   return (
     <>
       {loading && <div>Loading...</div>}
       {error && <div>Error: {error.message}</div>}
       <HeaderContainer>
-        <Title>search for games...</Title>
-        <SearchInput type="text" placeholder={`enter a title or keywords`} />
+        <Title>Search for games...</Title>
+        <SearchInput 
+          type="text" 
+          placeholder={`Enter a title or keywords`} 
+          value={searchQuery} // Set the input value to the search query
+          onChange={(e) => setSearchQuery(e.target.value)} // Update search query on input change
+        />
       </HeaderContainer>
       <GridContainer>
-        {Games.map(Game => (
+        {filteredGames.map(Game => (
           <GameCard
+            key={Game.game_id}
             id={Game.game_id}
             image={`/path-to-image-placeholder.jpg`}
             title={Game.title}
