@@ -10,13 +10,13 @@ const fetchMediaData = async (table: string, id: string): Promise<Media[]> => {
   return await response.json();
 };
 
-const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}) => {
-  const { id } = useParams(); // this extract the id from the URL, not any component!!!!
+const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Element => {
+  const { id } = useParams<string>(); // this extract the id from the URL, not any component!!!!
   const [media, setmedia] = useState<Media[]>();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<Boolean>(true);
   const [error, setError] = useState<Error | null>(null);
 
-  const fetchMedia = async (mediaType: string, id: string) => {
+  const fetchMedia = async (mediaType: string, id: string): Promise<void> => {
     setLoading(true);
     try {
         const data = await fetchMediaData(mediaType, id);
@@ -33,19 +33,19 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}) => {
     }
   };
 
-    // Fetch media on initial load and when searchQuery changes
-    React.useEffect(() => {
-      if (id)
-        fetchMedia(mediaType, id);
-    }, [id, mediaType]);
+  // Fetch media on initial load and when searchQuery changes
+  React.useEffect((): void => {
+    if (id)
+      fetchMedia(mediaType, id);
+  }, [id, mediaType]);
 
-    return (
-    <>
-      {media && <h1> Type: {mediaType}</h1>}
-      {media && <h1> Title: {media[0].title}</h1>}
-      {media && <h1> ID: {media[0].id}</h1>}
-    </> 
-    );
+  return (
+  <>
+    {media && <h1> Type: {mediaType}</h1>}
+    {media && <h1> Title: {media[0].title}</h1>}
+    {media && <h1> ID: {media[0].id}</h1>}
+  </> 
+  );
 }
 
 export default MediaReviewPage;

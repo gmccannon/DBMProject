@@ -14,21 +14,17 @@ const CardContainer = styled.div`
     }
 `;
 
-const BookImage = styled.img`
+const Title = styled.h3`
+    font-family: 'Courier New';
+    font-size: 16px;
+    font-weight: 2000;
+    color: #333;
+    margin-bottom: 20px;
+`;
+
+const Image = styled.img`
     width: 100%;
     height: auto;
-`;
-
-const BookTitle = styled.h3`
-    font-size: 18px;
-    padding: 0 15px;
-    color: #333;
-`;
-
-const BookSubtitle = styled.p`
-  font-size: 16px;
-  color: #666;
-  padding: 0 15px 15px 15px;
 `;
 
 const MediaCard: React.FC<MediaCardProps> = ({ content, mediaType }) => {
@@ -40,16 +36,16 @@ const MediaCard: React.FC<MediaCardProps> = ({ content, mediaType }) => {
 
     return (
     <CardContainer onClick={handleClick} role="button" tabIndex={0}>
-        {content.image &&<BookImage src={content.image} alt="Book cover" />}
-        {content.title &&<BookTitle>{content.title}</BookTitle>}
-        {content.subtitle &&<BookSubtitle>{content.subtitle}</BookSubtitle>}
-        {content.author &&<BookSubtitle>{content.author}</BookSubtitle>}
-        {content.publisher &&<BookSubtitle>{content.publisher}</BookSubtitle>}
-        {content.release_year &&<BookSubtitle>{content.release_year}</BookSubtitle>}
-        {content.director &&<BookSubtitle>{content.director}</BookSubtitle>}
-        {content.writer &&<BookSubtitle>{content.writer}</BookSubtitle>}
-        {content.seasons && <BookSubtitle>{content.seasons} seasons</BookSubtitle>}
-        {content.network && <BookSubtitle>{content.network}</BookSubtitle>}
+        {content.image &&<Image src={content.image} alt="Book cover" />}
+        {content.title &&<Title>{content.title}</Title>}
+        {content.subtitle &&<Title>{content.subtitle}</Title>}
+        {content.author &&<Title>{content.author}</Title>}
+        {content.publisher &&<Title>{content.publisher}</Title>}
+        {content.release_year &&<Title>{content.release_year}</Title>}
+        {content.director &&<Title>{content.director}</Title>}
+        {content.writer &&<Title>{content.writer}</Title>}
+        {content.seasons && <Title>{content.seasons} seasons</Title>}
+        {content.network && <Title>{content.network}</Title>}
     </CardContainer>
 )};
 

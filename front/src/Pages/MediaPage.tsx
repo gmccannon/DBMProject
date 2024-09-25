@@ -40,16 +40,16 @@ const fetchmediaData = async (query: string, table: string): Promise<Media[]> =>
     return await response.json();
 };
 
-const MediaPage: React.FC<MediaPageProps> = ({mediaType}) => {
+const MediaPage: React.FC<MediaPageProps> = ({mediaType}): JSX.Element => {
     const [media, setmedia] = useState<Media[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState<Boolean>(true);
     const [error, setError] = useState<Error | null>(null);
     const [searchQuery, setSearchQuery] = useState<string>('');
 
-    const fetchMedia = async (query: string, media: string) => {
+    const fetchMedia = async (query: string, media: string): Promise<void> => {
         setLoading(true);
         try {
-            const data = await fetchmediaData(query, media);
+            const data: Media[] = await fetchmediaData(query, media);
             setmedia(data);
         } catch (err: unknown) {
             setError(err instanceof Error ? err : new Error('An unknown error occurred'));
@@ -59,7 +59,7 @@ const MediaPage: React.FC<MediaPageProps> = ({mediaType}) => {
     };
 
     // Fetch media on initial load and when searchQuery changes
-    React.useEffect(() => {
+    React.useEffect((): void => {
         fetchMedia(searchQuery, mediaType);
     }, [searchQuery, mediaType]); // Trigger re-fetch when searchQuery or page changes
 
@@ -70,7 +70,7 @@ const MediaPage: React.FC<MediaPageProps> = ({mediaType}) => {
                 <Title>search for {mediaType.toLowerCase()}...</Title>
                 <SearchInput 
                     type="text" 
-                    placeholder={`Enter a title or keywords`} 
+                    placeholder={`enter a title or keywords`} 
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)} 
                 />
