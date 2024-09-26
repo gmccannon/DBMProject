@@ -113,39 +113,46 @@ db.exec(`
         FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE -- Delete reviews if book is deleted
     );
 
-    insert or replace into genres
+    INSERT OR REPLACE INTO genres
         (genre)
-        values ('Fantasy');
+    VALUES 
+        ('Fantasy'),
+        ('Science Fiction'),
+        ('Drama'),
+        ('Adventure');
 
-    insert or replace into books
+    INSERT OR REPLACE INTO books
         (title, author, publication_date, genre_id, word_count, best_seller)
-        values ('Book1', 'Author1', '1999-12-31', 1, 12345, false);
+    VALUES 
+        ('Don Quixote', 'Miguel de Cervantes', '1605-01-16', 4, 383748, true);
 
-    insert or replace into movies
+    INSERT OR REPLACE INTO movies
         (title, director, release_date, genre_id, duration, oscar_winner)
-        values ('Movie1', 'Director1', '1998-12-31', 1, 2134, false);
-    
-    insert or replace into shows
-        (title, writer, release_date, genre_id, episodes, emmy_winner)
-        values ('Show1', 'Writer1', '1997-12-31', 1, 4356, false);
+    VALUES 
+        ('The Lord of the Rings: The Return of the King', 'Peter Jackson', '2003-12-17', 1, 201, true);
 
-    insert or replace into games
-        (title, studio, release_date, genre_id, platform, multiplayer)
-        values ('Game1', 'Studio1', '1996-12-31', 1, 'PC', false);
-
-    insert or replace into books
-        (title, author, publication_date, genre_id, word_count, best_seller)
-        values ('Book2', 'Author1', '1999-12-31', 1, 12345, false);
-
-    insert or replace into movies
+    INSERT OR REPLACE INTO movies
         (title, director, release_date, genre_id, duration, oscar_winner)
-        values ('Movie2', 'Director1', '1998-12-31', 1, 2134, false);
-    
-    insert or replace into shows
-        (title, writer, release_date, genre_id, episodes, emmy_winner)
-        values ('Show2', 'Writer1', '1997-12-31', 1, 4356, false);
+    VALUES 
+        ('The Departed', 'Martin Scorsese', '2006-10-06', 3, 151, true);
 
-    insert or replace into games
+    INSERT OR REPLACE INTO shows
+        (title, writer, release_date, genre_id, episodes, emmy_winner)
+    VALUES 
+        ('Breaking Bad', 'Vince Gilligan', '2008-01-20', 3, 62, true);
+
+    INSERT OR REPLACE INTO shows
+        (title, writer, release_date, genre_id, episodes, emmy_winner)
+    VALUES 
+        ('Better Call Saul', 'Vince Gilligan', '2015-02-08', 3, 63, false);
+
+    INSERT OR REPLACE INTO shows
+        (title, writer, release_date, genre_id, episodes, emmy_winner)
+    VALUES 
+        ('Star Trek: The Next Generation', 'Gene Roddenberry', '1987-09-28', 2, 178, true);
+
+    INSERT OR REPLACE INTO games
         (title, studio, release_date, genre_id, platform, multiplayer)
-        values ('Game2', 'Studio1', '1996-12-31', 1, 'PC', false);
+    VALUES 
+        ('Dark Souls 3', 'FromSoftware', '2016-03-24', 1, 'PC', true);
 `);

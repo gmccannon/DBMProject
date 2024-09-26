@@ -36,8 +36,14 @@ app.get('/ind', (req, res) => {
         }
 
         // Prepare the SQL query with the validated table name
-        const sql = `SELECT * FROM ${table} WHERE id = ?`;
+        // Joining the genres table to also get the genre name!!
+        const sql = `SELECT ${table}.*, genres.genre 
+                     FROM ${table} 
+                     JOIN genres ON ${table}.genre_id = genres.id 
+                     WHERE ${table}.id = ?`;
         const shows = db.prepare(sql).all(id); // Safely pass the id as a parameter
+
+        console.log(shows)
 
         res.setHeader('Content-Type', 'application/json');
         res.send(shows);

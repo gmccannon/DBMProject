@@ -43,6 +43,7 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
   <>
     {media && <h1> Type: {mediaType}</h1>}
     {media && <h1> Title: {media[0].title}</h1>}
+    {media && <h1> Genre: {media[0].genre}</h1>}
     {media && <h1> ID: {media[0].id}</h1>}
   </> 
   );

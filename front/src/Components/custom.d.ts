@@ -1,4 +1,5 @@
 interface Media {
+    genre: string;
     id: number;
     image: string;
     title: string;
