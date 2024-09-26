@@ -3,7 +3,7 @@ const db = new Database('database.db');
 
 db.exec(`
     create table if not exists books (
-        book_id integer NOT NULL primary key autoincrement,
+        id integer NOT NULL primary key autoincrement,
         title varchar(256) NOT NULL,
         subtitle varchar(256),
         author varchar(256),
@@ -11,7 +11,7 @@ db.exec(`
     );
     
     create table if not exists shows (
-        show_id integer NOT NULL primary key autoincrement,
+        id integer NOT NULL primary key autoincrement,
         title varchar(256) NOT NULL,
         seasons varchar(256),
         writer varchar(256),
@@ -19,14 +19,14 @@ db.exec(`
     );
     
     create table if not exists movies (
-        movie_id integer NOT NULL primary key autoincrement,
+        id integer NOT NULL primary key autoincrement,
         title varchar(256) NOT NULL,
         director varchar(256),
         release_year varchar(256)
     );
 
     create table if not exists games (
-        game_id integer NOT NULL primary key autoincrement,
+        id integer NOT NULL primary key autoincrement,
         title varchar(256) NOT NULL,
         publisher varchar(256),
         release_year varchar(256)
@@ -34,7 +34,15 @@ db.exec(`
 
     insert or replace into shows
         (title, seasons, writer, network)
-        values ('Breaking Bad', '6', 'Vince Giligan', 'AMC');
+        values ('Breaking Bad', '5', 'Vince Giligan', 'Drama');
+
+    insert or replace into shows
+        (title, seasons, writer, network)
+        values ('Better Call Saul', '6', 'Vince Giligan', 'Drama');
+
+    insert or replace into shows
+        (title, seasons, writer, network)
+        values ('Star Trek: The Next Generation', '7', 'Gene Roddenberry', 'Sci-fi');
     
     insert or replace into movies
         (title, director, release_year)

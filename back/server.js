@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { raw } from 'express';
 import cors from 'cors';
 import Database from 'better-sqlite3';
 
@@ -8,22 +8,14 @@ const port = 3001;
 
 app.use(cors());
 
-app.get('/books', (req, res) => {
-    const bookTitle = req.params.bookID;
-    const order = req.params.order;
+app.get('/getmedia', (req, res) => {
     try {
-        const books = db.prepare('select * from books').all();
-        res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify(books));
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Error searching for books.');
-    }
-});
+        const searchQuery = req.query.search || ''; // Get the search query from the request
+        const table = req.query.table || '';
+        
+        const sql = `SELECT * FROM ${table} WHERE title LIKE ?`;  // Prepare the SQL query with a parameter to avoid a SQL injection
+        const games = db.prepare(sql).all(`%${searchQuery}%`); // Use wildcard for searching
 
-app.get('/games', (req, res) => {
-    try {
-        const games = db.prepare('select * from games').all();
         res.setHeader('Content-Type', 'application/json');
         res.send(JSON.stringify(games));
     } catch (error) {
@@ -32,22 +24,25 @@ app.get('/games', (req, res) => {
     }
 });
 
-app.get('/movies', (req, res) => {
+app.get('/ind', (req, res) => {
     try {
-        const movies = db.prepare('select * from movies').all();
-        res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify(movies));
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Error searching for movies.');
-    }
-});
+        const id = req.query.search || ''; // Get the search query from the request
+        const table = req.query.table || ''; // Get the table name from the request
 
-app.get('/shows', (req, res) => {
-    try {
-        const shows = db.prepare('select * from shows').all();
+        // Validate the table name to prevent SQL injection
+        const validTables = ['shows', 'movies', 'books', 'games']; // Add allowed table names here
+        if (!validTables.includes(table)) {
+            return res.status(400).send('Invalid table name');
+        }
+
+        // Prepare the SQL query with the validated table name
+        const sql = `SELECT * FROM ${table} WHERE id = ?`;
+        const shows = db.prepare(sql).all(id); // Safely pass the id as a parameter
+
+        console.log('Query result:', shows);  // Log the result
+
         res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify(shows));
+        res.send(shows);
     } catch (error) {
         console.error(error);
         res.status(500).send('Error searching for shows.');
