@@ -39,8 +39,6 @@ app.get('/ind', (req, res) => {
         const sql = `SELECT * FROM ${table} WHERE id = ?`;
         const shows = db.prepare(sql).all(id); // Safely pass the id as a parameter
 
-        console.log('Query result:', shows);  // Log the result
-
         res.setHeader('Content-Type', 'application/json');
         res.send(shows);
     } catch (error) {
