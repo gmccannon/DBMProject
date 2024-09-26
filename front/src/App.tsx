@@ -4,7 +4,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import TopBar from './Components/TopBar';
 import TitlePage from './Pages/TitlePage';
 import MediaPage from './Pages/MediaPage';
-import MediaReviewPage from './Pages/MediaReviewpage'; 
+import MediaReviewPage from './Pages/MediaReviewpage';
+import Login from "./Components/login";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route path="/Shows" element={<MediaPage mediaType={"Shows"} />}/>
             <Route path="/Books" element={<MediaPage mediaType={"Books"}/>}/>
             <Route path="/Games" element={<MediaPage mediaType={"Games"} />}/>
+            <Route path="/login" element={<Login />} />
 
             <Route path="/Movies/:id" element={<MediaReviewPage mediaType={"Movie"}/>}/>
             <Route path="/Shows/:id" element={<MediaReviewPage mediaType={"Show"}/>}/>
