@@ -33,19 +33,15 @@ const MediaCard: React.FC<MediaCardProps> = ({ content, mediaType }) => {
     const handleClick = () => {
         navigate(`/${mediaType}/${content.id}`);
     };
-
+    
     return (
     <CardContainer onClick={handleClick} role="button" tabIndex={0}>
         {content.image &&<Image src={content.image} alt="Book cover" />}
         {content.title &&<Title>{content.title}</Title>}
-        {content.subtitle &&<Title>{content.subtitle}</Title>}
         {content.author &&<Title>{content.author}</Title>}
-        {content.publisher &&<Title>{content.publisher}</Title>}
-        {content.release_year &&<Title>{content.release_year}</Title>}
-        {content.director &&<Title>{content.director}</Title>}
+        {content.studio &&<Title>{content.studio}</Title>}
         {content.writer &&<Title>{content.writer}</Title>}
-        {content.seasons && <Title>{content.seasons} seasons</Title>}
-        {content.network && <Title>{content.network}</Title>}
+        {content.director &&<Title>{content.director}</Title>}
     </CardContainer>
 )};
 

@@ -2,88 +2,157 @@ import Database from 'better-sqlite3';
 const db = new Database('database.db');
 
 db.exec(`
-    CREATE TABLE if NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT UNIQUE NOT NULL,
-    password TEXT NOT NULL
+    CREATE TABLE genres (
+        id INTEGER PRIMARY KEY,
+        genre VARCHAR NOT NULL UNIQUE -- Ensure each genre is unique
     );
 
-    create table if not exists books (
-        id integer NOT NULL primary key autoincrement,
-        title varchar(256) NOT NULL,
-        subtitle varchar(256),
-        author varchar(256),
-        publisher varchar(256)
-    );
-    
-    create table if not exists shows (
-        id integer NOT NULL primary key autoincrement,
-        title varchar(256) NOT NULL,
-        seasons varchar(256),
-        writer varchar(256),
-        network varchar(256)
-    );
-    
-    create table if not exists movies (
-        id integer NOT NULL primary key autoincrement,
-        title varchar(256) NOT NULL,
-        director varchar(256),
-        release_year varchar(256)
+    CREATE TABLE users (
+        id INTEGER PRIMARY KEY,
+        username VARCHAR UNIQUE NOT NULL, -- Enforce unique usernames and make it required
+        password VARCHAR NOT NULL, -- Ensure password is required
+        bio VARCHAR,
+        joined_on DATE DEFAULT CURRENT_DATE, -- Set default to current date for new users
+        fav_game_id INTEGER,
+        fav_book_id INTEGER,
+        fav_movie_id INTEGER,
+        fav_show_id INTEGER,
+        fav_genre_id INTEGER,
+        FOREIGN KEY (fav_game_id) REFERENCES games(id) ON DELETE SET NULL, -- Set to NULL if game is deleted
+        FOREIGN KEY (fav_book_id) REFERENCES books(id) ON DELETE SET NULL, -- Set to NULL if book is deleted
+        FOREIGN KEY (fav_movie_id) REFERENCES movies(id) ON DELETE SET NULL, -- Set to NULL if movie is deleted
+        FOREIGN KEY (fav_show_id) REFERENCES shows(id) ON DELETE SET NULL, -- Set to NULL if show is deleted
+        FOREIGN KEY (fav_genre_id) REFERENCES genres(id) ON DELETE SET NULL -- Set to NULL if genre is deleted
     );
 
-    create table if not exists games (
-        id integer NOT NULL primary key autoincrement,
-        title varchar(256) NOT NULL,
-        publisher varchar(256),
-        release_year varchar(256)
+    CREATE TABLE movies (
+        id INTEGER PRIMARY KEY,
+        title VARCHAR NOT NULL,
+        director VARCHAR NOT NULL,
+        release_date DATE NOT NULL CHECK (release_date <= CURRENT_DATE), -- Ensure release date is not in the future
+        genre_id INTEGER,
+        duration INTEGER CHECK (duration > 0), -- Ensure duration is a positive number
+        oscar_winner BOOLEAN DEFAULT FALSE, -- Default to false if not specified
+        FOREIGN KEY (genre_id) REFERENCES genres(id) ON DELETE SET NULL -- Set to NULL if genre is deleted
     );
 
-    insert or replace into shows
-        (title, seasons, writer, network)
-        values ('Breaking Bad', '5', 'Vince Giligan', 'Drama');
+    CREATE TABLE shows (
+        id INTEGER PRIMARY KEY,
+        title VARCHAR NOT NULL,
+        writer VARCHAR NOT NULL,
+        release_date DATE NOT NULL CHECK (release_date <= CURRENT_DATE), -- Ensure release date is not in the future
+        genre_id INTEGER,
+        episodes INTEGER CHECK (episodes > 0), -- Ensure episodes count is a positive number
+        emmy_winner BOOLEAN DEFAULT FALSE, -- Default to false if not specified
+        FOREIGN KEY (genre_id) REFERENCES genres(id) ON DELETE SET NULL -- Set to NULL if genre is deleted
+    );
 
-    insert or replace into shows
-        (title, seasons, writer, network)
-        values ('Better Call Saul', '6', 'Vince Giligan', 'Drama');
+    CREATE TABLE books (
+        id INTEGER PRIMARY KEY,
+        title VARCHAR NOT NULL,
+        author VARCHAR NOT NULL,
+        publication_date DATE NOT NULL CHECK (publication_date <= CURRENT_DATE), -- Ensure publication date is not in the future
+        genre_id INTEGER,
+        word_count INTEGER CHECK (word_count > 0), -- Ensure word count is positive
+        best_seller BOOLEAN DEFAULT FALSE, -- Default to false if not specified
+        FOREIGN KEY (genre_id) REFERENCES genres(id) ON DELETE SET NULL -- Set to NULL if genre is deleted
+    );
 
-    insert or replace into shows
-        (title, seasons, writer, network)
-        values ('Star Trek: The Next Generation', '7', 'Gene Roddenberry', 'Sci-fi');
-    
-    insert or replace into movies
-        (title, director, release_year)
-        values ('The Lord of The Rings: The Return of The King', 'Peter Jackson', '2003');
-    
-    insert or replace into movies
-        (title, director, release_year)
-        values ('The Departed', 'Martin Scorsese', '2006');
+    CREATE TABLE games (
+        id INTEGER PRIMARY KEY,
+        title VARCHAR NOT NULL,
+        studio VARCHAR NOT NULL,
+        release_date DATE NOT NULL CHECK (release_date <= CURRENT_DATE), -- Ensure release date is not in the future
+        genre_id INTEGER,
+        platform VARCHAR NOT NULL CHECK (platform IN ('PC', 'Console', 'Mobile')), -- Limit platforms to specific values
+        multiplayer BOOLEAN DEFAULT FALSE, -- Default to false if not specified
+        FOREIGN KEY (genre_id) REFERENCES genres(id) ON DELETE SET NULL -- Set to NULL if genre is deleted
+    );
 
-    insert or replace into games
-        (title, publisher, release_year)
-        values ('Dark Souls 3', 'Fromsoft', '2016');
+    CREATE TABLE game_reviews (
+        user_id INTEGER NOT NULL,
+        game_id INTEGER NOT NULL,
+        rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 10), -- Rating must be between 1 and 10
+        summary VARCHAR,
+        text VARCHAR NOT NULL,
+        PRIMARY KEY (user_id, game_id), -- Composite primary key to ensure a user can only review a game once
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE, -- Delete reviews if user is deleted
+        FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE CASCADE -- Delete reviews if game is deleted
+    );
 
-    insert or replace into books
-        (title, subtitle, author, publisher)
-        values ('Blaming the User', 'You''re a 10x hacker and it must be someone else''s fault', 'The Practical Dev', 'ORLY');
+    CREATE TABLE movie_reviews (
+        user_id INTEGER NOT NULL,
+        movie_id INTEGER NOT NULL,
+        rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 10), -- Rating must be between 1 and 10
+        summary VARCHAR,
+        text VARCHAR NOT NULL,
+        PRIMARY KEY (user_id, movie_id), -- Composite primary key to ensure a user can only review a movie once
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE, -- Delete reviews if user is deleted
+        FOREIGN KEY (movie_id) REFERENCES movies(id) ON DELETE CASCADE -- Delete reviews if movie is deleted
+    );
 
-    insert or replace into books
-        (title, subtitle, author, publisher)
-        values ('Buzzword First Design', 'Fashion-forward development', 'The Practical Dev', 'ORLY');
+    CREATE TABLE show_reviews (
+        user_id INTEGER NOT NULL,
+        show_id INTEGER NOT NULL,
+        rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 10), -- Rating must be between 1 and 10
+        summary VARCHAR,
+        text VARCHAR NOT NULL,
+        PRIMARY KEY (user_id, show_id), -- Composite primary key to ensure a user can only review a show once
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE, -- Delete reviews if user is deleted
+        FOREIGN KEY (show_id) REFERENCES shows(id) ON DELETE CASCADE -- Delete reviews if show is deleted
+    );
 
-    insert or replace into books
-        (title, subtitle, author, publisher)
-        values ('Googling the Error Message', 'The internet will make those bad words go away', 'The Practical Dev', 'ORLY');
+    CREATE TABLE book_reviews (
+        user_id INTEGER NOT NULL,
+        book_id INTEGER NOT NULL,
+        rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 10), -- Rating must be between 1 and 10
+        summary VARCHAR,
+        text VARCHAR NOT NULL,
+        PRIMARY KEY (user_id, book_id), -- Composite primary key to ensure a user can only review a book once
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE, -- Delete reviews if user is deleted
+        FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE -- Delete reviews if book is deleted
+    );
 
-    insert or replace into books
-        (title, subtitle, author, publisher)
-        values ('Web Development With Assembly', 'You might as well just shoot yourself right now', 'Bob Johnson (with his therapist)', 'ORLY');
+    INSERT OR REPLACE INTO genres
+        (genre)
+    VALUES 
+        ('Fantasy'),
+        ('Science Fiction'),
+        ('Drama'),
+        ('Adventure');
 
-    insert or replace into books
-        (title, subtitle, author, publisher)
-        values ('Works on My Machine', 'Every other developer is wrong', 'R. William', 'ORLY');
+    INSERT OR REPLACE INTO books
+        (title, author, publication_date, genre_id, word_count, best_seller)
+    VALUES 
+        ('Don Quixote', 'Miguel de Cervantes', '1605-01-16', 4, 383748, true);
 
-    insert or replace into books
-        (title, subtitle, author, publisher)
-        values ('Writing Code That Nobody Else can Read', 'Does it run? Just leave it alone.', 'The Practical Dev', 'ORLY');
+    INSERT OR REPLACE INTO movies
+        (title, director, release_date, genre_id, duration, oscar_winner)
+    VALUES 
+        ('The Lord of the Rings: The Return of the King', 'Peter Jackson', '2003-12-17', 1, 201, true);
 
+    INSERT OR REPLACE INTO movies
+        (title, director, release_date, genre_id, duration, oscar_winner)
+    VALUES 
+        ('The Departed', 'Martin Scorsese', '2006-10-06', 3, 151, true);
+
+    INSERT OR REPLACE INTO shows
+        (title, writer, release_date, genre_id, episodes, emmy_winner)
+    VALUES 
+        ('Breaking Bad', 'Vince Gilligan', '2008-01-20', 3, 62, true);
+
+    INSERT OR REPLACE INTO shows
+        (title, writer, release_date, genre_id, episodes, emmy_winner)
+    VALUES 
+        ('Better Call Saul', 'Vince Gilligan', '2015-02-08', 3, 63, false);
+
+    INSERT OR REPLACE INTO shows
+        (title, writer, release_date, genre_id, episodes, emmy_winner)
+    VALUES 
+        ('Star Trek: The Next Generation', 'Gene Roddenberry', '1987-09-28', 2, 178, true);
+
+    INSERT OR REPLACE INTO games
+        (title, studio, release_date, genre_id, platform, multiplayer)
+    VALUES 
+        ('Dark Souls 3', 'FromSoftware', '2016-03-24', 1, 'PC', true);
 `);

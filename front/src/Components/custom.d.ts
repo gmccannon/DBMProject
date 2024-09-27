@@ -1,15 +1,17 @@
 interface Media {
+    genre: string;
     id: number;
     image: string;
     title: string;
     subtitle: string;
-    author?: string; // Optional if not all media has an author
-    publisher?: string; // Optional if not all media has a publisher
-    release_year?: number; // Optional if not all media has a release year
-    director?: string; // Optional if not all media has a director
-    writer?: string; // Optional if not all media has a writer
-    seasons?: number; // Optional if not all media has a seasons property
+    author?: string;
+    publisher?: string;
+    release_year?: number;
+    director?: string;
+    writer?: string;
+    seasons?: number;
     network?: string;
+    genre_id?: number;
 }
 
 interface MediaCardProps {
