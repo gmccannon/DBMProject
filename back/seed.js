@@ -2,6 +2,12 @@ import Database from 'better-sqlite3';
 const db = new Database('database.db');
 
 db.exec(`
+    CREATE TABLE if NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL
+    );
+
     create table if not exists books (
         id integer NOT NULL primary key autoincrement,
         title varchar(256) NOT NULL,

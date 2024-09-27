@@ -1,5 +1,7 @@
-import React from 'react';
+// src/Components/TopBar.tsx
+import React, { useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { AuthContext } from './AuthContext'; // Adjust the path based on your structure
 
 // Define the type for the styles object
 const styles: { [key: string]: React.CSSProperties } = {
@@ -9,7 +11,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     alignItems: 'center',
     backgroundColor: 'white',
     padding: '30px 0 0 0',
-    position: 'relative', // To position the login button absolutely within this container
+    position: 'relative', // To position the login/logout button absolutely within this container
     height: '80px', // Optional: Define a fixed height for consistent layout
   },
   navButtons: {
@@ -43,6 +45,33 @@ const styles: { [key: string]: React.CSSProperties } = {
     cursor: 'pointer',
     outline: 'none',
     transition: 'background-color 0.3s, color 0.3s', // Smooth transition for hover effects
+    color: '#ADD8E6', // Initial text color matching the border
+  },
+  userInfo: {
+    position: 'absolute',
+    top: '30px',
+    right: '20px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+  },
+  userEmail: {
+    fontFamily: 'Courier New',
+    fontSize: '20px',
+    fontWeight: 600,
+    color: '#333',
+  },
+  logoutButton: {
+    fontFamily: 'Courier New',
+    fontSize: '16px',
+    fontWeight: 600,
+    padding: '5px 10px',
+    backgroundColor: '#DC143C', // Crimson background
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    color: 'white',
+    transition: 'background-color 0.3s',
   },
 };
 
@@ -68,6 +97,13 @@ const TopBar: React.FC = () => {
   const location = useLocation();
   const activetab: string = location.pathname;
 
+  // Access authentication state from AuthContext
+  const { isAuthenticated, username, logout } = useContext(AuthContext);
+
+  // Debugging: Log authentication state
+  console.log('TopBar - isAuthenticated:', isAuthenticated);
+  console.log('TopBar - username:', username);
+
   // Handler for navigation buttons
   const handleNavigate = (page: string): void => {
     navigate(page);
@@ -76,6 +112,12 @@ const TopBar: React.FC = () => {
   // Handler for the "Log In" button
   const handleLoginClick = (): void => {
     navigate('/login');
+  };
+
+  // Handler for the "Logout" button
+  const handleLogoutClick = (): void => {
+    logout();
+    navigate('/');
   };
 
   return (
@@ -89,23 +131,37 @@ const TopBar: React.FC = () => {
                     ...styles.button,
                     textDecoration: activetab === path ? 'underline' : 'none',
                     textDecorationColor: activetab === path ? 'rgb(173, 216, 230)' : 'none', // Light blue underline for active tab
+                    color: activetab === path ? '#ADD8E6' : '#333', // Change color for active tab
                   }}
               >
                 {getButtonLabel(path)}
               </button>
           ))}
         </div>
-        <button
-            onClick={handleLoginClick}
-            style={{
-              ...styles.loginButton,
-              // Optionally, indicate active state if on /login route
-              textDecoration: activetab === '/login' ? 'underline' : 'none',
-              textDecorationColor: activetab === '/login' ? 'rgb(173, 216, 230)' : 'none',
-            }}
-        >
-          Log In
-        </button>
+
+        {/* Conditionally render "Log In" button or user email with "Logout" */}
+        {isAuthenticated && username ? (
+            <div style={styles.userInfo}>
+              <span style={styles.userEmail}>{username}</span>
+              <button onClick={handleLogoutClick} style={styles.logoutButton}>
+                Logout
+              </button>
+            </div>
+        ) : (
+            <button
+                onClick={handleLoginClick}
+                style={{
+                  ...styles.loginButton,
+                  // Optionally, indicate active state if on /login route
+                  textDecoration: activetab === '/login' ? 'underline' : 'none',
+                  textDecorationColor: activetab === '/login' ? 'rgb(173, 216, 230)' : 'none',
+                  color: activetab === '/login' ? '#333' : '#ADD8E6', // Change text color if active
+                  backgroundColor: activetab === '/login' ? '#ADD8E6' : 'transparent', // Change background if active
+                }}
+            >
+              Log In
+            </button>
+        )}
       </div>
   );
 };

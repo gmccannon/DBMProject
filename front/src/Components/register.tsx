@@ -1,10 +1,10 @@
-// src/Components/Login.tsx
+// src/Components/Register.tsx
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from './AuthContext'; // Ensure correct path
 
-const Login: React.FC = () => {
+const Register: React.FC = () => {
     const navigate = useNavigate();
     const { login } = useContext(AuthContext); // Access login function from context
 
@@ -14,22 +14,22 @@ const Login: React.FC = () => {
     const [error, setError] = useState<string>('');
 
     // Handler for form submission
-    const handleLogin = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+    const handleRegister = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
         setError(''); // Reset error message
 
         try {
-            const response = await axios.post('http://localhost:3001/login', {
+            const response = await axios.post('http://localhost:3001/register', {
                 username,
                 password,
             });
 
             const { token } = response.data;
 
-            // Use the login function from AuthContext
+            // Use the login function from AuthContext to set auth state
             login(token);
 
-            // Redirect after successful login
+            // Redirect after successful registration
             navigate('/Shows');
         } catch (err: any) {
             if (err.response && err.response.data && err.response.data.message) {
@@ -40,15 +40,10 @@ const Login: React.FC = () => {
         }
     };
 
-    // Handler for navigating to the Register page
-    const handleNavigateToRegister = (): void => {
-        navigate('/register');
-    };
-
     return (
         <div style={styles.container}>
-            <h2 style={styles.title}>Log In</h2>
-            <form onSubmit={handleLogin} style={styles.form}>
+            <h2 style={styles.title}>Register</h2>
+            <form onSubmit={handleRegister} style={styles.form}>
                 <div style={styles.inputGroup}>
                     <label htmlFor="username" style={styles.label}>Username:</label>
                     <input
@@ -73,15 +68,9 @@ const Login: React.FC = () => {
                 </div>
                 {error && <p style={styles.error}>{error}</p>}
                 <button type="submit" style={styles.submitButton}>
-                    Log In
-                </button>
-            </form>
-            <p style={styles.registerPrompt}>
-                Don't have an account?
-                <button onClick={handleNavigateToRegister} style={styles.registerButton}>
                     Register
                 </button>
-            </p>
+            </form>
         </div>
     );
 };
@@ -138,28 +127,10 @@ const styles: { [key: string]: React.CSSProperties } = {
         color: 'white',
         transition: 'background-color 0.3s',
     },
-    registerPrompt: {
-        marginTop: '20px',
-        fontSize: '16px',
-        color: '#333',
-    },
-    registerButton: {
-        marginLeft: '10px',
-        fontFamily: 'Courier New',
-        fontSize: '16px',
-        fontWeight: 600,
-        padding: '5px 10px',
-        backgroundColor: '#32CD32', // Lime green background
-        border: 'none',
-        borderRadius: '5px',
-        cursor: 'pointer',
-        color: 'white',
-        transition: 'background-color 0.3s',
-    },
     error: {
         color: 'red',
         fontSize: '14px',
     },
 };
 
-export default Login;
+export default Register;
