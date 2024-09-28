@@ -14,7 +14,7 @@ const ProfilePage = () => {
   return (
     <div>
       <h1>Profile for {username}</h1>
-      <h1>ID number: {userID}</h1>
+      <h1>ID number for profile: {userID}</h1>
       <button onClick={handleLogout} >Logout</button>
     </div>
   )

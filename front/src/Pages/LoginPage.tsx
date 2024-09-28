@@ -3,10 +3,88 @@ import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../Components/AuthContext'; // Ensure correct path
+import styled from 'styled-components';
+
+// Styled components
+const Container = styled.div`
+    max-width: 400px;
+    margin: 100px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    font-family: 'Courier New';
+    text-align: center;
+`;
+
+const Title = styled.h2`
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+`;
+
+const Form = styled.form`
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+`;
+
+const InputGroup = styled.div`
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+`;
+
+const Label = styled.label`
+    margin-bottom: 5px;
+    font-size: 18px;
+    color: #555;
+`;
+
+const Input = styled.input`
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    outline: none;
+    transition: border-color 0.3s;
+`;
+
+const Button = styled.button`
+    font-family: 'Courier New';
+    font-size: 20px;
+    font-weight: 600;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+    transition: background-color 0.3s;
+
+    &.submit {
+        background-color: #ADD8E6; // Light blue background
+    }
+
+    &.register {
+        margin-left: 10px;
+        background-color: #32CD32; // Lime green background
+    }
+`;
+
+const ErrorMessage = styled.p`
+    color: red;
+    font-size: 14px;
+`;
+
+const RegisterPrompt = styled.p`
+    margin-top: 20px;
+    font-size: 16px;
+    color: #333;
+`;
 
 const Login: React.FC = () => {
     const navigate = useNavigate();
-    const { login } = useContext(AuthContext); // Access login function from context
+    const { login } = useContext(AuthContext);
 
     // State variables for form inputs
     const [username, setUsername] = useState<string>('');
@@ -19,147 +97,49 @@ const Login: React.FC = () => {
         setError(''); // Reset error message
 
         try {
-            const response = await axios.post('http://localhost:3001/login', {
-                username,
-                password,
-            });
-
+            const response = await axios.post('http://localhost:3001/login', { username, password });
             const { token } = response.data;
-
-            // Use the login function from AuthContext
-            login(token);
-
-            // Redirect after successful login
-            navigate('/Shows');
+            login(token); // Use the login function from AuthContext
+            navigate('/Shows'); // Redirect after successful login
         } catch (err: any) {
-            if (err.response && err.response.data && err.response.data.message) {
-                setError(err.response.data.message);
-            } else {
-                setError('An unexpected error occurred.');
-            }
+            const errorMessage = err.response?.data?.message || 'An unexpected error occurred.';
+            setError(errorMessage);
         }
     };
 
-    // Handler for navigating to the Register page
-    const handleNavigateToRegister = (): void => {
-        navigate('/register');
-    };
-
     return (
-        <div style={styles.container}>
-            <h2 style={styles.title}>Log In</h2>
-            <form onSubmit={handleLogin} style={styles.form}>
-                <div style={styles.inputGroup}>
-                    <label htmlFor="username" style={styles.label}>Username:</label>
-                    <input
+        <Container>
+            <Title>Log In</Title>
+            <Form onSubmit={handleLogin}>
+                <InputGroup>
+                    <Label htmlFor="username">Username:</Label>
+                    <Input
                         type="text"
                         id="username"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         required
-                        style={styles.input}
                     />
-                </div>
-                <div style={styles.inputGroup}>
-                    <label htmlFor="password" style={styles.label}>Password:</label>
-                    <input
+                </InputGroup>
+                <InputGroup>
+                    <Label htmlFor="password">Password:</Label>
+                    <Input
                         type="password"
                         id="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
-                        style={styles.input}
                     />
-                </div>
-                {error && <p style={styles.error}>{error}</p>}
-                <button type="submit" style={styles.submitButton}>
-                    Log In
-                </button>
-            </form>
-            <p style={styles.registerPrompt}>
+                </InputGroup>
+                {error && <ErrorMessage>{error}</ErrorMessage>}
+                <Button type="submit" className="submit">Log In</Button>
+            </Form>
+            <RegisterPrompt>
                 Don't have an account?
-                <button onClick={handleNavigateToRegister} style={styles.registerButton}>
-                    Register
-                </button>
-            </p>
-        </div>
+                <Button onClick={() => navigate('/register')} className="register">Register</Button>
+            </RegisterPrompt>
+        </Container>
     );
-};
-
-// Define styles using TypeScript's React.CSSProperties
-const styles: { [key: string]: React.CSSProperties } = {
-    container: {
-        maxWidth: '400px',
-        margin: '100px auto', // Center the container vertically with some top margin
-        padding: '20px',
-        border: '1px solid #ddd',
-        borderRadius: '8px',
-        backgroundColor: '#f9f9f9',
-        fontFamily: 'Courier New', // Consistent with TopBar
-        textAlign: 'center',
-    },
-    title: {
-        marginBottom: '20px',
-        fontSize: '24px',
-        color: '#333',
-    },
-    form: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '15px', // Space between form elements
-    },
-    inputGroup: {
-        display: 'flex',
-        flexDirection: 'column',
-        textAlign: 'left',
-    },
-    label: {
-        marginBottom: '5px',
-        fontSize: '18px',
-        color: '#555',
-    },
-    input: {
-        padding: '10px',
-        fontSize: '16px',
-        borderRadius: '4px',
-        border: '1px solid #ccc',
-        outline: 'none',
-        transition: 'border-color 0.3s',
-    },
-    submitButton: {
-        fontFamily: 'Courier New',
-        fontSize: '20px',
-        fontWeight: 600,
-        padding: '10px 20px',
-        backgroundColor: '#ADD8E6', // Light blue background
-        border: 'none',
-        borderRadius: '5px',
-        cursor: 'pointer',
-        color: 'white',
-        transition: 'background-color 0.3s',
-    },
-    registerPrompt: {
-        marginTop: '20px',
-        fontSize: '16px',
-        color: '#333',
-    },
-    registerButton: {
-        marginLeft: '10px',
-        fontFamily: 'Courier New',
-        fontSize: '16px',
-        fontWeight: 600,
-        padding: '5px 10px',
-        backgroundColor: '#32CD32', // Lime green background
-        border: 'none',
-        borderRadius: '5px',
-        cursor: 'pointer',
-        color: 'white',
-        transition: 'background-color 0.3s',
-    },
-    error: {
-        color: 'red',
-        fontSize: '14px',
-    },
 };
 
 export default Login;
