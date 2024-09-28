@@ -10,8 +10,6 @@ interface Media {
     director?: string;
     writer?: string;
     seasons?: number;
-    network?: string;
-    genre_id?: number;
 }
 
 interface MediaCardProps {

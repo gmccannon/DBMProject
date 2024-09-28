@@ -40,8 +40,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [userID, setUserID] = useState<number | null>(null);
 
     // On page load, check if a token exists in localStorage and update the state accordingly
-    // If a valid token is found, decode it to extract the username and userID, setting authentication to true
-    // If the token is invalid or absent, reset the authentication state to false
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
@@ -54,7 +52,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 console.log('Token valid. Username:', decoded.username);
             } catch (error) {
                 console.error('Invalid token on load:', error);
-                // Clear user states if the token is invalid
                 setIsAuthenticated(false);
                 setUsername(null);
                 setUserID(null);
@@ -64,9 +61,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
     }, []);
 
-    // Function to handle login; stores the token in localStorage and updates user state
-    // After decoding the token, it sets the username, userID, and marks the user as authenticated
-    // In case of an invalid token, clears all user states
+    // function to handle login, sets authentaction state to true
     const login = (token: string) => {
         console.log('Attempting to login with token:', token);
         localStorage.setItem('token', token);
@@ -78,14 +73,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             console.log('Login successful. Username:', decoded.username);
         } catch (error) {
             console.error('Invalid token:', error);
-            // Clear user states on error
             setIsAuthenticated(false);
             setUsername(null);
             setUserID(null);
         }
     };
 
-    // Function to handle logout; removes the token from localStorage and clears user state
+    // function to handle logout, sets authentaction state to false
     const logout = () => {
         console.log('Logging out...');
         localStorage.removeItem('token');

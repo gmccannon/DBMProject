@@ -9,7 +9,7 @@ import MediaReviewPage from './Pages/MediaReviewpage';
 import Login from "./Pages/LoginPage";
 import Register from "./Pages/RegisterPage";
 import ProfilePage from './Pages/ProfilePage';
-import ProtectedRoute from "./Components/ProtectedRoute"; // Optional
+import ProtectedRoute from "./Components/ProtectedRoute";  // used to ensure the user is logged in 
 
 function App() {
     return (

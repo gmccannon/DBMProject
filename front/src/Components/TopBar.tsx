@@ -62,7 +62,7 @@ const TopBar: React.FC = () => {
   const navigate = useNavigate();
 
   // method to get current URL from react router, and decide the active tab
-  // this is not used for naviagtion, this is simply used to decide which topbar button to highlight
+  // this is not used for navigation, this is simply used to decide which topbar button to highlight
   const location = useLocation();
   const activetab: string = location.pathname;
 

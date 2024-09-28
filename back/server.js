@@ -133,10 +133,10 @@ app.get('/getmedia', (req, res) => {
         const table = req.query.table || '';
         
         const sql = `SELECT * FROM ${table} WHERE title LIKE ?`;  // Prepare the SQL query with a parameter to avoid a SQL injection
-        const games = db.prepare(sql).all(`%${searchQuery}%`); // Use wildcard for searching
+        const mediaItem = db.prepare(sql).all(`%${searchQuery}%`); // Use wildcard for searching
 
         res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify(games));
+        res.send(JSON.stringify(mediaItem));
     } catch (error) {
         console.error('GetMedia Error:', error);
         res.status(500).send('Error searching for media.');
@@ -171,14 +171,18 @@ app.get('/ind', (req, res) => {
         }
 
         // Prepare the SQL query with the validated table name
-        // Joining the genres table to also get the genre name!!
+        // Joining the genres table to also get the genre name
         const sql = `SELECT ${table}.*, genres.genre 
                      FROM ${table} 
                      JOIN genres ON ${table}.genre_id = genres.id 
                      WHERE ${table}.id = ?`;
-        const mediaItem = db.prepare(sql).all(id); // Safely pass the id as a parameter
+        const mediaItem = db.prepare(sql).all(id);
 
-        res.json(mediaItem);
+        console.log(mediaItem[0])
+
+        // send back database query
+        res.setHeader('Content-Type', 'application/json');
+        res.send(mediaItem[0]); // query should only return one item
     } catch (error) {
         console.error('Ind Error:', error);
         res.status(500).send('Error searching for media.');
