@@ -19,23 +19,29 @@ interface TokenPayload {
     username: string;
 }
 
-// export function to access the AuthProvider methods from outside the component
+// Creates an AuthContext with default values to provide authentication state and methods (login, logout)
+// This allows other components to access authentication status and user data (username, userID)
 export const AuthContext = createContext<AuthContextType>({
+    // Default states and functions to be overridden by the context provider
     isAuthenticated: false,
     username: null,
     userID: null,
-    login: () => {},
+    login: () => {},  
     logout: () => {},
 });
 
-// component to manage the states of the user (authentication status, current user's ID and name)
+// Component that manages authentication state (e.g., whether a user is logged in or not) 
+// Provides access to `login` and `logout` functions and user information (username, userID)
+// State is updated on page load (via useEffect) and when the login or logout functions are invoked
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-    // user states
+    // States for authentication, username, and userID
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const [username, setUsername] = useState<string | null>(null);
     const [userID, setUserID] = useState<number | null>(null);
 
-    // Check for token on app load, and update the states, otherwise clear all the states
+    // On page load, check if a token exists in localStorage and update the state accordingly
+    // If a valid token is found, decode it to extract the username and userID, setting authentication to true
+    // If the token is invalid or absent, reset the authentication state to false
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
@@ -48,6 +54,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 console.log('Token valid. Username:', decoded.username);
             } catch (error) {
                 console.error('Invalid token on load:', error);
+                // Clear user states if the token is invalid
                 setIsAuthenticated(false);
                 setUsername(null);
                 setUserID(null);
@@ -57,7 +64,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
     }, []);
 
-    // Function to handle login, and update the states, clear user states on error
+    // Function to handle login; stores the token in localStorage and updates user state
+    // After decoding the token, it sets the username, userID, and marks the user as authenticated
+    // In case of an invalid token, clears all user states
     const login = (token: string) => {
         console.log('Attempting to login with token:', token);
         localStorage.setItem('token', token);
@@ -69,13 +78,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             console.log('Login successful. Username:', decoded.username);
         } catch (error) {
             console.error('Invalid token:', error);
+            // Clear user states on error
             setIsAuthenticated(false);
             setUsername(null);
             setUserID(null);
         }
     };
 
-    // Function to handle logout, clear all user states
+    // Function to handle logout; removes the token from localStorage and clears user state
     const logout = () => {
         console.log('Logging out...');
         localStorage.removeItem('token');
@@ -84,6 +94,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setUserID(null);
     };
 
+    // The provider passes the authentication state (isAuthenticated, username, userID)
+    // and the login/logout functions to any child component that consumes the AuthContext
     return (
         <AuthContext.Provider value={{ isAuthenticated, username, userID, login, logout }}>
             {children}
