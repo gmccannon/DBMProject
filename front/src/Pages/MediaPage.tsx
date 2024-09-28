@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import MediaCard from '../Components/MediaCard';
 
@@ -46,6 +46,11 @@ const MediaPage: React.FC<MediaPageProps> = ({mediaType}): JSX.Element => {
     const [error, setError] = useState<Error | null>(null);
     const [searchQuery, setSearchQuery] = useState<string>('');
 
+    // Fetch media on initial load and when searchQuery changes
+    useEffect((): void => {
+        fetchMedia(searchQuery, mediaType);
+    }, [searchQuery, mediaType]); // Trigger re-fetch when searchQuery or page changes
+
     const fetchMedia = async (query: string, media: string): Promise<void> => {
         setLoading(true);
         try {
@@ -57,11 +62,6 @@ const MediaPage: React.FC<MediaPageProps> = ({mediaType}): JSX.Element => {
             setLoading(false);
         }
     };
-
-    // Fetch media on initial load and when searchQuery changes
-    React.useEffect((): void => {
-        fetchMedia(searchQuery, mediaType);
-    }, [searchQuery, mediaType]); // Trigger re-fetch when searchQuery or page changes
 
     return (
         <>

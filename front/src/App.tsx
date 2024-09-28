@@ -10,43 +10,39 @@ import Login from "./Components/login";
 import Register from "./Components/register";
 // import ProtectedRoute from "./Components/ProtectedRoute"; // Optional
 
-import { AuthProvider } from './Components/AuthContext'; // Ensure correct path
-
 function App() {
     return (
-        <AuthProvider>
-            <BrowserRouter>
-                <TopBar />
-                <Routes>
-                    <Route path="/" element={<TitlePage />} />
+      <BrowserRouter>
+          <TopBar />
+          <Routes>
+              <Route path="/" element={<TitlePage />} />
 
-                    <Route path="/Movies" element={<MediaPage mediaType={"Movies"} />} />
-                    <Route path="/Shows" element={<MediaPage mediaType={"Shows"} />} />
-                    <Route path="/Books" element={<MediaPage mediaType={"Books"} />} />
-                    <Route path="/Games" element={<MediaPage mediaType={"Games"} />} />
+              <Route path="/Movies" element={<MediaPage mediaType={"Movies"} />} />
+              <Route path="/Shows" element={<MediaPage mediaType={"Shows"} />} />
+              <Route path="/Books" element={<MediaPage mediaType={"Books"} />} />
+              <Route path="/Games" element={<MediaPage mediaType={"Games"} />} />
 
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<Register />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
 
-                    <Route path="/Movies/:id" element={<MediaReviewPage mediaType={"Movie"} />} />
-                    <Route path="/Shows/:id" element={<MediaReviewPage mediaType={"Show"} />} />
-                    <Route path="/Books/:id" element={<MediaReviewPage mediaType={"Book"} />} />
-                    <Route path="/Games/:id" element={<MediaReviewPage mediaType={"Game"} />} />
+              <Route path="/Movies/:mediaNumber" element={<MediaReviewPage mediaType={"Movie"} />} />
+              <Route path="/Shows/:mediaNumber" element={<MediaReviewPage mediaType={"Show"} />} />
+              <Route path="/Books/:mediaNumber" element={<MediaReviewPage mediaType={"Book"} />} />
+              <Route path="/Games/:mediaNumber" element={<MediaReviewPage mediaType={"Game"} />} />
 
-                    {/* Example of a protected route (optional) */}
-                    {/*
-          <Route
-            path="/protected"
-            element={
-              <ProtectedRoute>
-                <ProtectedComponent />
-              </ProtectedRoute>
-            }
-          />
-          */}
-                </Routes>
-            </BrowserRouter>
-        </AuthProvider>
+              {/* Example of a protected route (optional) */}
+              {/*
+              <Route
+                path="/protected"
+                element={
+                  <ProtectedRoute>
+                    <ProtectedComponent />
+                  </ProtectedRoute>
+                }
+              />
+              */}
+          </Routes>
+      </BrowserRouter>
     );
 }
 

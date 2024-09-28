@@ -176,11 +176,9 @@ app.get('/ind', (req, res) => {
                      FROM ${table} 
                      JOIN genres ON ${table}.genre_id = genres.id 
                      WHERE ${table}.id = ?`;
-        const shows = db.prepare(sql).all(id); // Safely pass the id as a parameter
+        const mediaItem = db.prepare(sql).all(id); // Safely pass the id as a parameter
 
-        console.log(shows)
-
-        res.json(mediaItems);
+        res.json(mediaItem);
     } catch (error) {
         console.error('Ind Error:', error);
         res.status(500).send('Error searching for media.');
