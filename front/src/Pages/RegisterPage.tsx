@@ -88,17 +88,23 @@ const RegisterButton = styled.button`
 `;
 
 const Register: React.FC = () => {
+    // use navigation method from react router
     const navigate = useNavigate();
+
+    // use method to login the user from AuthContext component
     const { login } = useContext(AuthContext);
 
+    // states
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [error, setError] = useState<string>('');
 
+    // function to handle navigate to login page
     const handleNavigateToLogin = (): void => {
         navigate('/login');
     };
 
+    // function to add a new user into the database, then log in that user
     const handleRegister = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
         setError('');

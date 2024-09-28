@@ -28,8 +28,10 @@ const Image = styled.img`
 `;
 
 const MediaCard: React.FC<MediaCardProps> = ({ content, mediaType }) => {
+    // use navigation method from react router
     const navigate = useNavigate();
 
+    // function to navigate to individual media's info page 
     const handleClick = () => {
         navigate(`/${mediaType}/${content.id}`);
     };

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import { AuthContext } from '../Components/AuthContext';
 
+// function to get media from the database based on the specificed mediaType (table) and its specific ID
 const fetchMediaData = async (table: string, mediaNumber: string): Promise<Media[]> => {
   const response = await fetch(`http://localhost:3001/ind?table=${table.toLocaleLowerCase()}&search=${mediaNumber}`);
   if (!response.ok) {
@@ -12,17 +13,21 @@ const fetchMediaData = async (table: string, mediaNumber: string): Promise<Media
 };
 
 const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Element => {
-  const { mediaNumber } = useParams<string>(); // this extract the number from the URL, not any component!!!!
+  // method to extract the media number from the URL
+  const { mediaNumber } = useParams<string>();
+
+  // states
   const [media, setmedia] = useState<Media[]>();
   const [loading, setLoading] = useState<Boolean>(true);
   const [error, setError] = useState<Error | null>(null);
 
-  // Fetch media on initial load and when searchQuery changes
+  // Fetch media on initial load, and when searchQuery or mediaType (page) changes
   useEffect((): void => {
     if (mediaNumber)
       fetchMedia(mediaType, mediaNumber);
   }, [mediaNumber, mediaType]);
 
+  // function to update states based on info from the database
   const fetchMedia = async (mediaType: string, mediaNumber: string): Promise<void> => {
     setLoading(true);
     try {

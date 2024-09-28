@@ -4,7 +4,7 @@ import { jwtDecode } from 'jwt-decode'; // Named import
 
 interface AuthContextType {
     isAuthenticated: boolean;
-    username: string | null; // Changed from 'email' to 'username'
+    username: string | null;
     userID: number | null;
     login: (token: string) => void;
     logout: () => void;
@@ -19,6 +19,7 @@ interface TokenPayload {
     username: string;
 }
 
+// export function to access the AuthProvider methods from outside the component
 export const AuthContext = createContext<AuthContextType>({
     isAuthenticated: false,
     username: null,
@@ -27,12 +28,14 @@ export const AuthContext = createContext<AuthContextType>({
     logout: () => {},
 });
 
+// component to manage the states of the user (authentication status, current user's ID and name)
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+    // user states
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const [username, setUsername] = useState<string | null>(null);
     const [userID, setUserID] = useState<number | null>(null);
 
-    // Check for token on app load
+    // Check for token on app load, and update the states, otherwise clear all the states
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
@@ -54,7 +57,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
     }, []);
 
-    // Function to handle login
+    // Function to handle login, and update the states, clear user states on error
     const login = (token: string) => {
         console.log('Attempting to login with token:', token);
         localStorage.setItem('token', token);
@@ -72,7 +75,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
     };
 
-    // Function to handle logout
+    // Function to handle logout, clear all user states
     const logout = () => {
         console.log('Logging out...');
         localStorage.removeItem('token');

@@ -83,10 +83,13 @@ const RegisterPrompt = styled.p`
 `;
 
 const Login: React.FC = () => {
+    // use navigation method from react router
     const navigate = useNavigate();
+
+    // use method to login the user from AuthContext component
     const { login } = useContext(AuthContext);
 
-    // State variables for form inputs
+    // States
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [error, setError] = useState<string>('');

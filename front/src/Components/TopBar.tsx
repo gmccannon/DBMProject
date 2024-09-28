@@ -55,21 +55,31 @@ const getButtonLabel = (path: string): string => {
 };
 
 const TopBar: React.FC = () => {
+  // paths for media
   const paths: string[] = ['/Shows', '/Movies', '/Books', '/Games'];
+
+  // use navigation method from react router
   const navigate = useNavigate();
+
+  // method to get current URL from react router, and decide the active tab
+  // this is not used for naviagtion, this is simply used to decide which topbar button to highlight
   const location = useLocation();
   const activetab: string = location.pathname;
 
+  // grab info for the current user from AuthContext component
   const { isAuthenticated, username } = useContext(AuthContext);
 
+  // function to navigate to the specific media page
   const handleNavigate = (page: string): void => {
     navigate(page);
   };
 
+  // function to navigate to the login page
   const handleLoginClick = (): void => {
     navigate('/login');
   };
 
+  // function to navigate to profile page
   const handleProfileClick = (): void => {
     navigate('/profile');
   };

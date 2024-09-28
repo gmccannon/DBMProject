@@ -31,7 +31,7 @@ const GridContainer = styled.div`
     padding: 20px;
 `;
 
-// Function to fetch media data with an optional search query
+// Function to fetch media data with the search query
 const fetchmediaData = async (query: string, table: string): Promise<Media[]> => {
     const response = await fetch(`http://localhost:3001/getmedia?table=${table}&search=${encodeURIComponent(query)}`);
     if (!response.ok) {
@@ -41,6 +41,7 @@ const fetchmediaData = async (query: string, table: string): Promise<Media[]> =>
 };
 
 const MediaPage: React.FC<MediaPageProps> = ({mediaType}): JSX.Element => {
+    //states
     const [media, setmedia] = useState<Media[]>([]);
     const [loading, setLoading] = useState<Boolean>(true);
     const [error, setError] = useState<Error | null>(null);
@@ -51,6 +52,7 @@ const MediaPage: React.FC<MediaPageProps> = ({mediaType}): JSX.Element => {
         fetchMedia(searchQuery, mediaType);
     }, [searchQuery, mediaType]); // Trigger re-fetch when searchQuery or page changes
 
+    // function to update states based on info from the database
     const fetchMedia = async (query: string, media: string): Promise<void> => {
         setLoading(true);
         try {
