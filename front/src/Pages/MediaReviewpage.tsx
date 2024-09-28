@@ -1,30 +1,43 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
+import { AuthContext } from '../Components/AuthContext';
 
-const fetchMediaData = async (table: string, id: string): Promise<Media[]> => {
-  const response = await fetch(`http://localhost:3001/ind?table=${table.toLocaleLowerCase()}s&search=${id}`);
+// function to get media from the database based on the specificed mediaType (table) and its specific ID
+const fetchMediaData = async (table: string, mediaNumber: string): Promise<Media> => {
+  const response = await fetch(`http://localhost:3001/ind?table=${table.toLocaleLowerCase()}&search=${mediaNumber}`);
   if (!response.ok) {
     throw new Error('Failed to fetch media');
   }
   return await response.json();
 };
 
-const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}) => {
-  const { id } = useParams(); // this extract the id from the URL, not any component!!!!
-  const [media, setmedia] = useState<Media[]>();
-  const [loading, setLoading] = useState(true);
+const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Element => {
+  // method to extract the media number from the URL
+  const { mediaNumber } = useParams<string>();
+
+  // states
+  const [media, setMedia] = useState<Media>();
+  const [loading, setLoading] = useState<Boolean>(true);
   const [error, setError] = useState<Error | null>(null);
 
-  const fetchMedia = async (mediaType: string, id: string) => {
+  // Fetch media on initial load, and when searchQuery or mediaType (page) changes
+  useEffect((): void => {
+    if (mediaNumber)
+      fetchMedia(mediaType, mediaNumber);
+  }, [mediaNumber, mediaType]);
+
+  // function to update states based on info from the database
+  // queried with mediaID (ID from the URL), and the mediaType
+  const fetchMedia = async (mediaType: string, mediaNumber: string): Promise<void> => {
     setLoading(true);
     try {
-        const data = await fetchMediaData(mediaType, id);
+        const data = await fetchMediaData(mediaType, mediaNumber);
         console.log('Fetched media data:', data);  // Log the response here
         if (data) {  // Check if array has any elements
-          setmedia(data);    // Set the first item in the array
+          setMedia(data);    // Set the first item in the array
         } else {
-          setmedia(undefined);  // Handle case where no results are returned
+          setMedia(undefined);  // Handle case where no results are returned
         }
     } catch (err: unknown) {
         setError(err instanceof Error ? err : new Error('An unknown error occurred'));
@@ -33,19 +46,14 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}) => {
     }
   };
 
-    // Fetch media on initial load and when searchQuery changes
-    React.useEffect(() => {
-      if (id)
-        fetchMedia(mediaType, id);
-    }, [id, mediaType]);
-
-    return (
-    <>
-      {media && <h1> Type: {mediaType}</h1>}
-      {media && <h1> Title: {media[0].title}</h1>}
-      {media && <h1> ID: {media[0].id}</h1>}
-    </> 
-    );
+  return (
+  <>
+    {media && <h1> Type: {mediaType}</h1>}
+    {media && <h1> Title: {media.title}</h1>}
+    {media && <h1> Genre: {media.genre}</h1>}
+    {media && <h1> Media ID: {media.id}</h1>}
+  </> 
+  );
 }
 
 export default MediaReviewPage;
