@@ -10,6 +10,15 @@ interface AuthContextType {
     logout: () => void;
 }
 
+interface AuthProviderProps {
+    children: ReactNode;
+}
+
+interface TokenPayload {
+    id: number;
+    username: string;
+}
+
 export const AuthContext = createContext<AuthContextType>({
     isAuthenticated: false,
     username: null,
@@ -18,17 +27,7 @@ export const AuthContext = createContext<AuthContextType>({
     logout: () => {},
 });
 
-interface Props {
-    children: ReactNode;
-}
-
-interface TokenPayload {
-    id: number;
-    username: string;
-    // Add other fields if necessary
-}
-
-export const AuthProvider: React.FC<Props> = ({ children }) => {
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const [username, setUsername] = useState<string | null>(null);
     const [userID, setUserID] = useState<number | null>(null);
@@ -77,6 +76,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         localStorage.removeItem('token');
         setIsAuthenticated(false);
         setUsername(null);
+        setUserID(null);
     };
 
     return (

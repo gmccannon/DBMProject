@@ -25,10 +25,10 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
 
-              <Route path="/Movies/:mediaNumber" element={<MediaReviewPage mediaType={"Movie"} />} />
-              <Route path="/Shows/:mediaNumber" element={<MediaReviewPage mediaType={"Show"} />} />
-              <Route path="/Books/:mediaNumber" element={<MediaReviewPage mediaType={"Book"} />} />
-              <Route path="/Games/:mediaNumber" element={<MediaReviewPage mediaType={"Game"} />} />
+              <Route path="/Movies/:mediaNumber" element={<MediaReviewPage mediaType={"Movies"} />} />
+              <Route path="/Shows/:mediaNumber" element={<MediaReviewPage mediaType={"Shows"} />} />
+              <Route path="/Books/:mediaNumber" element={<MediaReviewPage mediaType={"Books"} />} />
+              <Route path="/Games/:mediaNumber" element={<MediaReviewPage mediaType={"Games"} />} />
 
               {/* Example of a protected route (optional) */}
               {/*

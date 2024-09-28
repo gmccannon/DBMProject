@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { AuthContext } from '../Components/AuthContext';
 
 const fetchMediaData = async (table: string, mediaNumber: string): Promise<Media[]> => {
-  const response = await fetch(`http://localhost:3001/ind?table=${table.toLocaleLowerCase()}s&search=${mediaNumber}`);
+  const response = await fetch(`http://localhost:3001/ind?table=${table.toLocaleLowerCase()}&search=${mediaNumber}`);
   if (!response.ok) {
     throw new Error('Failed to fetch media');
   }
