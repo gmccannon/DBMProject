@@ -6,9 +6,10 @@ import TopBar from './Components/TopBar';
 import TitlePage from './Pages/TitlePage';
 import MediaPage from './Pages/MediaPage';
 import MediaReviewPage from './Pages/MediaReviewpage';
-import Login from "./Components/login";
-import Register from "./Components/register";
-// import ProtectedRoute from "./Components/ProtectedRoute"; // Optional
+import Login from "./Pages/LoginPage";
+import Register from "./Pages/RegisterPage";
+import ProfilePage from './Pages/ProfilePage';
+import ProtectedRoute from "./Components/ProtectedRoute"; // Optional
 
 function App() {
     return (
@@ -24,23 +25,13 @@ function App() {
 
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
 
               <Route path="/Movies/:mediaNumber" element={<MediaReviewPage mediaType={"Movies"} />} />
               <Route path="/Shows/:mediaNumber" element={<MediaReviewPage mediaType={"Shows"} />} />
               <Route path="/Books/:mediaNumber" element={<MediaReviewPage mediaType={"Books"} />} />
               <Route path="/Games/:mediaNumber" element={<MediaReviewPage mediaType={"Games"} />} />
 
-              {/* Example of a protected route (optional) */}
-              {/*
-              <Route
-                path="/protected"
-                element={
-                  <ProtectedRoute>
-                    <ProtectedComponent />
-                  </ProtectedRoute>
-                }
-              />
-              */}
           </Routes>
       </BrowserRouter>
     );

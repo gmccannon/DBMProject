@@ -40,12 +40,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             try {
                 const decoded = jwtDecode<TokenPayload>(token);
                 setUsername(decoded.username);
+                setUserID(decoded.id);
                 setIsAuthenticated(true);
                 console.log('Token valid. Username:', decoded.username);
             } catch (error) {
                 console.error('Invalid token on load:', error);
                 setIsAuthenticated(false);
                 setUsername(null);
+                setUserID(null);
             }
         } else {
             console.log('No token found in localStorage.');

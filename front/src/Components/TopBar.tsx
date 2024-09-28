@@ -1,91 +1,54 @@
 // src/Components/TopBar.tsx
 import React, { useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { AuthContext } from './AuthContext'; // Adjust the path based on your structure
+import styled from 'styled-components';
+import { AuthContext } from './AuthContext';
 
-// Define the type for the styles object
-const styles: { [key: string]: React.CSSProperties } = {
-  topBar: {
-    display: 'flex',
-    justifyContent: 'center', // Center the navigation buttons
-    alignItems: 'center',
-    backgroundColor: 'white',
-    padding: '30px 0 0 0',
-    position: 'relative', // To position the login/logout button absolutely within this container
-    height: '80px', // Optional: Define a fixed height for consistent layout
-  },
-  navButtons: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  button: {
-    fontFamily: 'Courier New',
-    fontSize: '30px', // Large font for navigation buttons
-    fontWeight: 600,
-    margin: '0 10px', // Space between buttons
-    padding: '10px 20px', // Padding inside buttons
-    backgroundColor: 'transparent', // Transparent background
-    border: 'none', // Remove default border
-    cursor: 'pointer',
-    outline: 'none', // Remove focus outline
-    transition: 'color 0.3s, text-decoration-color 0.3s', // Smooth transition for color and underline
-  },
-  loginButton: {
-    position: 'absolute', // Position the login button absolutely within the topBar
-    top: '30px', // Align with the top padding of the topBar
-    right: '20px', // 20px from the right edge
-    fontFamily: 'Courier New',
-    fontSize: '20px', // Smaller font size for the login button
-    fontWeight: 600,
-    padding: '5px 10px', // Smaller padding to make the button smaller
-    backgroundColor: 'transparent',
-    border: '2px solid #ADD8E6', // Light blue border to make it stand out
-    borderRadius: '5px',
-    cursor: 'pointer',
-    outline: 'none',
-    transition: 'background-color 0.3s, color 0.3s', // Smooth transition for hover effects
-    color: '#ADD8E6', // Initial text color matching the border
-  },
-  userInfo: {
-    position: 'absolute',
-    top: '30px',
-    right: '20px',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px',
-  },
-  userEmail: {
-    fontFamily: 'Courier New',
-    fontSize: '20px',
-    fontWeight: 600,
-    color: '#333',
-  },
-  logoutButton: {
-    fontFamily: 'Courier New',
-    fontSize: '16px',
-    fontWeight: 600,
-    padding: '5px 10px',
-    backgroundColor: '#DC143C', // Crimson background
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-    color: 'white',
-    transition: 'background-color 0.3s',
-  },
-};
+const TopBarContainer = styled.div`
+  display: flex; // Use flexbox for layout
+  align-items: center; // Center items vertically
+  background-color: white;
+  padding: 1rem 2rem; // Padding for spacing
+  height: 5rem; // Set a consistent height
+  position: relative; // Enable positioning for child elements
+`;
 
-// Helper function to determine button labels
+const ButtonContainer = styled.div`
+  display: flex; // Use flexbox for buttons
+  justify-content: center; // Center navigation buttons
+  position: absolute; // Positioning absolutely within the parent
+  left: 50%; // Move to the center
+  transform: translateX(-50%); // Offset by half its width to truly center it
+  gap: 1.25rem; // Space between buttons
+`;
+
+const Button = styled.button`
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 1.875rem; // Font size set in rem (30px converted)
+  font-weight: 600;
+  padding: 0.625rem 1.25rem; // Padding for button size
+  background-color: transparent; // Transparent background
+  border: none; // Remove default border
+  cursor: pointer;
+  outline: none; // Remove focus outline
+  transition: color 0.3s, text-decoration-color 0.3s; // Smooth transition for color and underline
+`;
+
+const ProfileButton = styled(Button)`
+  margin-left: auto; // Push the profile/login button to the right
+`;
+
+// helper function for the button label
 const getButtonLabel = (path: string): string => {
   switch (path) {
     case '/Shows':
-      return 'Shows';
+      return 'shows';
     case '/Movies':
-      return 'Movies';
+      return 'movies';
     case '/Books':
-      return 'Books';
+      return 'books';
     case '/Games':
-      return 'Games';
+      return 'games';
     default:
       return path;
   }
@@ -97,72 +60,49 @@ const TopBar: React.FC = () => {
   const location = useLocation();
   const activetab: string = location.pathname;
 
-  // Access authentication state from AuthContext
-  const { isAuthenticated, username, logout } = useContext(AuthContext);
+  const { isAuthenticated, username } = useContext(AuthContext);
 
-  // Debugging: Log authentication state
-  console.log('TopBar - isAuthenticated:', isAuthenticated);
-  console.log('TopBar - username:', username);
-
-  // Handler for navigation buttons
   const handleNavigate = (page: string): void => {
     navigate(page);
   };
 
-  // Handler for the "Log In" button
   const handleLoginClick = (): void => {
     navigate('/login');
   };
 
-  // Handler for the "Logout" button
-  const handleLogoutClick = (): void => {
-    logout();
-    navigate('/');
+  const handleProfileClick = (): void => {
+    navigate('/profile');
   };
 
   return (
-      <div style={styles.topBar}>
-        <div style={styles.navButtons}>
-          {paths.map((path: string, index: number) => (
-              <button
-                  key={index}
-                  onClick={() => handleNavigate(path)}
-                  style={{
-                    ...styles.button,
-                    textDecoration: activetab === path ? 'underline' : 'none',
-                    textDecorationColor: activetab === path ? 'rgb(173, 216, 230)' : 'none', // Light blue underline for active tab
-                    color: activetab === path ? '#ADD8E6' : '#333', // Change color for active tab
-                  }}
-              >
-                {getButtonLabel(path)}
-              </button>
-          ))}
-        </div>
+    <TopBarContainer>
+      {/* All buttons in a single container */}
+      <ButtonContainer>
+        {paths.map((path: string, index: number) => (
+          <Button
+            key={index}
+            onClick={() => handleNavigate(path)}
+            style={{
+              textDecoration: activetab === path ? 'underline' : 'none',
+              textDecorationColor: activetab === path ? 'rgb(173, 216, 230)' : 'none', // Light blue underline for active tab
+            }}
+          >
+            {getButtonLabel(path)}
+          </Button>
+        ))}
+      </ButtonContainer>
 
-        {/* Conditionally render "Log In" button or user email with "Logout" */}
-        {isAuthenticated && username ? (
-            <div style={styles.userInfo}>
-              <span style={styles.userEmail}>{username}</span>
-              <button onClick={handleLogoutClick} style={styles.logoutButton}>
-                Logout
-              </button>
-            </div>
-        ) : (
-            <button
-                onClick={handleLoginClick}
-                style={{
-                  ...styles.loginButton,
-                  // Optionally, indicate active state if on /login route
-                  textDecoration: activetab === '/login' ? 'underline' : 'none',
-                  textDecorationColor: activetab === '/login' ? 'rgb(173, 216, 230)' : 'none',
-                  color: activetab === '/login' ? '#333' : '#ADD8E6', // Change text color if active
-                  backgroundColor: activetab === '/login' ? '#ADD8E6' : 'transparent', // Change background if active
-                }}
-            >
-              Log In
-            </button>
-        )}
-      </div>
+      {/* Profile/Login button on the right */}
+      <ProfileButton
+        onClick={isAuthenticated && username ? handleProfileClick : handleLoginClick}
+        style={{
+          textDecoration: activetab === (isAuthenticated && username ? '/profile' : '/login') ? 'underline' : 'none',
+          textDecorationColor: activetab === (isAuthenticated && username ? '/profile' : '/login') ? 'rgb(173, 216, 230)' : 'none', // Light blue underline for active tab
+        }}
+      >
+        {isAuthenticated && username ? 'profile' : 'login'}
+      </ProfileButton>
+    </TopBarContainer>
   );
 };
 
