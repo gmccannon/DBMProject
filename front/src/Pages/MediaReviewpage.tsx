@@ -6,20 +6,17 @@ import axios from 'axios';
 
 // function to get media from the database based on the specificed mediaType (table) and its specific ID
 const fetchMediaData = async (table: string, mediaNumber: string): Promise<Media> => {
-  // access the database endpoint
-  const response = await axios.get('http://localhost:3001/getmedia', {
-    params: {
-      table: table,
-      search: mediaNumber,
-    }
+    // access the database endpoint
+    const response = await axios.get('http://localhost:3001/ind', {
+      params: {
+        table: table,
+        search: mediaNumber,
+      }
   });
   
-  // handle responce error
   if (!response.status) {
     throw new Error('Failed to fetch media');
   }
-
-  //return a single media
   return await response.data;
 };
 

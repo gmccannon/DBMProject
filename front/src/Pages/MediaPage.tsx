@@ -27,16 +27,46 @@ const GridContainer = styled.div`
 const SearchInput = styled.input`
     font-family: 'Courier New';
     padding: 10px;
-    width: 35%;
+    width: 30%;
     margin-right: 10px;
     font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+
+    &:focus {
+        outline: none;
+        border-color: #666;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
 `;
 
 const OrderSelect = styled.select`
     font-family: 'Courier New';
+    width: 7%; /* Match width with SearchInput */
     padding: 10px;
     font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
     background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+
+    &:hover {
+        outline: none;
+        border-color: #666;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+`;
+
+const OrderOption = styled.option`
+    font-family: 'Courier New';
+    font-size: 16px;
+    padding: 10px; /* Padding might not work on all browsers for option elements */
+    background-color: green;
+    color: #333;
 `;
 
 // Function to fetch media data with the search query
@@ -50,7 +80,7 @@ const fetchmediaData = async (query: string, table: string, order: string): Prom
         }
     });
 
-    // handle error
+    // handle response error
     if (!response.status) {
         throw new Error('Failed to fetch media');
     }
@@ -103,8 +133,8 @@ const MediaPage: React.FC<MediaPageProps> = ({mediaType}): JSX.Element => {
                     value={order} 
                     onChange={(e) => setOrder(e.target.value)}
                 >
-                    <option value="title">Title</option>
-                    <option value="release_date">Release Date</option>
+                    <OrderOption value="title">title</OrderOption>
+                    <OrderOption value="release_date">release</OrderOption>
                 </OrderSelect>
             </HeaderContainer>
             <GridContainer>

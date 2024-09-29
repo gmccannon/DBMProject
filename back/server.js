@@ -158,8 +158,8 @@ app.get('/getmedia', (req, res) => {
  */
 app.get('/ind', (req, res) => {
     try {
-        let id = req.query.search || ''; // Get the search query from the request
-        let table = req.query.table || ''; // Get the table name from the request
+        let id = req.query.search.toLocaleLowerCase() || ''; // Get the search query from the request
+        let table = req.query.table.toLocaleLowerCase() || ''; // Get the table name from the request
 
         if (!id) {
             return res.status(400).send('ID parameter is required.');
