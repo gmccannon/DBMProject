@@ -129,14 +129,22 @@ app.get('/protected', authenticateToken, (req, res) => {
  */
 app.get('/getmedia', (req, res) => {
     try {
-        const searchQuery = req.query.search || ''; // Get the search query from the request
-        const table = req.query.table || '';
+        // search parameters from the request
+        const searchQuery = req.query.search.toLocaleLowerCase() || ''; // Get the search query from the request
+        const table = req.query.table.toLocaleLowerCase() || '';
+        let order = req.query.order.toLocaleLowerCase() || '';
+
+        // handle case of books and release date search
+        // books table calls it 'publication_date' not 'release_date'
+        if (table === 'books' && order === 'release_date') {
+            order = 'publication_date';
+        }
         
-        const sql = `SELECT * FROM ${table} WHERE title LIKE ?`;  // Prepare the SQL query with a parameter to avoid a SQL injection
-        const mediaItem = db.prepare(sql).all(`%${searchQuery}%`); // Use wildcard for searching
+        const sql = `SELECT * FROM ${table} WHERE title LIKE ? ORDER BY ${order}`;  // Prepare the SQL query with a parameter to avoid a SQL injection
+        const mediaItems = db.prepare(sql).all(`%${searchQuery}%`); // Use wildcard for searching
 
         res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify(mediaItem));
+        res.send(JSON.stringify(mediaItems));
     } catch (error) {
         console.error('GetMedia Error:', error);
         res.status(500).send('Error searching for media.');

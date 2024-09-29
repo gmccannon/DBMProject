@@ -119,37 +119,35 @@ db.exec(`
         ('Fantasy'),
         ('Science Fiction'),
         ('Drama'),
-        ('Adventure');
+        ('Adventure'),
+        ('Fiction');
 
     INSERT OR REPLACE INTO books
         (title, author, publication_date, genre_id, word_count, best_seller)
     VALUES 
-        ('Don Quixote', 'Miguel de Cervantes', '1605-01-16', 4, 383748, true);
+        ('Don Quixote', 'Miguel de Cervantes', '1605-01-16', 4, 383748, true),
+        ('For Whom the Bell Tolls', 'Ernest Hemingway', '1940-10-21', 5, 174106, true),
+        ('The Lord of the Rings', 'J.R.R. Tolkien', '1954-07-29', 1, 455125, true),
+        ('Nineteen Eighty-Four', 'George Orwell', '1949-06-08', 5, 88442, true),
+        ('Animal Farm', 'George Orwell', '1945-08-17', 5, 29966, true),
+        ('The Hobbit', 'J.R.R. Tolkien', '1937-09-21', 1, 95022, true),
+        ('The Old Man and the Sea', 'Ernest Hemingway', '1952-09-01', 5, 26925, true);
 
     INSERT OR REPLACE INTO movies
         (title, director, release_date, genre_id, duration, oscar_winner)
     VALUES 
-        ('The Lord of the Rings: The Return of the King', 'Peter Jackson', '2003-12-17', 1, 201, true);
-
-    INSERT OR REPLACE INTO movies
-        (title, director, release_date, genre_id, duration, oscar_winner)
-    VALUES 
+        ('The Lord of the Rings: The Return of the King', 'Peter Jackson', '2003-12-17', 1, 201, true),
         ('The Departed', 'Martin Scorsese', '2006-10-06', 3, 151, true);
 
     INSERT OR REPLACE INTO shows
         (title, writer, release_date, genre_id, episodes, emmy_winner)
     VALUES 
-        ('Breaking Bad', 'Vince Gilligan', '2008-01-20', 3, 62, true);
-
-    INSERT OR REPLACE INTO shows
-        (title, writer, release_date, genre_id, episodes, emmy_winner)
-    VALUES 
-        ('Better Call Saul', 'Vince Gilligan', '2015-02-08', 3, 63, false);
-
-    INSERT OR REPLACE INTO shows
-        (title, writer, release_date, genre_id, episodes, emmy_winner)
-    VALUES 
-        ('Star Trek: The Next Generation', 'Gene Roddenberry', '1987-09-28', 2, 178, true);
+        ('Breaking Bad', 'Vince Gilligan', '2008-01-20', 3, 62, true),
+        ('Better Call Saul', 'Vince Gilligan', '2015-02-08', 3, 63, false),
+        ('Star Trek: The Next Generation', 'Gene Roddenberry', '1987-09-28', 2, 178, true),
+        ('The West Wing', 'Aaron Sorkin', '1999-09-22', 3, 154, true),
+        ('The Wire', 'David Simon', '2002-06-02', 3, 60, false),
+        ('House', 'David Shore', '2004-11-16', 3, 177, true);
 
     INSERT OR REPLACE INTO games
         (title, studio, release_date, genre_id, platform, multiplayer)

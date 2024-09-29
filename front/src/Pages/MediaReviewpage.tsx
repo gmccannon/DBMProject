@@ -2,14 +2,25 @@ import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import { AuthContext } from '../Components/AuthContext';
+import axios from 'axios';
 
 // function to get media from the database based on the specificed mediaType (table) and its specific ID
 const fetchMediaData = async (table: string, mediaNumber: string): Promise<Media> => {
-  const response = await fetch(`http://localhost:3001/ind?table=${table.toLocaleLowerCase()}&search=${mediaNumber}`);
-  if (!response.ok) {
+  // access the database endpoint
+  const response = await axios.get('http://localhost:3001/getmedia', {
+    params: {
+      table: table,
+      search: mediaNumber,
+    }
+  });
+  
+  // handle responce error
+  if (!response.status) {
     throw new Error('Failed to fetch media');
   }
-  return await response.json();
+
+  //return a single media
+  return await response.data;
 };
 
 const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Element => {
