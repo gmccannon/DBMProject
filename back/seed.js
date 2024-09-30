@@ -131,13 +131,28 @@ db.exec(`
         ('Nineteen Eighty-Four', 'George Orwell', '1949-06-08', 5, 88442, true),
         ('Animal Farm', 'George Orwell', '1945-08-17', 5, 29966, true),
         ('The Hobbit', 'J.R.R. Tolkien', '1937-09-21', 1, 95022, true),
-        ('The Old Man and the Sea', 'Ernest Hemingway', '1952-09-01', 5, 26925, true);
+        ('The Old Man and the Sea', 'Ernest Hemingway', '1952-09-01', 5, 26925, true),
+        ('Fahrenheit 451', 'Ray Bradbury', '1953-10-19', 5, 46411, true),
+        ('Brave New World', 'Aldous Huxley', '1932-08-30', 5, 63210, true),
+        ('One Hundred Years of Solitude', 'Gabriel García Márquez', '1967-05-30', 4, 41781, true),
+        ('Slaughterhouse-Five', 'Kurt Vonnegut', '1969-03-31', 5, 27528, true),
+        ('The Bell Jar', 'Sylvia Plath', '1963-01-14', 5, 74300, true),
+        ('The Chronicles of Narnia', 'C.S. Lewis', '1950-10-16', 1, 167593, true);
 
     INSERT OR REPLACE INTO movies
         (title, director, release_date, genre_id, duration, oscar_winner)
     VALUES 
         ('The Lord of the Rings: The Return of the King', 'Peter Jackson', '2003-12-17', 1, 201, true),
-        ('The Departed', 'Martin Scorsese', '2006-10-06', 3, 151, true);
+        ('The Departed', 'Martin Scorsese', '2006-10-06', 3, 151, true),
+        ('The Lord of the Rings: The Fellowship of the Ring', 'Peter Jackson', '2001-12-19', 1, 178, true),
+        ('The Lord of the Rings: The Two Towers', 'Peter Jackson', '2002-12-18', 1, 179, true),
+        ('No Country for Old Men', 'Ethan Coen', '2007-11-21', 3, 122, true),
+        ('The Shawshank Redemption', 'Frank Darabont', '1994-09-23', 4, 142, true),
+        ('Pulp Fiction', 'Quentin Tarantino', '1994-10-14', 3, 154, true),
+        ('The Godfather', 'Francis Ford Coppola', '1972-03-24', 4, 175, true),
+        ('Fight Club', 'David Fincher', '1999-10-15', 3, 139, false),
+        ('Schindler''s List', 'Steven Spielberg', '1993-12-15', 4, 195, true),
+        ('Inception', 'Christopher Nolan', '2010-07-16', 1, 148, false);
 
     INSERT OR REPLACE INTO shows
         (title, writer, release_date, genre_id, episodes, emmy_winner)
@@ -147,7 +162,9 @@ db.exec(`
         ('Star Trek: The Next Generation', 'Gene Roddenberry', '1987-09-28', 2, 178, true),
         ('The West Wing', 'Aaron Sorkin', '1999-09-22', 3, 154, true),
         ('The Wire', 'David Simon', '2002-06-02', 3, 60, false),
-        ('House', 'David Shore', '2004-11-16', 3, 177, true);
+        ('House', 'David Shore', '2004-11-16', 3, 177, true),
+        ('Game of Thrones', 'David Benioff and D.B. Weiss', '2011-04-17', 2, 73, true),
+        ('The Sopranos', 'David Chase', '1999-01-10', 2, 86, true);
 
     INSERT OR REPLACE INTO games
         (title, studio, release_date, genre_id, platform, multiplayer)

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import MediaCard from '../Components/MediaCard';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 const HeaderContainer = styled.div`
     text-align: center;
@@ -64,15 +64,13 @@ const OrderSelect = styled.select`
 const OrderOption = styled.option`
     font-family: 'Courier New';
     font-size: 16px;
-    padding: 10px; /* Padding might not work on all browsers for option elements */
-    background-color: green;
     color: #333;
 `;
 
 // Function to fetch media data with the search query
 const fetchmediaData = async (query: string, table: string, order: string): Promise<Media[]> => {
     // access the database endpoint
-    const response = await axios.get('http://localhost:3001/getmedia', {
+    const response: AxiosResponse = await axios.get('http://localhost:3001/getmedia', {
         params: {
           table: table,
           search: query,
@@ -81,7 +79,7 @@ const fetchmediaData = async (query: string, table: string, order: string): Prom
     });
 
     // handle response error
-    if (!response.status) {
+    if (!response) {
         throw new Error('Failed to fetch media');
     }
 
@@ -89,7 +87,7 @@ const fetchmediaData = async (query: string, table: string, order: string): Prom
     return await response.data; 
 };
 
-const MediaPage: React.FC<MediaPageProps> = ({mediaType}): JSX.Element => {
+const MediaPage: React.FC<MediaPageProps> = ({mediaType}): React.JSX.Element => {
     //states
     const [media, setmedia] = useState<Media[]>([]);
     const [loading, setLoading] = useState<Boolean>(true);
@@ -97,10 +95,10 @@ const MediaPage: React.FC<MediaPageProps> = ({mediaType}): JSX.Element => {
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [order, setOrder] = useState<string>('title');
 
-    // Fetch media on initial load and when searchQuery changes
+    // Fetch media on initial load, page change, searchQuery change, and order change
     useEffect((): void => {
         fetchMedia(searchQuery, mediaType, order);
-    }, [searchQuery, mediaType, order]); // Trigger re-fetch when searchQuery or page changes
+    }, [searchQuery, mediaType, order]);
 
     // function to update states based on info from the database
     const fetchMedia = async (query: string, media: string, order: string): Promise<void> => {
@@ -137,6 +135,7 @@ const MediaPage: React.FC<MediaPageProps> = ({mediaType}): JSX.Element => {
                     <OrderOption value="release_date">release</OrderOption>
                 </OrderSelect>
             </HeaderContainer>
+            {/* Media Area*/}
             <GridContainer>
                 {media.map(media => (
                     <MediaCard

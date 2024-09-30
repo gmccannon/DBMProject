@@ -124,13 +124,13 @@ app.get('/protected', authenticateToken, (req, res) => {
 
 /**
  * @route   GET /getmedia
- * @desc    Retrieve media based on search query and table
+ * @desc    Retrieve media based on search query, media type, and order
  * @access  Public
  */
 app.get('/getmedia', (req, res) => {
     try {
         // search parameters from the request
-        const searchQuery = req.query.search.toLocaleLowerCase() || ''; // Get the search query from the request
+        const searchQuery = req.query.search.toLocaleLowerCase() || '';
         const table = req.query.table.toLocaleLowerCase() || '';
         let order = req.query.order.toLocaleLowerCase() || '';
 
@@ -140,9 +140,16 @@ app.get('/getmedia', (req, res) => {
             order = 'publication_date';
         }
         
-        const sql = `SELECT * FROM ${table} WHERE title LIKE ? ORDER BY ${order}`;  // Prepare the SQL query with a parameter to avoid a SQL injection
-        const mediaItems = db.prepare(sql).all(`%${searchQuery}%`); // Use wildcard for searching
+        // construct the query
+        const sql = `SELECT * FROM ${table} WHERE title LIKE ? ORDER BY ${order}`; 
 
+        // query the database, (use wildcard so that an empty parameter returns all)
+        const mediaItems = db.prepare(sql).all(`%${searchQuery}%`);
+
+        // debug log
+        console.log(mediaItems)
+
+        // send back database query as json 
         res.setHeader('Content-Type', 'application/json');
         res.send(JSON.stringify(mediaItems));
     } catch (error) {
@@ -161,36 +168,29 @@ app.get('/ind', (req, res) => {
         let id = req.query.search.toLocaleLowerCase() || ''; // Get the search query from the request
         let table = req.query.table.toLocaleLowerCase() || ''; // Get the table name from the request
 
-        if (!id) {
-            return res.status(400).send('ID parameter is required.');
-        }
-
-        if (!table) {
-            return res.status(400).send('Table parameter is required.');
-        }
-
         // Convert table parameter to lowercase to ensure case-insensitive matching
         table = table.toLowerCase();
 
         // Validate the table name to prevent SQL injection
-        const validTables = ['shows', 'movies', 'books', 'games']; // Allowed tables
+        const validTables = ['shows', 'movies', 'books', 'games'];
         if (!validTables.includes(table)) {
             return res.status(400).send('Invalid table name');
         }
 
-        // Prepare the SQL query with the validated table name
-        // Joining the genres table to also get the genre name
+        // construct the query
         const sql = `SELECT ${table}.*, genres.genre 
                      FROM ${table} 
                      JOIN genres ON ${table}.genre_id = genres.id 
                      WHERE ${table}.id = ?`;
         const mediaItem = db.prepare(sql).all(id);
 
+        // debug log
         console.log(mediaItem[0])
 
-        // send back database query
+        // send back database query as json
+        // should only return one item
         res.setHeader('Content-Type', 'application/json');
-        res.send(mediaItem[0]); // query should only return one item
+        res.send(mediaItem[0]);
     } catch (error) {
         console.error('Ind Error:', error);
         res.status(500).send('Error searching for media.');
