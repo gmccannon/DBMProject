@@ -184,13 +184,50 @@ app.get('/ind', (req, res) => {
                      WHERE ${table}.id = ?`;
         const mediaItem = db.prepare(sql).all(id);
 
-        // debug log
-        console.log(mediaItem[0])
-
         // send back database query as json
         // should only return one item
         res.setHeader('Content-Type', 'application/json');
         res.send(mediaItem[0]);
+    } catch (error) {
+        console.error('Ind Error:', error);
+        res.status(500).send('Error searching for media.');
+    }
+});
+
+/**
+ * @route   GET /review
+ * @desc    Retrieve individual reviews by ID(s)
+ * @access  Public
+ */
+app.get('/review', (req, res) => {
+    try {
+        let mediaID = req.query.mediaID.toLocaleLowerCase() || ''; // Get the table name from the request
+
+        // the type from the request will come in as 'Books' etc, but needs to be 'book_reviews' etc to get the table
+        // for the ID column, it needs to be {media}_id
+        // TODO: make this not suck
+        let table = req.query.mediaType.toLocaleLowerCase().slice(0, -1) + '_reviews' || ''; // Get the table name from the request
+        let mediaColumnIDName = req.query.mediaType.toLocaleLowerCase().slice(0, -1) + '_id' || ''; // Get the proper column name
+
+        // Validate the table name to prevent SQL injection
+        const validTables = ['show_reviews', 'movie_reviews', 'book_reviews', 'game_reviews'];
+        if (!validTables.includes(table)) {
+            return res.status(400).send('Invalid table name');
+        }
+
+        // construct the query
+        const sql = `SELECT *
+                     FROM ${table}  
+                     WHERE ${mediaColumnIDName} = ?`;
+        const mediaItem = db.prepare(sql).all(mediaID);
+
+        // debug log
+        console.log(mediaItem[0])
+
+        // send back database query as json
+        // might return more then on item
+        res.setHeader('Content-Type', 'application/json');
+        res.send(mediaItem);
     } catch (error) {
         console.error('Ind Error:', error);
         res.status(500).send('Error searching for media.');

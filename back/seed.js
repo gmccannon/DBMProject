@@ -170,4 +170,19 @@ db.exec(`
         (title, studio, release_date, genre_id, platform, multiplayer)
     VALUES 
         ('Dark Souls 3', 'FromSoftware', '2016-03-24', 1, 'PC', true);
+
+    INSERT OR REPLACE INTO users
+        (id, username, password)
+    VALUES 
+        (1, 'george3', '123');
+
+    INSERT OR REPLACE INTO book_reviews
+        (user_id, book_id, rating, summary, text)
+    VALUES 
+        (1, 2, 9, 'Good', 'This was a good book');
+
+    INSERT OR REPLACE INTO movie_reviews
+        (user_id, movie_id, rating, summary, text)
+    VALUES 
+        (1, 2, 9, 'Good movie', 'This was a good movie');
 `);
