@@ -174,7 +174,8 @@ db.exec(`
     INSERT OR REPLACE INTO users
         (id, username, password)
     VALUES 
-        (1, 'george3', '123');
+        (1, 'george3', '123'),
+        (2, 'george4', '123');
 
     INSERT OR REPLACE INTO book_reviews
         (user_id, book_id, rating, summary, text)
@@ -184,5 +185,16 @@ db.exec(`
     INSERT OR REPLACE INTO movie_reviews
         (user_id, movie_id, rating, summary, text)
     VALUES 
-        (1, 2, 9, 'Good movie', 'This was a good movie');
+        (1, 2, 9, 'Good movie', 'This was a good movie'),
+        (2, 2, 9, 'Very Good', 'Like the other guy i liked this movie');
+
+    INSERT OR REPLACE INTO game_reviews
+        (user_id, game_id, rating, summary, text)
+    VALUES 
+        (1, 1, 10, 'Good', 'This was a good game');
+
+    INSERT OR REPLACE INTO show_reviews
+        (user_id, show_id, rating, summary, text)
+    VALUES 
+        (1, 1, 8, 'Good', 'This was a good show');
 `);

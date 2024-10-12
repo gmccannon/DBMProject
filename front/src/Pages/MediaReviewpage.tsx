@@ -107,10 +107,11 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
     {media && <h1> Media ID: {media.id}</h1>}
 
     {mediaReviews && mediaReviews.map(mediaReview => (
-      <h1>  {/* Add a key prop if possible */}
-      {mediaReview.summary}
-      {mediaReview.text}
-    </h1>
+      <>
+        <h1> {mediaReview.rating} </h1>
+        <h1> {mediaReview.summary} </h1>
+        <h1> {mediaReview.text} </h1>
+      </>
       ))}
   </> 
   );
