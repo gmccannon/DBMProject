@@ -15,6 +15,9 @@ const ProfilePage = () => {
   // grab info for the current user, and method to login the user from AuthContext component
   const { username, userID, logout} = useContext(AuthContext);
 
+  //TODO: Display all of the users reviews here
+  //TODO: Add a way for a user to delete a review from here
+
   return (
     <div>
       <h1>Profile for {username}</h1>

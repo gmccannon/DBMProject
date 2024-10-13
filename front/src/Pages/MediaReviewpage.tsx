@@ -110,6 +110,9 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
     }
   };
 
+  //TODO: make it so if the user has already posted a review, the prompt becomes to edit the review
+  //TODO: add the functionality to edit a review
+
   return (
   <>
     {media && <h1> Media {'>'} {mediaType} {'>'} {media.title}</h1>}

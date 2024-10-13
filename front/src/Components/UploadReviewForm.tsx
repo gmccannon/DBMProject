@@ -37,6 +37,7 @@ const UploadReviewForm: React.FC<FormComponentProps> = ({ onFormSubmit, mediaTyp
     const [summary, setSummary] = useState<string>('');
     const [text, setText] = useState<string>('');
 
+    // function to handle a review submission
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
 
@@ -44,10 +45,8 @@ const UploadReviewForm: React.FC<FormComponentProps> = ({ onFormSubmit, mediaTyp
         if (mediaNumber && userID) {
             try {
                 await uploadReview(mediaNumber, userID, rating, summary, text, mediaType);
-                // Optionally, reset the form or show success message
             } catch (error) {
                 console.error('Error uploading review:', error);
-                // Handle error state (e.g., show an alert or set an error message state)
             }
         }
 
