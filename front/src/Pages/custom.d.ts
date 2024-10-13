@@ -10,6 +10,7 @@ interface MediaReview {
     summary: string;
     text: string;
     rating: number;
-    user: string;
+    userID: string;
     title: string;
+    username: string;
 }

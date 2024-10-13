@@ -72,7 +72,7 @@ db.exec(`
     CREATE TABLE game_reviews (
         user_id INTEGER NOT NULL,
         game_id INTEGER NOT NULL,
-        rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 10), -- Rating must be between 1 and 10
+        rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 5), -- Rating must be between 1 and 5
         summary VARCHAR,
         text VARCHAR NOT NULL,
         PRIMARY KEY (user_id, game_id), -- Composite primary key to ensure a user can only review a game once
@@ -83,7 +83,7 @@ db.exec(`
     CREATE TABLE movie_reviews (
         user_id INTEGER NOT NULL,
         movie_id INTEGER NOT NULL,
-        rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 10), -- Rating must be between 1 and 10
+        rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 5), -- Rating must be between 1 and 5
         summary VARCHAR,
         text VARCHAR NOT NULL,
         PRIMARY KEY (user_id, movie_id), -- Composite primary key to ensure a user can only review a movie once
@@ -94,7 +94,7 @@ db.exec(`
     CREATE TABLE show_reviews (
         user_id INTEGER NOT NULL,
         show_id INTEGER NOT NULL,
-        rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 10), -- Rating must be between 1 and 10
+        rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 5), -- Rating must be between 1 and 5
         summary VARCHAR,
         text VARCHAR NOT NULL,
         PRIMARY KEY (user_id, show_id), -- Composite primary key to ensure a user can only review a show once
@@ -105,7 +105,7 @@ db.exec(`
     CREATE TABLE book_reviews (
         user_id INTEGER NOT NULL,
         book_id INTEGER NOT NULL,
-        rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 10), -- Rating must be between 1 and 10
+        rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 5), -- Rating must be between 1 and 5
         summary VARCHAR,
         text VARCHAR NOT NULL,
         PRIMARY KEY (user_id, book_id), -- Composite primary key to ensure a user can only review a book once
@@ -180,21 +180,21 @@ db.exec(`
     INSERT OR REPLACE INTO book_reviews
         (user_id, book_id, rating, summary, text)
     VALUES 
-        (1, 2, 9, 'Good', 'This was a good book');
+        (1, 2, 4.5, 'Good', 'This was a good book');
 
     INSERT OR REPLACE INTO movie_reviews
         (user_id, movie_id, rating, summary, text)
     VALUES 
-        (1, 2, 9, 'Good movie', 'This was a good movie'),
-        (2, 2, 9, 'Very Good', 'Like the other guy i liked this movie');
+        (1, 2, 3.5, 'Good movie', 'This was a good movie'),
+        (2, 2, 4.5, 'Very Good', 'Like the other guy i liked this movie');
 
     INSERT OR REPLACE INTO game_reviews
         (user_id, game_id, rating, summary, text)
     VALUES 
-        (1, 1, 10, 'Good', 'This was a good game');
+        (1, 1, 5, 'Good', 'This was a good game');
 
     INSERT OR REPLACE INTO show_reviews
         (user_id, show_id, rating, summary, text)
     VALUES 
-        (1, 1, 8, 'Good', 'This was a good show');
+        (1, 1, 4, 'Good', 'This was a good show');
 `);

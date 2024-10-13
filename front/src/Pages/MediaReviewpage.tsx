@@ -1,8 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { AuthContext } from '../Components/AuthContext';
 import axios, { AxiosResponse } from 'axios';
+import Rating from '@mui/material/Rating';
+import UploadReviewForm from '../Components/UploadReviewForm'
 
 // function to get media from the database based on the specificed mediaType (table) and its specific ID
 const fetchMediaData = async (table: string, mediaNumber: string): Promise<Media> => {
@@ -43,14 +45,13 @@ const fetchMediaReviewData = async (mediaID: string, mediaType: string): Promise
 };
 
 const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Element => {
-  // method to extract the media number from the URL
-  const { mediaNumber } = useParams<string>();
-  // grab info for the current user ID
-  const {userID} = useContext(AuthContext);
+  const { mediaNumber } = useParams<string>();   // method to extract the media number from the URL
+  const {userID} = useContext(AuthContext);   // grab info for the current user ID
 
   // states
   const [media, setMedia] = useState<Media>();
   const [mediaReviews, setMediaReviews] = useState<MediaReview[]>();
+  const [showForm, setShowForm] = useState<Boolean>(false);
   const [loading, setLoading] = useState<Boolean>(true);
   const [error, setError] = useState<Error | null>(null);
 
@@ -62,8 +63,17 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
     }
   }, [mediaNumber, mediaType]);
 
+  // function to toggle the visibility of the form
+  const handleShowForm = () => {
+    if (showForm) {
+      setShowForm(false);
+    } else {
+      setShowForm(true);
+    }
+  }
+
   // function to update states based on info from the database
-  // queried with mediaID (ID from the URL), and the mediaType
+  // queried with mediaNumber (from the URL), and the mediaType
   const fetchMedia = async (mediaType: string, mediaNumber: string): Promise<void> => {
     setLoading(true);
     try {
@@ -81,7 +91,8 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
     }
   };
 
-  // function to update state of the media reviews
+  // function to update the state of all of the reviews for the current media
+  // queried with mediaNumber (from the URL), and the mediaType
   const fetchMediaReviews = async (mediaNumber: string, mediaType: string): Promise<void> => {
     setLoading(true);
     try {
@@ -106,13 +117,19 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
     {media && <h1> Genre: {media.genre}</h1>}
     {media && <h1> Media ID: {media.id}</h1>}
 
+    {!userID && <Link to={'/login'}>Login to write a review<br/></Link>}
+    {userID && <><Link to="#" onClick={handleShowForm}>Write a review</Link><br/></>}
+    {showForm && <UploadReviewForm onFormSubmit={handleShowForm}/>}
+
     {mediaReviews && mediaReviews.map(mediaReview => (
       <>
-        <h1> {mediaReview.rating} </h1>
+        <Rating value={mediaReview.rating} precision={0.25} readOnly />
+        <h1> {mediaReview.username} </h1>
         <h1> {mediaReview.summary} </h1>
         <h1> {mediaReview.text} </h1>
       </>
       ))}
+    {mediaReviews?.length == 0 && <h1>No reviews yet</h1>}
   </> 
   );
 }
