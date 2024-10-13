@@ -72,7 +72,7 @@ db.exec(`
     CREATE TABLE game_reviews (
         user_id INTEGER NOT NULL,
         game_id INTEGER NOT NULL,
-        rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 5), -- Rating must be between 1 and 5
+        rating REAL NOT NULL CHECK (rating BETWEEN 0.5 AND 5), -- Rating must be between 1 and 5
         summary VARCHAR,
         text VARCHAR NOT NULL,
         PRIMARY KEY (user_id, game_id), -- Composite primary key to ensure a user can only review a game once
@@ -83,7 +83,7 @@ db.exec(`
     CREATE TABLE movie_reviews (
         user_id INTEGER NOT NULL,
         movie_id INTEGER NOT NULL,
-        rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 5), -- Rating must be between 1 and 5
+        rating REAL NOT NULL CHECK (rating BETWEEN 0.5 AND 5), -- Rating must be between 1 and 5
         summary VARCHAR,
         text VARCHAR NOT NULL,
         PRIMARY KEY (user_id, movie_id), -- Composite primary key to ensure a user can only review a movie once
@@ -94,7 +94,7 @@ db.exec(`
     CREATE TABLE show_reviews (
         user_id INTEGER NOT NULL,
         show_id INTEGER NOT NULL,
-        rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 5), -- Rating must be between 1 and 5
+        rating REAL NOT NULL CHECK (rating BETWEEN 0.5 AND 5.0), -- Rating must be between 0.5 and 5.0
         summary VARCHAR,
         text VARCHAR NOT NULL,
         PRIMARY KEY (user_id, show_id), -- Composite primary key to ensure a user can only review a show once
@@ -105,7 +105,7 @@ db.exec(`
     CREATE TABLE book_reviews (
         user_id INTEGER NOT NULL,
         book_id INTEGER NOT NULL,
-        rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 5), -- Rating must be between 1 and 5
+        rating REAL NOT NULL CHECK (rating BETWEEN 0.5 AND 5), -- Rating must be between 1 and 5
         summary VARCHAR,
         text VARCHAR NOT NULL,
         PRIMARY KEY (user_id, book_id), -- Composite primary key to ensure a user can only review a book once

@@ -18,6 +18,7 @@ interface MediaCardProps {
 }
 
 interface FormComponentProps {
+    endpoint: string;
     onFormSubmit: () => void;
     mediaType: string;
 }

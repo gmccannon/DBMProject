@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Rating from '@mui/material/Rating';
@@ -8,10 +8,10 @@ import { AuthContext } from './AuthContext';
 import { useParams } from 'react-router-dom';
 
 // function to upload review to the database
-const uploadReview = async (mediaNumber: string, userID: number, rating: number, summary: string, text: string, mediaType: string) => {
+const uploadReview = async (endpoint: string, mediaNumber: string, userID: number, rating: number, summary: string, text: string, mediaType: string): Promise<void> => {
     // access the database endpoint
-    const response: AxiosResponse = await axios.post('http://localhost:3001/uploadreview', {
-        mediaID: mediaNumber,  // Corrected key name
+    const response: AxiosResponse = await axios.post(`http://localhost:3001/${endpoint}`, {
+        mediaID: mediaNumber,
         userID: userID,
         rating: rating,
         summary: summary,
@@ -28,7 +28,7 @@ const uploadReview = async (mediaNumber: string, userID: number, rating: number,
     return await response.data;
 };
 
-const UploadReviewForm: React.FC<FormComponentProps> = ({ onFormSubmit, mediaType }) => {
+const UploadReviewForm: React.FC<FormComponentProps> = ({ endpoint, onFormSubmit, mediaType }) => {
     const { mediaNumber } = useParams<string>(); // method to extract the media number from the URL
     const { userID } = useContext(AuthContext); // grab info for the current user ID
 
@@ -38,13 +38,22 @@ const UploadReviewForm: React.FC<FormComponentProps> = ({ onFormSubmit, mediaTyp
     const [text, setText] = useState<string>('');
 
     // function to handle a review submission
-    const handleSubmit = async (event: React.FormEvent) => {
+    const handleSubmit = async (event: React.FormEvent): Promise<void> => {
         event.preventDefault();
+
+        // Log the rating for debugging purposes
+        console.log('Submitted rating:', rating);
+
+        // Ensure rating is between 0.5 and 5
+        if (rating < 0.5 || rating > 5) {
+            console.error('Invalid rating value:', rating);
+            return;
+        }
 
         // Submit the form (you can add additional checks for other fields)
         if (mediaNumber && userID) {
             try {
-                await uploadReview(mediaNumber, userID, rating, summary, text, mediaType);
+                await uploadReview(endpoint, mediaNumber, userID, rating, summary, text, mediaType);
             } catch (error) {
                 console.error('Error uploading review:', error);
             }
@@ -53,6 +62,11 @@ const UploadReviewForm: React.FC<FormComponentProps> = ({ onFormSubmit, mediaTyp
         // Inform the parent component that the form was submitted
         onFormSubmit();
     };
+
+    // useEffect to log when rating changes (for debugging)
+    useEffect(() => {
+        console.log('Rating changed to:', rating);
+    }, [rating]);
 
     return (
         <Box
@@ -70,7 +84,11 @@ const UploadReviewForm: React.FC<FormComponentProps> = ({ onFormSubmit, mediaTyp
                 <Rating
                     precision={0.5}
                     value={rating}
-                    onChange={(event, newValue) => { setRating(newValue !== null ? newValue : 5); }}
+                    onChange={(event, newValue) => { 
+                        if (newValue !== null) {
+                            setRating(newValue);
+                        }
+                    }}
                 />
                 <br />
                 <TextField

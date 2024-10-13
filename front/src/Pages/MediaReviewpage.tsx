@@ -44,6 +44,22 @@ const fetchMediaReviewData = async (mediaID: string, mediaType: string): Promise
   return await response.data;
 };
 
+const fetchIfReviewed = async (userID: number, mediaNumber: string, mediaType: string): Promise<boolean> => {
+  const response: AxiosResponse = await axios.get('http://localhost:3001/user_review', {
+    params: {
+      userID: userID,
+      mediaID: mediaNumber,
+      mediaType: mediaType,
+    }
+  });
+
+  if (!response) {
+    throw new Error('Failed to check review status');
+  }
+
+  return response.data;
+}
+
 const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Element => {
   const { mediaNumber } = useParams<string>();   // method to extract the media number from the URL
   const {userID} = useContext(AuthContext);   // grab info for the current user ID
@@ -52,6 +68,7 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
   const [media, setMedia] = useState<Media>();
   const [mediaReviews, setMediaReviews] = useState<MediaReview[]>();
   const [showForm, setShowForm] = useState<Boolean>(false);
+  const [alreadyReviewed, setAlreadyReviewed] = useState<boolean>(false);
   const [loading, setLoading] = useState<Boolean>(true);
   const [error, setError] = useState<Error | null>(null);
 
@@ -60,8 +77,11 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
     if (mediaNumber) {
       fetchMedia(mediaType, mediaNumber);
       fetchMediaReviews(mediaNumber, mediaType);
+      if (userID) {
+        checkIfReviewed(userID, mediaNumber, mediaType);
+      }
     }
-  }, [mediaNumber, mediaType, showForm]);
+  }, [mediaNumber, mediaType, userID, showForm]);
 
   // function to toggle the visibility of the form
   const handleShowForm = () => {
@@ -69,6 +89,22 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
       setShowForm(false);
     } else {
       setShowForm(true);
+    }
+  }
+
+  // function to see if the user has already written a review, then update the state
+  const checkIfReviewed = async (userID: number, mediaNumber: string, mediaType: string): Promise<void> => {
+    try {
+      const alreadyReviewed: boolean = await fetchIfReviewed(userID, mediaNumber, mediaType);
+      if (alreadyReviewed) {
+        setAlreadyReviewed(true);
+      } else {
+        setAlreadyReviewed(false);
+      }
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err : new Error('An unknown error occurred'));
+    } finally {
+        setLoading(false);
     }
   }
 
@@ -110,9 +146,6 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
     }
   };
 
-  //TODO: make it so if the user has already posted a review, the prompt becomes to edit the review
-  //TODO: add the functionality to edit a review
-
   return (
   <>
     {media && <h1> Media {'>'} {mediaType} {'>'} {media.title}</h1>}
@@ -120,8 +153,17 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
     {media && <h1> Media ID: {media.id}</h1>}
 
     {!userID && <Link to={'/login'}>Login to write a review<br/></Link>}
-    {userID && <><Link to="#" onClick={handleShowForm}>Write a review</Link><br/></>}
-    {showForm && <UploadReviewForm onFormSubmit={handleShowForm} mediaType={mediaType}/>}
+    {userID && !alreadyReviewed && (
+      <>
+        <Link to="#" onClick={handleShowForm}>Write a review</Link><br/>
+      </>
+    )}
+    {userID && alreadyReviewed && (
+      <>You have already reviewed this <Link to="#"  onClick={handleShowForm}> Edit your review.</Link><br/></>
+    )}
+
+    {showForm && !alreadyReviewed && <UploadReviewForm endpoint={"uploadreview"} onFormSubmit={handleShowForm} mediaType={mediaType}/>}
+    {showForm && alreadyReviewed && <UploadReviewForm endpoint={"editreview"} onFormSubmit={handleShowForm} mediaType={mediaType}/>}
 
     {mediaReviews && mediaReviews.map(mediaReview => (
       <div>
