@@ -61,7 +61,7 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
       fetchMedia(mediaType, mediaNumber);
       fetchMediaReviews(mediaNumber, mediaType);
     }
-  }, [mediaNumber, mediaType]);
+  }, [mediaNumber, mediaType, showForm]);
 
   // function to toggle the visibility of the form
   const handleShowForm = () => {
@@ -112,22 +112,22 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
 
   return (
   <>
-    {media && <h1> Type: {mediaType}</h1>}
-    {media && <h1> Title: {media.title}</h1>}
+    {media && <h1> Media {'>'} {mediaType} {'>'} {media.title}</h1>}
     {media && <h1> Genre: {media.genre}</h1>}
     {media && <h1> Media ID: {media.id}</h1>}
 
     {!userID && <Link to={'/login'}>Login to write a review<br/></Link>}
     {userID && <><Link to="#" onClick={handleShowForm}>Write a review</Link><br/></>}
-    {showForm && <UploadReviewForm onFormSubmit={handleShowForm}/>}
+    {showForm && <UploadReviewForm onFormSubmit={handleShowForm} mediaType={mediaType}/>}
 
     {mediaReviews && mediaReviews.map(mediaReview => (
-      <>
+      <div>
+        <hr style={{ width: '100%', margin: '0 auto', border: '1px solid #000' }} />
+        <h3> {mediaReview.username} </h3>
         <Rating value={mediaReview.rating} precision={0.25} readOnly />
-        <h1> {mediaReview.username} </h1>
         <h1> {mediaReview.summary} </h1>
-        <h1> {mediaReview.text} </h1>
-      </>
+        <h2> {mediaReview.text} </h2>
+      </div>
       ))}
     {mediaReviews?.length == 0 && <h1>No reviews yet</h1>}
   </> 

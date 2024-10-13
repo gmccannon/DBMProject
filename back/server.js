@@ -8,6 +8,8 @@ const db = new Database('database.db');
 const port = 3001;
 
 app.use(cors());
+app.use(express.json());
+
 // JWT Configuration
 const JWT_SECRET = 'e4c4ac567ad9dd8b9a752f4ead74b53910874790830b9dec0611b20e3f230f598518ce91a356921ae8e252fa5fe6f34bbef04b32d9975a9fb15e0ce38ce60c6d'; // Replace with a strong, unique key
 const JWT_EXPIRES_IN = '1h'; // Token expiration time
@@ -237,23 +239,21 @@ app.get('/review', (req, res) => {
 
 /**
  * @route   POST /uploadreview
- * @desc    Post a review for a certian media
+ * @desc    Post a review for a certain media
  * @access  Public
  */
 app.post('/uploadreview', (req, res) => {
     try {
-        let mediaID = req.query.mediaID.toLocaleLowerCase() || ''; // Get the mediaID name from the request
-        let userID = req.query.mediaID.toLocaleLowerCase() || ''; // Get the userID name from the request
-        let rating = req.query.mediaID.toLocaleLowerCase() || ''; // Get the rating name from the request
-        let summary = req.query.mediaID.toLocaleLowerCase() || ''; // Get the summary name from the request
-        let text = req.query.mediaID.toLocaleLowerCase() || ''; // Get the text name from the request
+        const { mediaID, userID, rating, summary, text, mediaType } = req.body; // Destructure from req.body
 
-        // the type from the request will come in as 'Books' etc, but needs to be 'book_reviews' etc to get the table
-        // for the ID column, it needs to be {media}_id
-        // TODO: make this not suck
-        let table = req.query.mediaType.toLocaleLowerCase().slice(0, -1) + '_reviews' || ''; // Get the proper table name from the request
-        let mediaColumnIDName = req.query.mediaType.toLocaleLowerCase().slice(0, -1) + '_id' || ''; // Get the proper column name from the request
+        // Validate the input
+        if (!mediaID || !userID || !rating || !summary || !text || !mediaType) {
+            return res.status(400).send('All fields are required.');
+        }
 
+        // Get the proper table name and media column ID name
+        let table = mediaType.toLowerCase().slice(0, -1) + '_reviews';
+        let mediaColumnIDName = mediaType.toLowerCase().slice(0, -1) + '_id';
 
         // Validate the table name to prevent SQL injection
         const validTables = ['show_reviews', 'movie_reviews', 'book_reviews', 'game_reviews'];
@@ -261,23 +261,26 @@ app.post('/uploadreview', (req, res) => {
             return res.status(400).send('Invalid table name');
         }
 
-        // construct the query
-        const sql = `INSERT  INTO ${table}
-                     (user_id, ${mediaColumnIDName}, rating, summary, text)
-                     VALUES
-                     (?, ?, ?, ?, ?)`;
-        const mediaItem = db.prepare(sql).all(userID, mediaID, rating, summary, text);
+        // Construct the query
+        const sql = `INSERT INTO ${table} (user_id, ${mediaColumnIDName}, rating, summary, text) VALUES (?, ?, ?, ?, ?)`;
+        
+        // Use run() for inserts and check for errors
+        const result = db.prepare(sql).run(userID, mediaID, rating, summary, text);
+        
+        // Check if the insert was successful
+        if (result.changes === 0) {
+            return res.status(500).send('Error inserting review.');
+        }
 
-        // debug log
-        console.log(mediaItem[0])
-
-        // return success
-        res.status(200).send();
+        // Return success
+        res.status(201).json({ message: 'Review uploaded successfully' });
     } catch (error) {
         console.error('Ind Error:', error);
         res.status(500).send('Error uploading review.');
     }
 });
+
+
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
