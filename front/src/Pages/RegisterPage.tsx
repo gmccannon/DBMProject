@@ -76,7 +76,7 @@ const RegisterPrompt = styled.p`
 const RegisterButton = styled.button`
     margin-left: 10px;
     font-family: 'Courier New';
-    font-size: 16px;
+    font-size: 20px;
     font-weight: 600;
     padding: 5px 10px;
     background-color: #32CD32; // Lime green background

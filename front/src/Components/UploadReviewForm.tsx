@@ -111,7 +111,7 @@ const UploadReviewForm: React.FC<FormComponentProps> = ({ endpoint, onFormSubmit
                 />
                 <br />
                 <Button variant="outlined" size="medium" type="submit">
-                    Post Review
+                    {endpoint == "uploadreview" ? "Post Review" : "Edit Review"}
                 </Button>
             </div>
         </Box>

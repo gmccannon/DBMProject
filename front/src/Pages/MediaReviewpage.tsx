@@ -148,31 +148,36 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
 
   return (
   <>
-    {media && <h1> Media {'>'} {mediaType} {'>'} {media.title}</h1>}
-    {media && <h1> Genre: {media.genre}</h1>}
-    {media && <h1> Media ID: {media.id}</h1>}
+    {media && <h1 style={{ fontFamily: 'Courier New'}}> media {'>'} {mediaType.toLowerCase()} {'>'} {media.title}</h1>}
+    {media && <h1 style={{ fontFamily: 'Courier New'}}> {media.genre.toLocaleLowerCase()}</h1>}
+    {media && <h1 style={{ fontFamily: 'Courier New'}}> Media ID: {media.id}</h1>}
 
     {!userID && <Link to={'/login'}>Login to write a review<br/></Link>}
     {userID && !alreadyReviewed && (
       <>
-        <Link to="#" onClick={handleShowForm}>Write a review</Link><br/>
+        <Link to="#" onClick={handleShowForm} style={{ fontFamily: 'Courier New', fontWeight: 500 }}>Write a review</Link><br/>
       </>
     )}
     {userID && alreadyReviewed && (
-      <>You have already reviewed this <Link to="#"  onClick={handleShowForm}> Edit your review.</Link><br/></>
+      <p style={{ fontFamily: 'Courier New'}}>You have already reviewed this <Link to="#"  onClick={handleShowForm}> Edit your review.</Link><br/></p>
     )}
 
     {showForm && !alreadyReviewed && <UploadReviewForm endpoint={"uploadreview"} onFormSubmit={handleShowForm} mediaType={mediaType}/>}
     {showForm && alreadyReviewed && <UploadReviewForm endpoint={"editreview"} onFormSubmit={handleShowForm} mediaType={mediaType}/>}
 
+    {/* Add padding below the form */}
+    <div style={{ marginBottom: '30px' }}></div>
+
     {mediaReviews && mediaReviews.map(mediaReview => (
-      <div>
-        <hr style={{ width: '100%', margin: '0 auto', border: '1px solid #000' }} />
-        <h3> {mediaReview.username} </h3>
-        <Rating value={mediaReview.rating} precision={0.25} readOnly />
-        <h1> {mediaReview.summary} </h1>
-        <h2> {mediaReview.text} </h2>
-      </div>
+      <>
+        <hr style={{ width: '60%', margin: '0 auto', border: '.5px solid #000' }} />
+        <div style={{ paddingLeft: '25%', maxWidth: '50%', wordWrap: 'break-word' }}>
+          <h3 style={{ fontFamily: 'Courier New', fontWeight: 500 }}>posted by {mediaReview.username}</h3>
+          <Rating value={mediaReview.rating} precision={0.25} readOnly />
+          <h2 style={{ fontFamily: 'Courier New', fontWeight: 800 }}>{mediaReview.summary}</h2>
+          <h4 style={{ fontFamily: 'Courier New', fontWeight: 600 }}>{mediaReview.text}</h4>
+        </div>
+      </>
       ))}
     {mediaReviews?.length == 0 && <h1>No reviews yet</h1>}
   </> 

@@ -174,8 +174,14 @@ db.exec(`
     INSERT OR REPLACE INTO users
         (id, username, password)
     VALUES 
-        (1, 'george3', '123'),
-        (2, 'george4', '123');
+        (1, 'george1', '123'),
+        (2, 'george2', '123'),
+        (3, 'george3', '123'),
+        (4, 'george4', '123'),
+        (5, 'george5', '123'),
+        (6, 'george6', '123'),
+        (7, 'george7', '123'),
+        (8, 'george8', '123');
 
     INSERT OR REPLACE INTO book_reviews
         (user_id, book_id, rating, summary, text)
@@ -193,8 +199,16 @@ db.exec(`
     VALUES 
         (1, 1, 5, 'Good', 'This was a good game');
 
-    INSERT OR REPLACE INTO show_reviews
-        (user_id, show_id, rating, summary, text)
-    VALUES 
-        (1, 1, 4, 'Good', 'This was a good show');
+INSERT OR REPLACE INTO show_reviews
+    (user_id, show_id, rating, summary, text)
+VALUES 
+    (1, 1, 0.5, 'Overhyped', 'Honestly, I didn''t get the hype. It was slow in many places and the characters didn''t connect with me.'),
+    (2, 1, 1, 'Not my favorite', 'Breaking Bad started out strong, but it lost me halfway through. Too much build-up and not enough payoff.'),
+    (3, 1, 2, 'Mixed feelings', 'There were moments of brilliance, but I couldn''t really root for the characters. Walter White''s arc was interesting but frustrating.'),
+    (4, 1, 3, 'Great cinematography', 'Visually stunning and the acting was on point. Some episodes dragged, but the overall plot was engaging.'),
+    (5, 1, 4, 'Amazing characters', 'The writing, particularly for Jesse and Walt, was phenomenal. Some of the best character development I''ve seen.'),
+    (6, 1, 5, 'A masterpiece', 'Breaking Bad redefined TV. The storytelling was flawless, and every episode kept me on the edge of my seat.'),
+    (7, 1, 5, 'One of the best ever', 'Breaking Bad is hands down one of the best shows ever made. The transformation of Walter White is legendary.'),
+    (8, 1, 5, 'Perfect ending', 'The finale was perfect, tying up all loose ends. Not many shows manage to end on such a high note, but Breaking Bad did it right.');
+
 `);
