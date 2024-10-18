@@ -67,6 +67,7 @@ const OrderOption = styled.option`
     color: #333;
 `;
 
+//TODO: also return the average rating from media data
 // Function to fetch media data with the search query
 const fetchmediaData = async (query: string, table: string, order: string): Promise<Media[]> => {
     // access the database endpoint

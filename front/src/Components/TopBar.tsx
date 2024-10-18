@@ -110,7 +110,7 @@ const TopBar: React.FC = () => {
           textDecorationColor: activetab === (isAuthenticated && username ? '/profile' : '/login') ? 'rgb(173, 216, 230)' : 'none', // Light blue underline for active tab
         }}
       >
-        {isAuthenticated && username ? 'profile' : 'login'}
+        {isAuthenticated && username ? username : 'login'}
       </ProfileButton>
     </TopBarContainer>
   );

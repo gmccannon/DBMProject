@@ -8,6 +8,8 @@ const db = new Database('database.db');
 const port = 3001;
 
 app.use(cors());
+app.use(express.json());
+
 // JWT Configuration
 const JWT_SECRET = 'e4c4ac567ad9dd8b9a752f4ead74b53910874790830b9dec0611b20e3f230f598518ce91a356921ae8e252fa5fe6f34bbef04b32d9975a9fb15e0ce38ce60c6d'; // Replace with a strong, unique key
 const JWT_EXPIRES_IN = '1h'; // Token expiration time
@@ -184,9 +186,6 @@ app.get('/ind', (req, res) => {
                      WHERE ${table}.id = ?`;
         const mediaItem = db.prepare(sql).all(id);
 
-        // debug log
-        console.log(mediaItem[0])
-
         // send back database query as json
         // should only return one item
         res.setHeader('Content-Type', 'application/json');
@@ -194,6 +193,210 @@ app.get('/ind', (req, res) => {
     } catch (error) {
         console.error('Ind Error:', error);
         res.status(500).send('Error searching for media.');
+    }
+});
+
+/**
+ * @route   GET /review
+ * @desc    Retrieve all reviews for a certian media
+ * @access  Public
+ */
+app.get('/review', (req, res) => {
+    try {
+        let mediaID = req.query.mediaID.toLocaleLowerCase() || ''; // Get the table name from the request
+
+        // the type from the request will come in as 'Books' etc, but needs to be 'book_reviews' etc to get the table
+        // for the ID column, it needs to be {media}_id
+        // TODO: make this not suck
+        let table = req.query.mediaType.toLocaleLowerCase().slice(0, -1) + '_reviews' || ''; // Get the proper table name from the request
+        const mediaColumnIDName = req.query.mediaType.toLocaleLowerCase().slice(0, -1) + '_id' || ''; // Get the proper column name from the request
+
+        // Validate the table name to prevent SQL injection
+        const validTables = ['show_reviews', 'movie_reviews', 'book_reviews', 'game_reviews'];
+        if (!validTables.includes(table)) {
+            return res.status(400).send('Invalid table name');
+        }
+
+        // construct the query, join users to display the username of who posted it
+        const sql = `SELECT *
+                     FROM ${table}
+                     JOIN users ON ${table}.user_id = users.id
+                     WHERE ${mediaColumnIDName} = ?`;
+        const mediaItem = db.prepare(sql).all(mediaID);
+
+        // debug log
+        console.log(mediaItem[0])
+
+        // send back database query as json
+        // return one, more, or no items
+        res.setHeader('Content-Type', 'application/json');
+        res.send(mediaItem);
+    } catch (error) {
+        console.error('Ind Error:', error);
+        res.status(500).send('Error searching for reviews.');
+    }
+});
+
+/**
+ * @route   GET /review
+ * @desc    Retrieve all reviews for a certian user
+ * @access  Public
+ */
+app.get('/user_review', (req, res) => {
+    try {
+        const mediaID = req.query.mediaID.toLocaleLowerCase() || '';
+        const userID = req.query.userID.toLocaleLowerCase() || '';
+        const table = req.query.mediaType.toLocaleLowerCase().slice(0, -1) + '_reviews' || '';
+        const mediaColumnIDName = req.query.mediaType.toLocaleLowerCase().slice(0, -1) + '_id' || '';
+
+        const validTables = ['show_reviews', 'movie_reviews', 'book_reviews', 'game_reviews'];
+        if (!validTables.includes(table)) {
+            return res.status(400).send('Invalid table name');
+        }
+
+        const sql = `SELECT *
+                     FROM ${table}
+                     WHERE ${mediaColumnIDName} = ? AND user_id = ?`;
+        const mediaItem = db.prepare(sql).all(mediaID, userID);
+
+        const hasReviewed = mediaItem.length > 0; // Check if the user has reviewed
+        res.json(hasReviewed); // Send back true or false
+    } catch (error) {
+        console.error('Ind Error:', error);
+        res.status(500).send('Error checking for review.');
+    }
+});
+
+
+/**
+ * @route   POST /uploadreview
+ * @desc    Post a review for a certain media
+ * @access  Public
+ */
+app.post('/uploadreview', (req, res) => {
+    try {
+        const { mediaID, userID, rating, summary, text, mediaType } = req.body; // Destructure from req.body
+
+        // Validate the input
+        if (!mediaID || !userID || !rating || !summary || !text || !mediaType) {
+            return res.status(400).send('All fields are required.');
+        }
+
+        // Get the proper table name and media column ID name
+        let table = mediaType.toLowerCase().slice(0, -1) + '_reviews';
+        let mediaColumnIDName = mediaType.toLowerCase().slice(0, -1) + '_id';
+
+        // Validate the table name to prevent SQL injection
+        const validTables = ['show_reviews', 'movie_reviews', 'book_reviews', 'game_reviews'];
+        if (!validTables.includes(table)) {
+            return res.status(400).send('Invalid table name');
+        }
+
+        // Construct the query
+        const sql = `INSERT INTO ${table} (user_id, ${mediaColumnIDName}, rating, summary, text) VALUES (?, ?, ?, ?, ?)`;
+        
+        // Use run() for inserts and check for errors
+        const result = db.prepare(sql).run(userID, mediaID, rating, summary, text);
+        
+        // Check if the insert was successful
+        if (result.changes === 0) {
+            return res.status(500).send('Error inserting review.');
+        }
+
+        // Return success
+        res.status(201).json({ message: 'Review uploaded successfully' });
+    } catch (error) {
+        console.error('Ind Error:', error);
+        res.status(500).send('Error uploading review.');
+    }
+});
+
+/**
+ * @route   POST /editreview
+ * @desc    Edit a review for a certain media
+ * @access  Public
+ */
+app.post('/editreview', (req, res) => {
+    try {
+        const { mediaID, userID, rating, summary, text, mediaType } = req.body; // Destructure from req.body
+
+        // Validate the input
+        if (!mediaID || !userID || (rating < 0 || rating > 5) || !summary || !text || !mediaType) {
+            return res.status(400).send('All fields are required.');
+        }
+
+        // Get the proper table name and media column ID name
+        let table = mediaType.toLowerCase().slice(0, -1) + '_reviews';
+        let mediaColumnIDName = mediaType.toLowerCase().slice(0, -1) + '_id';
+
+        // Validate the table name to prevent SQL injection
+        const validTables = ['show_reviews', 'movie_reviews', 'book_reviews', 'game_reviews'];
+        if (!validTables.includes(table)) {
+            return res.status(400).send('Invalid table name');
+        }
+
+        // Construct the query
+        const sql = `UPDATE ${table} 
+                    SET rating = ?, summary = ?, text = ?
+                    WHERE ${mediaColumnIDName} = ? AND user_id = ?`;
+        
+        // Use run() for inserts and check for errors
+        const result = db.prepare(sql).run(rating, summary, text, mediaID, userID);
+        
+        // Check if the insert was successful
+        if (result.changes === 0) {
+            return res.status(500).send('Error inserting review.');
+        }
+
+        // Return success
+        res.status(201).json({ message: 'Review uploaded successfully' });
+    } catch (error) {
+        console.error('Ind Error:', error);
+        res.status(500).send('Error uploading review.');
+    }
+});
+
+/**
+ * @route   POST /editreview
+ * @desc    Delete a review for a certain media
+ * @access  Public
+ */
+app.post('/delete_review', (req, res) => {
+    try {
+        const {mediaID, userID, mediaType } = req.body; // Destructure from req.body
+
+        // Validate the input
+        if (!mediaID || !userID || !mediaType) {
+            return res.status(400).send('All fields are required.');
+        }
+
+        // Get the proper table name and media column ID name
+        let table = mediaType.toLowerCase().slice(0, -1) + '_reviews';
+        let mediaColumnIDName = mediaType.toLowerCase().slice(0, -1) + '_id';
+
+        // Validate the table name to prevent SQL injection
+        const validTables = ['show_reviews', 'movie_reviews', 'book_reviews', 'game_reviews'];
+        if (!validTables.includes(table)) {
+            return res.status(400).send('Invalid table name');
+        }
+
+        // Construct the query
+        const sql = `DELETE FROM ${table} 
+                    WHERE ${mediaColumnIDName} = ? AND user_id = ?`;
+        
+        // Use run() for inserts and check for errors
+        const result = db.prepare(sql).run(mediaID, userID);
+        
+        // Check if the insert was successful
+        if (result.changes === 0) {
+            return res.status(500).send('Error deleting review.');
+        }
+
+        // Return success
+        res.status(201).json({ message: 'Review deleted successfully' });
+    } catch (error) {
+        console.error('Ind Error:', error);
+        res.status(500).send('Error deleting review.');
     }
 });
 
