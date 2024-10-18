@@ -61,8 +61,9 @@ const fetchIfReviewed = async (userID: number, mediaNumber: string, mediaType: s
 }
 
 const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Element => {
-  const { mediaNumber } = useParams<string>();   // method to extract the media number from the URL
-  const {userID} = useContext(AuthContext);   // grab info for the current user ID
+  // grab info for the media number from the URL and the current user ID
+  const { mediaNumber } = useParams<string>();
+  const {userID} = useContext(AuthContext); 
 
   // states
   const [media, setMedia] = useState<Media>();
@@ -152,22 +153,25 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
     {media && <h1 style={{ fontFamily: 'Courier New'}}> {media.genre.toLocaleLowerCase()}</h1>}
     {media && <h1 style={{ fontFamily: 'Courier New'}}> Media ID: {media.id}</h1>}
 
-    {!userID && <Link to={'/login'}>Login to write a review<br/></Link>}
+    {/* Open review form prompt */}
+    {!userID && <Link style={{ fontFamily: 'Courier New', fontWeight: 500, textAlign: 'center'}} to={'/login'}>Login to write a review<br/></Link>}
     {userID && !alreadyReviewed && (
-      <>
-        <Link to="#" onClick={handleShowForm} style={{ fontFamily: 'Courier New', fontWeight: 500 }}>Write a review</Link><br/>
-      </>
+      <p style={{ fontFamily: 'Courier New', textAlign: 'center'}}> <Link to="#"  onClick={handleShowForm}> write a review</Link><br/></p>
     )}
     {userID && alreadyReviewed && (
-      <p style={{ fontFamily: 'Courier New'}}>You have already reviewed this <Link to="#"  onClick={handleShowForm}> Edit your review.</Link><br/></p>
+      <>
+      <p style={{ fontFamily: 'Courier New', textAlign: 'center'}}>you have already reviewed this <Link to="#"  onClick={handleShowForm}> edit your review</Link><br/></p>
+      </>
     )}
 
+    {/* Form */}
     {showForm && !alreadyReviewed && <UploadReviewForm endpoint={"uploadreview"} onFormSubmit={handleShowForm} mediaType={mediaType}/>}
     {showForm && alreadyReviewed && <UploadReviewForm endpoint={"editreview"} onFormSubmit={handleShowForm} mediaType={mediaType}/>}
 
     {/* Add padding below the form */}
     <div style={{ marginBottom: '30px' }}></div>
 
+    {/* Reviews */}
     {mediaReviews && mediaReviews.map(mediaReview => (
       <>
         <hr style={{ width: '60%', margin: '0 auto', border: '.5px solid #000' }} />
@@ -179,7 +183,7 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
         </div>
       </>
       ))}
-    {mediaReviews?.length == 0 && <h1>No reviews yet</h1>}
+    {mediaReviews?.length == 0 && <h2 style={{ fontFamily: 'Courier New', textAlign: 'center', fontWeight: 100 }}>no reviews yet</h2>}
   </> 
   );
 }

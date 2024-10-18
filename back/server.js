@@ -239,7 +239,7 @@ app.get('/review', (req, res) => {
 
 /**
  * @route   GET /review
- * @desc    Retrieve all reviews for a certian media
+ * @desc    Retrieve all reviews for a certian user
  * @access  Public
  */
 app.get('/user_review', (req, res) => {
@@ -353,6 +353,50 @@ app.post('/editreview', (req, res) => {
     } catch (error) {
         console.error('Ind Error:', error);
         res.status(500).send('Error uploading review.');
+    }
+});
+
+/**
+ * @route   POST /editreview
+ * @desc    Delete a review for a certain media
+ * @access  Public
+ */
+app.post('/delete_review', (req, res) => {
+    try {
+        const {mediaID, userID, mediaType } = req.body; // Destructure from req.body
+
+        // Validate the input
+        if (!mediaID || !userID || !mediaType) {
+            return res.status(400).send('All fields are required.');
+        }
+
+        // Get the proper table name and media column ID name
+        let table = mediaType.toLowerCase().slice(0, -1) + '_reviews';
+        let mediaColumnIDName = mediaType.toLowerCase().slice(0, -1) + '_id';
+
+        // Validate the table name to prevent SQL injection
+        const validTables = ['show_reviews', 'movie_reviews', 'book_reviews', 'game_reviews'];
+        if (!validTables.includes(table)) {
+            return res.status(400).send('Invalid table name');
+        }
+
+        // Construct the query
+        const sql = `DELETE FROM ${table} 
+                    WHERE ${mediaColumnIDName} = ? AND user_id = ?`;
+        
+        // Use run() for inserts and check for errors
+        const result = db.prepare(sql).run(mediaID, userID);
+        
+        // Check if the insert was successful
+        if (result.changes === 0) {
+            return res.status(500).send('Error deleting review.');
+        }
+
+        // Return success
+        res.status(201).json({ message: 'Review deleted successfully' });
+    } catch (error) {
+        console.error('Ind Error:', error);
+        res.status(500).send('Error deleting review.');
     }
 });
 

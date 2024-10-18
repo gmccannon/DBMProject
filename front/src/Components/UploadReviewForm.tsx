@@ -5,7 +5,7 @@ import Rating from '@mui/material/Rating';
 import Button from '@mui/material/Button';
 import axios, { AxiosResponse } from 'axios';
 import { AuthContext } from './AuthContext';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 // function to upload review to the database
 const uploadReview = async (endpoint: string, mediaNumber: string, userID: number, rating: number, summary: string, text: string, mediaType: string): Promise<void> => {
@@ -23,14 +23,27 @@ const uploadReview = async (endpoint: string, mediaNumber: string, userID: numbe
     if (!response) {
         throw new Error('Failed to fetch media');
     }
+};
 
-    // returns a single Media
-    return await response.data;
+// function to upload review to the database
+const deleteReview = async (mediaNumber: string, userID: number, mediaType: string): Promise<void> => {
+    // access the database endpoint
+    const response: AxiosResponse = await axios.post(`http://localhost:3001/delete_review`, {
+        mediaID: mediaNumber,
+        userID: userID,
+        mediaType: mediaType,
+    });
+
+    // handle response error
+    if (!response) {
+        throw new Error('Failed to delete review');
+    }
 };
 
 const UploadReviewForm: React.FC<FormComponentProps> = ({ endpoint, onFormSubmit, mediaType }) => {
-    const { mediaNumber } = useParams<string>(); // method to extract the media number from the URL
-    const { userID } = useContext(AuthContext); // grab info for the current user ID
+    // grab info for the media number from the URL and the current user ID
+    const { mediaNumber } = useParams<string>();
+    const { userID } = useContext(AuthContext);
 
     // states
     const [rating, setRating] = useState<number>(5);
@@ -41,16 +54,7 @@ const UploadReviewForm: React.FC<FormComponentProps> = ({ endpoint, onFormSubmit
     const handleSubmit = async (event: React.FormEvent): Promise<void> => {
         event.preventDefault();
 
-        // Log the rating for debugging purposes
-        console.log('Submitted rating:', rating);
-
-        // Ensure rating is between 0.5 and 5
-        if (rating < 0.5 || rating > 5) {
-            console.error('Invalid rating value:', rating);
-            return;
-        }
-
-        // Submit the form (you can add additional checks for other fields)
+        // edit or post the review
         if (mediaNumber && userID) {
             try {
                 await uploadReview(endpoint, mediaNumber, userID, rating, summary, text, mediaType);
@@ -63,58 +67,71 @@ const UploadReviewForm: React.FC<FormComponentProps> = ({ endpoint, onFormSubmit
         onFormSubmit();
     };
 
-    // useEffect to log when rating changes (for debugging)
-    useEffect(() => {
-        console.log('Rating changed to:', rating);
-    }, [rating]);
+    const handleDelete = async (): Promise<void> => {
+        
+        // delete review
+        if (mediaNumber && userID) {
+            try {
+                await deleteReview(mediaNumber, userID, mediaType);
+            } catch (error) {
+                console.error('Error uploading review:', error);
+            }
+        }
+
+        // Inform the parent component that the form was submitted
+        onFormSubmit();
+    }
 
     return (
-        <Box
-            component="form"
-            sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center', // Horizontally center
-                '& .MuiTextField-root': { m: 1, width: '25ch' },
-            }}
-            autoComplete="off"
-            onSubmit={handleSubmit}
-        >
-            <div>
-                <Rating
-                    precision={0.5}
-                    value={rating}
-                    onChange={(event, newValue) => { 
-                        if (newValue !== null) {
-                            setRating(newValue);
-                        }
-                    }}
-                />
-                <br />
-                <TextField
-                    id="summary"
-                    label="Summary"
-                    value={summary}
-                    onChange={(e) => setSummary(e.target.value)} // Control the input
-                    multiline
-                    required
-                />
-                <br />
-                <TextField
-                    id="text"
-                    label="Review Text"
-                    value={text}
-                    onChange={(e) => setText(e.target.value)} // Control the input
-                    multiline
-                    rows={4} // Set rows to 4 for multiline input
-                    required
-                />
-                <br />
-                <Button variant="outlined" size="medium" type="submit">
-                    {endpoint == "uploadreview" ? "Post Review" : "Edit Review"}
-                </Button>
-            </div>
-        </Box>
+        <>
+            <Box
+                component="form"
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center', // Horizontally center
+                    '& .MuiTextField-root': { m: 1, width: '25ch' },
+                }}
+                autoComplete="off"
+                onSubmit={handleSubmit}
+            >
+                <div>
+                    <Rating
+                        precision={0.5}
+                        value={rating}
+                        onChange={(event, newValue) => { 
+                            if (newValue !== null) {
+                                setRating(newValue);
+                            }
+                        }}
+                    />
+                    <br />
+                    <TextField
+                        id="summary"
+                        label="Summary"
+                        value={summary}
+                        onChange={(e) => setSummary(e.target.value)} // Control the input
+                        multiline
+                        required
+                    />
+                    <br />
+                    <TextField
+                        id="text"
+                        label="Review Text"
+                        value={text}
+                        onChange={(e) => setText(e.target.value)} // Control the input
+                        multiline
+                        rows={4} // Set rows to 4 for multiline input
+                        required
+                    />
+                    <br />
+                    <Button variant="outlined" size="medium" type="submit">
+                        {endpoint == "uploadreview" ? "Post Review" : "Edit Review"}
+                    </Button>
+                </div>
+            </Box>
+            <p style={{ fontFamily: 'Courier New', textAlign: 'center'}}><Link to="#"  onClick={handleDelete}>or delete your review </Link><br/></p>
+        </>
     );
 };
 
