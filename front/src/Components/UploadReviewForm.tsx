@@ -25,7 +25,7 @@ const uploadReview = async (endpoint: string, mediaNumber: string, userID: numbe
     }
 };
 
-// function to upload review to the database
+// function to delete a review from the database
 const deleteReview = async (mediaNumber: string, userID: number, mediaType: string): Promise<void> => {
     // access the database endpoint
     const response: AxiosResponse = await axios.post(`http://localhost:3001/delete_review`, {
@@ -84,53 +84,99 @@ const UploadReviewForm: React.FC<FormComponentProps> = ({ endpoint, onFormSubmit
 
     return (
         <>
-            <Box
-                component="form"
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center', // Horizontally center
-                    '& .MuiTextField-root': { m: 1, width: '25ch' },
-                }}
-                autoComplete="off"
-                onSubmit={handleSubmit}
-            >
-                <div>
-                    <Rating
-                        precision={0.5}
-                        value={rating}
-                        onChange={(event, newValue) => { 
-                            if (newValue !== null) {
-                                setRating(newValue);
-                            }
-                        }}
-                    />
-                    <br />
-                    <TextField
-                        id="summary"
-                        label="Summary"
-                        value={summary}
-                        onChange={(e) => setSummary(e.target.value)} // Control the input
-                        multiline
-                        required
-                    />
-                    <br />
-                    <TextField
-                        id="text"
-                        label="Review Text"
-                        value={text}
-                        onChange={(e) => setText(e.target.value)} // Control the input
-                        multiline
-                        rows={4} // Set rows to 4 for multiline input
-                        required
-                    />
-                    <br />
-                    <Button variant="outlined" size="medium" type="submit">
-                        {endpoint == "uploadreview" ? "Post Review" : "Edit Review"}
-                    </Button>
-                </div>
-            </Box>
-            <p style={{ fontFamily: 'Courier New', textAlign: 'center'}}><Link to="#"  onClick={handleDelete}>or delete your review </Link><br/></p>
+<Box
+    component="form"
+    sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center', // Horizontally center
+        justifyContent: 'center', // Vertically center
+        width: '40%', // Set width to 30% of the page
+        margin: '0 auto', // Center horizontally
+        fontFamily: 'Courier New', // Apply Courier New font to the entire form
+        '& .MuiTextField-root': { m: 1, width: '100%' }, // Ensure text fields take up full width within the form
+    }}
+    autoComplete="off"
+    onSubmit={handleSubmit}
+>
+    <div style={{ width: '100%' }}> {/* Ensure the child elements take full width */}
+        <Rating
+            precision={0.5}
+            value={rating}
+            onChange={(event, newValue) => { 
+                if (newValue !== null) {
+                    setRating(newValue);
+                }
+            }}
+        />
+        <br />
+        <TextField
+            id="summary"
+            label="Summary"
+            value={summary}
+            onChange={(e) => setSummary(e.target.value)}
+            multiline
+            required
+            InputLabelProps={{
+                style: { fontFamily: 'Courier New' }, // Apply Courier New font to label
+            }}
+            InputProps={{
+                style: { fontFamily: 'Courier New' }, // Apply Courier New font to input text
+            }}
+            sx={{
+                '& .MuiOutlinedInput-root': {
+                    '&.Mui-focused fieldset': {
+                        borderColor: 'black', // Change border color to black when focused
+                    },
+                },
+                '& .MuiInputLabel-root.Mui-focused': {
+                    color: 'black', // Change label color to black when focused
+                }
+            }}
+        />
+        <br />
+        <TextField
+            id="text"
+            label="Review Text"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            multiline
+            rows={4}
+            required
+            InputLabelProps={{
+                style: { fontFamily: 'Courier New' }, // Apply Courier New font to label
+            }}
+            InputProps={{
+                style: { fontFamily: 'Courier New' }, // Apply Courier New font to input text
+            }}
+            sx={{
+                '& .MuiOutlinedInput-root': {
+                    '&.Mui-focused fieldset': {
+                        borderColor: 'black', // Change border color to black when focused
+                    },
+                },
+                '& .MuiInputLabel-root.Mui-focused': {
+                    color: 'black', // Change label color to black when focused
+                }
+            }}
+        />
+
+        <br />
+        <Button 
+            style={{ color: 'black', borderColor: 'black', fontFamily: 'Courier New', display: 'flex', justifyContent: 'center'}} 
+            variant="outlined" 
+            size="medium" 
+            type="submit"
+        >
+            {endpoint === "uploadreview" ? "Post Review" : "Edit Review"}
+        </Button>
+    </div>
+</Box>
+<p style={{ fontFamily: 'Courier New', textAlign: 'center' }}>
+    {endpoint == "editreview" && <Link to="#" onClick={handleDelete}>or delete your review</Link>}
+    <br />
+</p>
+
         </>
     );
 };

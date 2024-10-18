@@ -221,7 +221,8 @@ app.get('/review', (req, res) => {
         const sql = `SELECT *
                      FROM ${table}
                      JOIN users ON ${table}.user_id = users.id
-                     WHERE ${mediaColumnIDName} = ?`;
+                     WHERE ${mediaColumnIDName} = ?
+                     ORDER BY rating DESC`;
         const mediaItem = db.prepare(sql).all(mediaID);
 
         // debug log

@@ -156,12 +156,14 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
     {/* Open review form prompt */}
     {!userID && <Link style={{ fontFamily: 'Courier New', fontWeight: 500, textAlign: 'center'}} to={'/login'}>Login to write a review<br/></Link>}
     {userID && !alreadyReviewed && (
-      <p style={{ fontFamily: 'Courier New', textAlign: 'center'}}> <Link to="#"  onClick={handleShowForm}> write a review</Link><br/></p>
+      <p style={{ fontFamily: 'Courier New', textAlign: 'center'}}> 
+        <Link to="#"  onClick={handleShowForm}> {!showForm ? "write a review" : "close form"}</Link><br/>
+      </p>
     )}
     {userID && alreadyReviewed && (
-      <>
-      <p style={{ fontFamily: 'Courier New', textAlign: 'center'}}>you have already reviewed this <Link to="#"  onClick={handleShowForm}> edit your review</Link><br/></p>
-      </>
+      <p style={{ fontFamily: 'Courier New', textAlign: 'center'}}>{!showForm && "you have already reviewed this "} 
+        <Link to="#"  onClick={handleShowForm}> {!showForm ? "edit your review" : "close form"}</Link><br/>
+      </p>
     )}
 
     {/* Form */}
