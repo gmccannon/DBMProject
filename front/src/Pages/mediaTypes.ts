@@ -2,7 +2,7 @@
 export interface Media {
     id: string;
     title: string;
-    image: string; // URL to the image
+    image_url: string; // URL to the image
     author?: string;
     studio?: string;
     writer?: string;

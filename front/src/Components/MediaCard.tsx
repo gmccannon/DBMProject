@@ -58,8 +58,8 @@ const MediaCard: React.FC<MediaCardProps> = ({ content, mediaType }) => {
 
     return (
         <CardContainer onClick={handleClick} role="button" tabIndex={0}>
-            {content.image ? (
-                <Image src={content.image} alt={`${content.title} cover`} />
+            {content.image_url ? (
+                <Image src={content.image_url} alt={`${content.title} cover`} />
             ) : (
                 <Image src="/placeholder.png" alt="Placeholder cover" /> // Use a placeholder image if no image is available
             )}

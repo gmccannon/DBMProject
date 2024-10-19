@@ -212,7 +212,7 @@ app.get('/review', (req, res) => {
         const mediaColumnIDName = req.query.mediaType.toLocaleLowerCase().slice(0, -1) + '_id' || ''; // Get the proper column name from the request
 
         // Validate the table name to prevent SQL injection
-        const validTables = ['show_reviews', 'movie_reviews', 'book_reviews', 'game_reviews'];
+        const validTables =['show_reviews', 'movie_reviews', 'book_reviews', 'game_reviews'];
         if (!validTables.includes(table)) {
             return res.status(400).send('Invalid table name');
         }
