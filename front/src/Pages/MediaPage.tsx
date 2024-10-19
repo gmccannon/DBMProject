@@ -1,7 +1,9 @@
+// MediaPage.tsx
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import MediaCard from '../Components/MediaCard';
 import axios, { AxiosResponse } from 'axios';
+import { Media } from './mediaTypes'; // Adjust the import path as needed
 
 const HeaderContainer = styled.div`
     text-align: center;
@@ -67,84 +69,96 @@ const OrderOption = styled.option`
     color: #333;
 `;
 
-//TODO: also return the average rating from media data
+interface MediaPageProps {
+    mediaType: string;
+}
+
 // Function to fetch media data with the search query
-const fetchmediaData = async (query: string, table: string, order: string): Promise<Media[]> => {
-    // access the database endpoint
-    const response: AxiosResponse = await axios.get('http://localhost:3001/getmedia', {
-        params: {
-          table: table,
-          search: query,
-          order: order,
+const fetchMediaData = async (query: string, table: string, order: string): Promise<Media[]> => {
+    try {
+        const response: AxiosResponse<Media[]> = await axios.get('http://localhost:3001/getmedia', {
+            params: {
+                table: table,
+                search: query,
+                order: order,
+            }
+        });
+
+        // Check if response data is valid
+        if (response.status !== 200) {
+            throw new Error('Failed to fetch media');
         }
-    });
 
-    // handle response error
-    if (!response) {
-        throw new Error('Failed to fetch media');
+        return response.data;
+    } catch (error) {
+        throw error;
     }
-
-    // returns a list of Media
-    return await response.data; 
 };
 
-const MediaPage: React.FC<MediaPageProps> = ({mediaType}): React.JSX.Element => {
-    //states
-    const [media, setmedia] = useState<Media[]>([]);
+const MediaPage: React.FC<MediaPageProps> = ({ mediaType }): React.JSX.Element => {
+    // States
+    const [media, setMedia] = useState<Media[]>([]);
     const [loading, setLoading] = useState<Boolean>(true);
     const [error, setError] = useState<Error | null>(null);
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [order, setOrder] = useState<string>('title');
 
-    // Fetch media on initial load, page change, searchQuery change, and order change
+    // Fetch media on initial load, searchQuery change, or order change
     useEffect((): void => {
-        fetchMedia(searchQuery, mediaType, order);
+        const fetchMedia = async () => {
+            setLoading(true);
+            try {
+                const data: Media[] = await fetchMediaData(searchQuery, mediaType, order);
+                setMedia(data);
+            } catch (err: unknown) {
+                setError(err instanceof Error ? err : new Error('An unknown error occurred'));
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchMedia();
     }, [searchQuery, mediaType, order]);
 
-    // function to update states based on info from the database
-    const fetchMedia = async (query: string, media: string, order: string): Promise<void> => {
-        setLoading(true);
-        try {
-            const data: Media[] = await fetchmediaData(query, media, order);
-            setmedia(data);
-        } catch (err: unknown) {
-            setError(err instanceof Error ? err : new Error('An unknown error occurred'));
-        } finally {
-            setLoading(false);
-        }
-    };
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <>
             {error && <div>Error: {error.message}</div>}
             <HeaderContainer>
                 {/* Page Title */}
-                <Title>search for {mediaType.toLowerCase()}...</Title>
+                <Title>Search for {mediaType.toLowerCase()}...</Title>
                 {/* Search Bar */}
-                <SearchInput 
-                    type="text" 
-                    placeholder={`enter a title or keywords`} 
+                <SearchInput
+                    type="text"
+                    placeholder="Enter a title or keywords"
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)} 
+                    onChange={(e) => setSearchQuery(e.target.value)}
                 />
                 {/* Order Select Dropdown */}
-                <OrderSelect 
-                    value={order} 
+                <OrderSelect
+                    value={order}
                     onChange={(e) => setOrder(e.target.value)}
                 >
-                    <OrderOption value="title">title</OrderOption>
-                    <OrderOption value="release_date">release</OrderOption>
+                    <OrderOption value="title">Title</OrderOption>
+                    <OrderOption value="release_date">Release Date</OrderOption>
                 </OrderSelect>
             </HeaderContainer>
-            {/* Media Area*/}
+            {/* Media Area */}
             <GridContainer>
-                {media.map(media => (
-                    <MediaCard
-                        key={media.id}
-                        content={media}
-                        mediaType={mediaType}
-                    />
-                ))}
+                {media.length > 0 ? (
+                    media.map((item) => (
+                        <MediaCard
+                            key={item.id}
+                            content={item}
+                            mediaType={mediaType}
+                        />
+                    ))
+                ) : (
+                    <div>No media found.</div>
+                )}
             </GridContainer>
         </>
     );
