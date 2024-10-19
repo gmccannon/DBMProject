@@ -133,10 +133,10 @@ db.exec(`
         ('The Hobbit', 'J.R.R. Tolkien', '1937-09-21', 1, 95022, true),
         ('The Old Man and the Sea', 'Ernest Hemingway', '1952-09-01', 5, 26925, true),
         ('Fahrenheit 451', 'Ray Bradbury', '1953-10-19', 5, 46411, true),
-        ('The Sun Also Rises', 'Ernest Hemingway', '1926-10-22', 3, 102707, true),
-        ('One Hundred Years of Solitude', 'Gabriel García Márquez', '1967-05-30', 4, 41781, true),
-        ('War and Peace', 'Leo Tolstoy', '1869-01-01', 2, 587287, true),
-        ('A Farewell to Arms', 'Ernest Hemingway', '1929-09-27', 1, 75000, true),
+        ('The Sun Also Rises', 'Ernest Hemingway', '1926-10-22', 5, 102707, true),
+        ('One Hundred Years of Solitude', 'Gabriel García Márquez', '1967-05-30', 5, 41781, true),
+        ('War and Peace', 'Leo Tolstoy', '1869-01-01', 5, 587287, true),
+        ('A Farewell to Arms', 'Ernest Hemingway', '1929-09-27', 5, 75000, true),
         ('The Chronicles of Narnia', 'C.S. Lewis', '1950-10-16', 1, 167593, true);
 
     INSERT OR REPLACE INTO movies
@@ -152,7 +152,7 @@ db.exec(`
         ('The Godfather', 'Francis Coppola', '1972-03-24', 3, 175, true),
         ('Catch Me If You Can', 'Steven Spielberg', '2002-12-25', 4, 141, false),
         ('Inception', 'Christopher Nolan', '2010-07-16', 5, 148, false),
-        ('Field of Dreams', 'Phil Robinson', '1989-04-21', 4, 107, true);
+        ('Field of Dreams', 'Phil Robinson', '1989-04-21', 5, 107, true);
 
     INSERT OR REPLACE INTO shows
         (title, maker, release_date, genre_id, episodes, emmy_winner)
