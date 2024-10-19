@@ -19,6 +19,14 @@ const Title = styled.h3`
     font-size: 16px;
     font-weight: 2000;
     color: #333;
+    font-style: italic;
+`;
+
+const Maker = styled.h3`
+    font-family: 'Courier New';
+    font-size: 16px;
+    font-weight: 400;
+    color: #333;
     margin-bottom: 20px;
 `;
 
@@ -40,8 +48,7 @@ const MediaCard: React.FC<MediaCardProps> = ({ content, mediaType }) => {
     <CardContainer onClick={handleClick} role="button" tabIndex={0}>
         {content.image &&<Image src={content.image} alt="Book cover" />}
         {content.title &&<Title>{content.title}</Title>}
-
-        {content.maker &&<Title>{content.maker}</Title>}
+        {content.maker &&<Maker>{content.maker}</Maker>}
     </CardContainer>
 )};
 

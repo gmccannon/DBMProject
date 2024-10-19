@@ -4,8 +4,8 @@ interface Media {
     image: string;
     title: string;
     subtitle: string;
-    release_date?: number;
-    maker?: number;
+    release_date?: string;
+    maker?: string;
 }
 
 interface MediaCardProps {

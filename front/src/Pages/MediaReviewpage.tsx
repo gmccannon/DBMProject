@@ -150,9 +150,18 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
   return (
   <>
     {media && <h1 style={{ fontFamily: 'Courier New'}}> media {'>'} {mediaType.toLowerCase()} {'>'} {media.title}</h1>}
-    {media && <h1 style={{ fontFamily: 'Courier New'}}> {media.genre.toLocaleLowerCase()}</h1>}
-    {media && <h1 style={{ fontFamily: 'Courier New'}}> Maker: {media.maker}</h1>}
-    {media && <h1 style={{ fontFamily: 'Courier New'}}>  Date: {media.release_date}</h1>}
+    {media && <h1 style={{ fontFamily: 'Courier New'}}> {media.genre}</h1>}
+    {media && <h1 style={{ fontFamily: 'Courier New'}}> Creator: {media.maker}</h1>}
+    {media?.release_date && (
+      <h1 style={{ fontFamily: 'Courier New'}}>
+        Release Date: {new Date(media.release_date).toLocaleDateString("en-US", {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        })}
+      </h1>
+    )}
+
 
     {/* Open review form prompt */}
     {!userID && <Link style={{ fontFamily: 'Courier New', fontWeight: 500, textAlign: 'center'}} to={'/login'}>Login to write a review<br/></Link>}

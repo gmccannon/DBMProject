@@ -51,7 +51,7 @@ db.exec(`
         id INTEGER PRIMARY KEY,
         title VARCHAR NOT NULL,
         maker VARCHAR NOT NULL,
-        publication_date DATE NOT NULL CHECK (publication_date <= CURRENT_DATE), -- Ensure publication date is not in the future
+        release_date DATE NOT NULL CHECK (release_date <= CURRENT_DATE), -- Ensure publication date is not in the future
         genre_id INTEGER,
         word_count INTEGER CHECK (word_count > 0), -- Ensure word count is positive
         best_seller BOOLEAN DEFAULT FALSE, -- Default to false if not specified
@@ -123,7 +123,7 @@ db.exec(`
         ('Fiction');
 
     INSERT OR REPLACE INTO books
-        (title, maker, publication_date, genre_id, word_count, best_seller)
+        (title, maker, release_date, genre_id, word_count, best_seller)
     VALUES 
         ('Don Quixote', 'Miguel de Cervantes', '1605-01-16', 4, 383748, true),
         ('For Whom the Bell Tolls', 'Ernest Hemingway', '1940-10-21', 5, 174106, true),

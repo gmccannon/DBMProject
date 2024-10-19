@@ -135,17 +135,11 @@ app.get('/getmedia', (req, res) => {
         const searchQuery = req.query.search.toLocaleLowerCase() || '';
         const table = req.query.table.toLocaleLowerCase() || '';
         let order = req.query.order.toLocaleLowerCase() || '';
-
-        // handle case of books and release date search
-        // books table calls it 'publication_date' not 'release_date'
-        if (table === 'books' && order === 'release_date') {
-            order = 'publication_date';
-        }
         
         // construct the query
         const sql = `SELECT * FROM ${table} 
-        WHERE title LIKE ? OR maker LIKE ?
-        ORDER BY ${order}`; 
+                    WHERE title LIKE ? OR maker LIKE ?
+                    ORDER BY ${order}`; 
 
         // query the database, (use wildcard so that an empty parameter returns all)
         const mediaItems = db.prepare(sql).all(`%${searchQuery}%`, `%${searchQuery}%`);
