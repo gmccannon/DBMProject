@@ -20,6 +20,7 @@ const Title = styled.h3`
     font-weight: 2000;
     color: #333;
     font-style: italic;
+    padding-left: 10px;
 `;
 
 const Maker = styled.h3`
@@ -28,28 +29,35 @@ const Maker = styled.h3`
     font-weight: 400;
     color: #333;
     margin-bottom: 20px;
+    padding-left: 10px;
 `;
 
 const Image = styled.img`
     width: 100%;
-    height: auto;
+    height: 80%;
 `;
 
 const MediaCard: React.FC<MediaCardProps> = ({ content, mediaType }) => {
-    // use navigation method from react router
     const navigate = useNavigate();
 
-    // function to navigate to individual media's info page 
+    // Function to handle navigation to individual media's info page
     const handleClick = () => {
         navigate(`/${mediaType}/${content.id}`);
     };
-    
+
+    // Function to determine image path based on mediaType and mediaNumber
+    const getImagePath = () => {
+        // Images are stored in public/images/{mediaType}{content.id}.jpg
+        return `/images/${mediaType}${content.id}.jpg`;
+    };
+
     return (
-    <CardContainer onClick={handleClick} role="button" tabIndex={0}>
-        {content.image &&<Image src={content.image} alt="Book cover" />}
-        {content.title &&<Title>{content.title}</Title>}
-        {content.maker &&<Maker>{content.maker}</Maker>}
-    </CardContainer>
-)};
+        <CardContainer onClick={handleClick} role="button" tabIndex={0}>
+            <Image src={getImagePath()} alt={`${content.title} cover`} />
+            {content.title && <Title>{content.title}</Title>}
+            {content.maker && <Maker>{content.maker}</Maker>}
+        </CardContainer>
+    );
+};
 
 export default MediaCard;

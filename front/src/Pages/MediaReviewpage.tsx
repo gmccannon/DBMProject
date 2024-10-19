@@ -6,6 +6,55 @@ import axios, { AxiosResponse } from 'axios';
 import Rating from '@mui/material/Rating';
 import UploadReviewForm from '../Components/UploadReviewForm'
 
+const Container = styled.div`
+  display: flex;
+  justify-content: center; /* Center the columns */
+  align-items: flex-start; /* Ensures both columns start at the same height */
+  padding: 20px;
+`;
+
+const LeftColumn = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: left; /* Center content horizontally in the column */
+  padding-left: 5%;
+  margin-left: 10%
+`;
+
+const RightColumn = styled.div`
+  flex: 1;
+  margin-left: 6%; /* Reduced margin for closer columns */
+  display: flex;
+  flex-direction: column;
+  align-items: left; /* Align items to the left */
+  justify-content: center;
+  margin-right: 10%
+`;
+
+const Title = styled.h1`
+  font-family: 'Courier New';
+  font-size: 18px; /* Reduced font size */
+  margin: 0 0 15px 0; /* Remove top margin for better alignment */
+  text-align: left; /* Left-align the breadcrumb title */
+  width: 100%; /* Take full width to align with the image */
+  max-width: 493px; /* Set a max width to align with the image */
+`;
+
+const Image = styled.img`
+  max-width: 493px; /* Maximum width */
+  max-height: 600px; /* Maximum height */
+`;
+
+
+const Info = styled.h1`
+  font-family: 'Courier New';
+  font-size: 1.5vw;
+  font-weight: 300;
+  margin-bottom: 10px;
+  text-align: left; /* Left-align the text in the right column */
+`;
+
 // function to get media from the database based on the specificed mediaType (table) and its specific ID
 const fetchMediaData = async (table: string, mediaNumber: string): Promise<Media> => {
   // access the database endpoint
@@ -147,24 +196,53 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
     }
   };
 
+  // Function to determine image path based on mediaType and mediaNumber
+  const getImagePath = () => {
+    // Images are stored in public/images/{mediaType}{content.id}.jpg
+    return `/images/${mediaType}${mediaNumber}.jpg`;
+  };
+
   return (
   <>
-    {media && <h1 style={{ fontFamily: 'Courier New'}}> media {'>'} {mediaType.toLowerCase()} {'>'} {media.title}</h1>}
-    {media && <h1 style={{ fontFamily: 'Courier New'}}> {media.genre}</h1>}
-    {media && <h1 style={{ fontFamily: 'Courier New'}}> Creator: {media.maker}</h1>}
-    {media?.release_date && (
-      <h1 style={{ fontFamily: 'Courier New'}}>
-        Release Date: {new Date(media.release_date).toLocaleDateString("en-US", {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric'
-        })}
-      </h1>
-    )}
+    <div>
+      {/* Two-column layout */}
+      <Container>
+        {/* Left Column: Title and Image */}
+        <LeftColumn>
+          {media && (
+            <Title>
+              media {'>'} {mediaType.toLowerCase()} {'>'} {media.title}
+            </Title>
+          )}
+          <Image src={getImagePath()} alt="Image not found" />
+        </LeftColumn>
 
+        {/* Right Column: Genre, Creator, Release Date */}
+        <RightColumn>
+          {media && <Info>Title: {media.title}</Info>}
+          {media && <Info>Creator: {media.maker}</Info>}
+          {media?.release_date && (
+            <Info>
+              Release Date: {new Date(media.release_date).toLocaleDateString("en-US", {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })}
+            </Info>
+          )}
+          {media && <Info>Genre: {media.genre}</Info>}
+        </RightColumn>
+      </Container>
+    </div>
+
+    <h1 style={{ fontFamily: 'Courier New', textAlign: 'center', fontWeight: 100}}>reviews</h1>
 
     {/* Open review form prompt */}
-    {!userID && <Link style={{ fontFamily: 'Courier New', fontWeight: 500, textAlign: 'center'}} to={'/login'}>Login to write a review<br/></Link>}
+    {!userID &&
+        <p style={{ fontFamily: 'Courier New', textAlign: 'center'}}> 
+          <Link style={{ fontFamily: 'Courier New', fontWeight: 500}} to={'/login'}>Login to write a review<br/></Link>
+        </p>
+        }
     {userID && !alreadyReviewed && (
       <p style={{ fontFamily: 'Courier New', textAlign: 'center'}}> 
         <Link to="#"  onClick={handleShowForm}> {!showForm ? "write a review" : "close form"}</Link><br/>
@@ -196,6 +274,9 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
       </>
       ))}
     {mediaReviews?.length == 0 && <h2 style={{ fontFamily: 'Courier New', textAlign: 'center', fontWeight: 100 }}>no reviews yet</h2>}
+
+    {/* Add padding at bottom of page*/}
+    <div style={{ marginBottom: '120px' }}></div>
   </> 
   );
 }

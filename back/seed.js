@@ -133,10 +133,10 @@ db.exec(`
         ('The Hobbit', 'J.R.R. Tolkien', '1937-09-21', 1, 95022, true),
         ('The Old Man and the Sea', 'Ernest Hemingway', '1952-09-01', 5, 26925, true),
         ('Fahrenheit 451', 'Ray Bradbury', '1953-10-19', 5, 46411, true),
-        ('Brave New World', 'Aldous Huxley', '1932-08-30', 5, 63210, true),
+        ('The Sun Also Rises', 'Ernest Hemingway', '1926-10-22', 3, 102707, true),
         ('One Hundred Years of Solitude', 'Gabriel García Márquez', '1967-05-30', 4, 41781, true),
-        ('Slaughterhouse-Five', 'Kurt Vonnegut', '1969-03-31', 5, 27528, true),
-        ('The Bell Jar', 'Sylvia Plath', '1963-01-14', 5, 74300, true),
+        ('War and Peace', 'Leo Tolstoy', '1869-01-01', 2, 587287, true),
+        ('A Farewell to Arms', 'Ernest Hemingway', '1929-09-27', 1, 75000, true),
         ('The Chronicles of Narnia', 'C.S. Lewis', '1950-10-16', 1, 167593, true);
 
     INSERT OR REPLACE INTO movies
@@ -147,12 +147,12 @@ db.exec(`
         ('The Lord of the Rings: The Fellowship of the Ring', 'Peter Jackson', '2001-12-19', 1, 178, true),
         ('The Lord of the Rings: The Two Towers', 'Peter Jackson', '2002-12-18', 1, 179, true),
         ('No Country for Old Men', 'Ethan Coen', '2007-11-21', 3, 122, true),
-        ('The Shawshank Redemption', 'Frank Darabont', '1994-09-23', 4, 142, true),
-        ('Pulp Fiction', 'Quentin Tarantino', '1994-10-14', 3, 154, true),
-        ('The Godfather', 'Francis Ford Coppola', '1972-03-24', 4, 175, true),
-        ('Fight Club', 'David Fincher', '1999-10-15', 3, 139, false),
-        ('Schindler''s List', 'Steven Spielberg', '1993-12-15', 4, 195, true),
-        ('Inception', 'Christopher Nolan', '2010-07-16', 1, 148, false);
+        ('The Shawshank Redemption', 'Frank Darabont', '1994-09-23', 3, 142, true),
+        ('The Good, the Bad and the Ugly', 'Sergio Leone', '1966-12-23', 4, 178, true),
+        ('The Godfather', 'Francis Coppola', '1972-03-24', 3, 175, true),
+        ('Catch Me If You Can', 'Steven Spielberg', '2002-12-25', 4, 141, false),
+        ('Inception', 'Christopher Nolan', '2010-07-16', 5, 148, false),
+        ('Field of Dreams', 'Phil Robinson', '1989-04-21', 4, 107, true);
 
     INSERT OR REPLACE INTO shows
         (title, maker, release_date, genre_id, episodes, emmy_winner)
@@ -163,8 +163,8 @@ db.exec(`
         ('The West Wing', 'Aaron Sorkin', '1999-09-22', 3, 154, true),
         ('The Wire', 'David Simon', '2002-06-02', 3, 60, false),
         ('House', 'David Shore', '2004-11-16', 3, 177, true),
-        ('Game of Thrones', 'David Benioff and D.B. Weiss', '2011-04-17', 2, 73, true),
-        ('The Sopranos', 'David Chase', '1999-01-10', 2, 86, true);
+        ('Chernobyl', 'Craig Mazin', '2019-05-06', 3, 5, true),
+        ('The Sopranos', 'David Chase', '1999-01-10', 3, 86, true);
 
     INSERT OR REPLACE INTO games
         (title, maker, release_date, genre_id, platform, multiplayer)
