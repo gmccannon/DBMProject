@@ -7,7 +7,7 @@ Node, React, SQLite, Express, Flask, Scikit-Learn
 ### Part 1
 - [x] Login/Logout
 - [x] Create / modify / delete a review
-- [ ] Add images
+- [ ] Add images (in progress)
 
 ### Part 2
 - [ ] Recommendation system
