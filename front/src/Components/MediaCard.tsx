@@ -40,10 +40,8 @@ const MediaCard: React.FC<MediaCardProps> = ({ content, mediaType }) => {
     <CardContainer onClick={handleClick} role="button" tabIndex={0}>
         {content.image &&<Image src={content.image} alt="Book cover" />}
         {content.title &&<Title>{content.title}</Title>}
-        {content.author &&<Title>{content.author}</Title>}
-        {content.studio &&<Title>{content.studio}</Title>}
-        {content.writer &&<Title>{content.writer}</Title>}
-        {content.director &&<Title>{content.director}</Title>}
+
+        {content.maker &&<Title>{content.maker}</Title>}
     </CardContainer>
 )};
 
