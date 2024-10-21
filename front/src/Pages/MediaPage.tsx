@@ -5,7 +5,7 @@ import axios, { AxiosResponse } from 'axios';
 
 const HeaderContainer = styled.div`
     text-align: center;
-    padding: 20px;
+    padding-bottom: 20px;
     background-color: white;
 `;
 

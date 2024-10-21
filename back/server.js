@@ -135,18 +135,14 @@ app.get('/getmedia', (req, res) => {
         const searchQuery = req.query.search.toLocaleLowerCase() || '';
         const table = req.query.table.toLocaleLowerCase() || '';
         let order = req.query.order.toLocaleLowerCase() || '';
-
-        // handle case of books and release date search
-        // books table calls it 'publication_date' not 'release_date'
-        if (table === 'books' && order === 'release_date') {
-            order = 'publication_date';
-        }
         
         // construct the query
-        const sql = `SELECT * FROM ${table} WHERE title LIKE ? ORDER BY ${order}`; 
+        const sql = `SELECT * FROM ${table} 
+                    WHERE title LIKE ? OR maker LIKE ?
+                    ORDER BY ${order}`; 
 
         // query the database, (use wildcard so that an empty parameter returns all)
-        const mediaItems = db.prepare(sql).all(`%${searchQuery}%`);
+        const mediaItems = db.prepare(sql).all(`%${searchQuery}%`, `%${searchQuery}%`);
 
         // debug log
         console.log(mediaItems)
@@ -162,16 +158,13 @@ app.get('/getmedia', (req, res) => {
 
 /**
  * @route   GET /ind
- * @desc    Retrieve individual media item by ID
+ * @desc    Retrieve individual media data by ID
  * @access  Public
  */
 app.get('/ind', (req, res) => {
     try {
         let id = req.query.search.toLocaleLowerCase() || ''; // Get the search query from the request
         let table = req.query.table.toLocaleLowerCase() || ''; // Get the table name from the request
-
-        // Convert table parameter to lowercase to ensure case-insensitive matching
-        table = table.toLowerCase();
 
         // Validate the table name to prevent SQL injection
         const validTables = ['shows', 'movies', 'books', 'games'];
@@ -206,10 +199,8 @@ app.get('/review', (req, res) => {
         let mediaID = req.query.mediaID.toLocaleLowerCase() || ''; // Get the table name from the request
 
         // the type from the request will come in as 'Books' etc, but needs to be 'book_reviews' etc to get the table
-        // for the ID column, it needs to be {media}_id
         // TODO: make this not suck
         let table = req.query.mediaType.toLocaleLowerCase().slice(0, -1) + '_reviews' || ''; // Get the proper table name from the request
-        const mediaColumnIDName = req.query.mediaType.toLocaleLowerCase().slice(0, -1) + '_id' || ''; // Get the proper column name from the request
 
         // Validate the table name to prevent SQL injection
         const validTables = ['show_reviews', 'movie_reviews', 'book_reviews', 'game_reviews'];
@@ -221,12 +212,12 @@ app.get('/review', (req, res) => {
         const sql = `SELECT *
                      FROM ${table}
                      JOIN users ON ${table}.user_id = users.id
-                     WHERE ${mediaColumnIDName} = ?
+                     WHERE media_id = ?
                      ORDER BY rating DESC`;
         const mediaItem = db.prepare(sql).all(mediaID);
 
         // debug log
-        console.log(mediaItem[0])
+        console.log(mediaItem)
 
         // send back database query as json
         // return one, more, or no items
@@ -239,8 +230,8 @@ app.get('/review', (req, res) => {
 });
 
 /**
- * @route   GET /review
- * @desc    Retrieve all reviews for a certian user
+ * @route   GET /user_review
+ * @desc    Return if a user has reviewed a specific media
  * @access  Public
  */
 app.get('/user_review', (req, res) => {
@@ -248,7 +239,6 @@ app.get('/user_review', (req, res) => {
         const mediaID = req.query.mediaID.toLocaleLowerCase() || '';
         const userID = req.query.userID.toLocaleLowerCase() || '';
         const table = req.query.mediaType.toLocaleLowerCase().slice(0, -1) + '_reviews' || '';
-        const mediaColumnIDName = req.query.mediaType.toLocaleLowerCase().slice(0, -1) + '_id' || '';
 
         const validTables = ['show_reviews', 'movie_reviews', 'book_reviews', 'game_reviews'];
         if (!validTables.includes(table)) {
@@ -257,7 +247,7 @@ app.get('/user_review', (req, res) => {
 
         const sql = `SELECT *
                      FROM ${table}
-                     WHERE ${mediaColumnIDName} = ? AND user_id = ?`;
+                     WHERE media_id = ? AND user_id = ?`;
         const mediaItem = db.prepare(sql).all(mediaID, userID);
 
         const hasReviewed = mediaItem.length > 0; // Check if the user has reviewed
@@ -283,9 +273,8 @@ app.post('/uploadreview', (req, res) => {
             return res.status(400).send('All fields are required.');
         }
 
-        // Get the proper table name and media column ID name
+        // Get the proper table name
         let table = mediaType.toLowerCase().slice(0, -1) + '_reviews';
-        let mediaColumnIDName = mediaType.toLowerCase().slice(0, -1) + '_id';
 
         // Validate the table name to prevent SQL injection
         const validTables = ['show_reviews', 'movie_reviews', 'book_reviews', 'game_reviews'];
@@ -294,7 +283,7 @@ app.post('/uploadreview', (req, res) => {
         }
 
         // Construct the query
-        const sql = `INSERT INTO ${table} (user_id, ${mediaColumnIDName}, rating, summary, text) VALUES (?, ?, ?, ?, ?)`;
+        const sql = `INSERT INTO ${table} (user_id, media_id, rating, summary, text) VALUES (?, ?, ?, ?, ?)`;
         
         // Use run() for inserts and check for errors
         const result = db.prepare(sql).run(userID, mediaID, rating, summary, text);
@@ -326,9 +315,8 @@ app.post('/editreview', (req, res) => {
             return res.status(400).send('All fields are required.');
         }
 
-        // Get the proper table name and media column ID name
+        // Get the proper table name
         let table = mediaType.toLowerCase().slice(0, -1) + '_reviews';
-        let mediaColumnIDName = mediaType.toLowerCase().slice(0, -1) + '_id';
 
         // Validate the table name to prevent SQL injection
         const validTables = ['show_reviews', 'movie_reviews', 'book_reviews', 'game_reviews'];
@@ -339,7 +327,7 @@ app.post('/editreview', (req, res) => {
         // Construct the query
         const sql = `UPDATE ${table} 
                     SET rating = ?, summary = ?, text = ?
-                    WHERE ${mediaColumnIDName} = ? AND user_id = ?`;
+                    WHERE media_id = ? AND user_id = ?`;
         
         // Use run() for inserts and check for errors
         const result = db.prepare(sql).run(rating, summary, text, mediaID, userID);
@@ -358,7 +346,7 @@ app.post('/editreview', (req, res) => {
 });
 
 /**
- * @route   POST /editreview
+ * @route   POST /delete_review
  * @desc    Delete a review for a certain media
  * @access  Public
  */
@@ -371,9 +359,8 @@ app.post('/delete_review', (req, res) => {
             return res.status(400).send('All fields are required.');
         }
 
-        // Get the proper table name and media column ID name
+        // Get the proper table name
         let table = mediaType.toLowerCase().slice(0, -1) + '_reviews';
-        let mediaColumnIDName = mediaType.toLowerCase().slice(0, -1) + '_id';
 
         // Validate the table name to prevent SQL injection
         const validTables = ['show_reviews', 'movie_reviews', 'book_reviews', 'game_reviews'];
@@ -383,7 +370,7 @@ app.post('/delete_review', (req, res) => {
 
         // Construct the query
         const sql = `DELETE FROM ${table} 
-                    WHERE ${mediaColumnIDName} = ? AND user_id = ?`;
+                    WHERE media_id = ? AND user_id = ?`;
         
         // Use run() for inserts and check for errors
         const result = db.prepare(sql).run(mediaID, userID);

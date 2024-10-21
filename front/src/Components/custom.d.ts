@@ -4,12 +4,8 @@ interface Media {
     image: string;
     title: string;
     subtitle: string;
-    author?: string;
-    publisher?: string;
-    release_year?: number;
-    director?: string;
-    writer?: string;
-    seasons?: number;
+    release_date?: string;
+    maker?: string;
 }
 
 interface MediaCardProps {
