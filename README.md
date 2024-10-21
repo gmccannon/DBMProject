@@ -1,9 +1,13 @@
 # DBMProject
 
 ## Stack (so far)
-Node, React, SQLite, Express??
+Node, React, SQLite, Express, Flask, Scikit-Learn
 
-## To-do list for part 1
-- [x] Login/Logout  
-- [x] For admins: Create a new TV Show / Movie / Book  
-- [ ] Create / modify / delete a review  
+## To-do list 
+### Part 1
+- [x] Login/Logout
+- [x] Create / modify / delete a review
+- [x] Add images (in progress)
+
+### Part 2
+- [ ] Recommendation system
