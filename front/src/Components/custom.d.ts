@@ -6,6 +6,7 @@ interface Media {
     subtitle: string;
     release_date?: string;
     maker?: string;
+    rating?: number;
 }
 
 interface MediaCardProps {

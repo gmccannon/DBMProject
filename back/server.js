@@ -134,11 +134,14 @@ app.get('/getmedia', (req, res) => {
         // search parameters from the request
         const searchQuery = req.query.search.toLocaleLowerCase() || '';
         const table = req.query.table.toLocaleLowerCase() || '';
+        let reviewTable = req.query.table.toLocaleLowerCase().slice(0, -1) + '_reviews' || ''; // Get the proper table name from the request
         let order = req.query.order.toLocaleLowerCase() || '';
         
         // construct the query
-        const sql = `SELECT * FROM ${table} 
+        const sql = `SELECT ${table}.*, avg(rating) AS rating FROM ${table}
+                    LEFT JOIN ${reviewTable} ON ${reviewTable}.media_id = ${table}.id
                     WHERE title LIKE ? OR maker LIKE ?
+                    GROUP BY title
                     ORDER BY ${order}`; 
 
         // query the database, (use wildcard so that an empty parameter returns all)

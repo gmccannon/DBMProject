@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import Rating  from '@mui/material/Rating';
 
 const CardContainer = styled.div`
     width: 350px;
@@ -21,6 +22,10 @@ const Title = styled.h3`
     color: #333;
     font-style: italic;
     padding-left: 10px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    margin-bottom: 0px;
+    white-space: nowrap;
 `;
 
 const Maker = styled.h3`
@@ -55,7 +60,12 @@ const MediaCard: React.FC<MediaCardProps> = ({ content, mediaType }) => {
         <CardContainer onClick={handleClick} role="button" tabIndex={0}>
             <Image src={getImagePath()} alt={`${content.title} cover`} />
             {content.title && <Title>{content.title}</Title>}
-            {content.maker && <Maker>{content.maker}</Maker>}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                {content.maker && <Maker>{content.maker}</Maker>}
+                {content.maker && <Rating style={{ marginRight: '10px' }}value={content.rating} precision={0.25} readOnly />}
+            </div>
+
+
         </CardContainer>
     );
 };

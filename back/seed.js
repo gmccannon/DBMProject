@@ -120,7 +120,8 @@ db.exec(`
         ('Science Fiction'),
         ('Drama'),
         ('Adventure'),
-        ('Fiction');
+        ('Fiction'),
+        ('Comedy');
 
     INSERT OR REPLACE INTO books
         (title, maker, release_date, genre_id, word_count, best_seller)
@@ -149,7 +150,7 @@ db.exec(`
         ('No Country for Old Men', 'Ethan Coen', '2007-11-21', 3, 122, true),
         ('The Shawshank Redemption', 'Frank Darabont', '1994-09-23', 3, 142, true),
         ('The Good, the Bad and the Ugly', 'Sergio Leone', '1966-12-23', 4, 178, true),
-        ('The Godfather', 'Francis Coppola', '1972-03-24', 3, 175, true),
+        ('Rain Man', 'Barry Levinson', '1988-12-16', 6, 133, true),
         ('Catch Me If You Can', 'Steven Spielberg', '2002-12-25', 4, 141, false),
         ('Inception', 'Christopher Nolan', '2010-07-16', 5, 148, false),
         ('Field of Dreams', 'Phil Robinson', '1989-04-21', 5, 107, true);
@@ -188,11 +189,44 @@ db.exec(`
     VALUES 
         (1, 2, 4.5, 'Good', 'This was a good book');
 
-    INSERT OR REPLACE INTO movie_reviews
-        (user_id, media_id, rating, summary, text)
-    VALUES 
-        (1, 2, 3.5, 'Good movie', 'This was a good movie'),
-        (2, 2, 4.5, 'Very Good', 'Like the other guy i liked this movie');
+INSERT OR REPLACE INTO movie_reviews
+    (user_id, media_id, rating, summary, text)
+VALUES
+    (1, 1, 5, 'Epic conclusion to the trilogy', 'The Return of the King is a masterpiece. The visuals, the storytelling, and the emotional depth make it one of the best movies ever made.'),
+    (2, 1, 4, 'A grand finale', 'A bit long but an absolutely amazing finish to a great trilogy. Peter Jackson outdid himself.'),
+    (5, 1, 5, 'Perfect in every way', 'I was moved to tears by the beauty of this film. It perfectly wraps up the trilogy with heart and action.'),
+    (2, 2, 4, 'Intense and thrilling', 'The Departed keeps you on the edge of your seat. The performances by the cast are phenomenal, especially DiCaprio and Nicholson.'),
+    (3, 2, 3, 'Good but a bit overhyped', 'Great performances but the plot was hard to follow at times. Still a solid thriller.'),
+    (5, 2, 5, 'Scorsese at his best', 'This movie is a masterpiece. The tension, the action, and the performances all make it one of Scorsese’s finest.'),
+    (4, 2, 4, 'Gripping crime drama', 'The Departed delivers on all fronts: great acting, an intriguing plot, and nonstop intensity. However, it was a bit long.'),
+    (1, 2, 5, 'Flawless storytelling', 'Every scene in The Departed serves a purpose. The way the story unfolds is masterful, and the ending left me stunned.'),
+    (6, 2, 4, 'Great acting, but convoluted', 'I loved the performances by everyone, but the story was a bit hard to follow. Still a fantastic movie overall.'),
+    (7, 2, 5, 'A modern crime classic', 'The Departed is a brilliantly executed crime drama with incredible performances by DiCaprio and Damon.'),
+    (8, 2, 4, 'Suspenseful and gritty', 'The Departed is gritty, intense, and full of suspense. While it gets a bit complicated, the payoff is well worth it.'),
+    (5, 2, 5, 'Incredible performances and direction', 'Scorsese’s direction in The Departed is incredible. It’s thrilling from start to finish and one of his best films.'),
+    (3, 2, 4, 'Strong but a bit long', 'A great movie with strong performances, but it couldve been trimmed down. Still, a must-watch for crime drama fans.'),
+    (3, 3, 5, 'A magical beginning', 'The Fellowship of the Ring sets the stage for an incredible journey. The world-building is spectacular and Peter Jackson brings Middle-earth to life.'),
+    (4, 3, 4, 'Great start to a legendary trilogy', 'The movie does a fantastic job setting up the world of Middle-earth, though it felt a bit slow at times.'),
+    (7, 3, 5, 'Absolutely stunning', 'The cinematography, the cast, the story – everything is just incredible! It’s the start of something legendary.'),
+    (4, 4, 4, 'An epic middle chapter', 'The Two Towers is darker and more action-packed than the first. It excels in character development and visual effects.'),
+    (6, 4, 5, 'Even better than the first', 'This one has a better balance of action and drama. The battle scenes are incredible!'),
+    (5, 5, 5, 'Chilling and gripping', 'No Country for Old Men is a brilliantly crafted film with outstanding performances. The tension never lets up.'),
+    (1, 5, 5, 'A modern masterpiece', 'Everything about this film is perfection. The Coen brothers know how to create atmosphere and tension.'),
+    (3, 5, 4, 'Dark and compelling', 'The movie is a bit slow in parts but the performances and dialogue make up for it. Chigurh is one of the best villains ever.'),
+    (8, 5, 4, 'Not for everyone but brilliant', 'This movie is a bit slow and brooding, but if you’re in the mood for something dark and tense, this is perfect.'),
+    (6, 6, 5, 'A timeless classic', 'The Shawshank Redemption is an inspirational story about hope and friendship. Tim Robbins and Morgan Freeman are extraordinary.'),
+    (4, 6, 5, 'Perfect film', 'This movie has it all – heart, emotion, and great storytelling. I never get tired of watching it.'),
+    (7, 7, 4, 'An unforgettable western', 'The Good, the Bad and the Ugly is a classic for a reason. The cinematography and score are legendary.'),
+    (8, 8, 4, 'Heartwarming and thoughtful', 'Rain Man tells a touching story with incredible performances by Dustin Hoffman and Tom Cruise.'),
+    (1, 8, 5, 'Great performances, great story', 'Dustin Hoffman and Tom Cruise play off each other so well. A touching story that resonates.'),
+    (5, 8, 4, 'Touching and insightful', 'Rain Man is not only a heartwarming film but also a great look at the challenges of autism.'),
+    (1, 9, 3, 'Fun but a bit long', 'Catch Me If You Can is entertaining but could have been shorter. DiCaprio and Hanks are great, though.'),
+    (3, 9, 4, 'Entertaining and fun', 'A fun ride with great performances by DiCaprio and Hanks. The story keeps you engaged throughout.'),
+    (2, 10, 5, 'Mind-bending thriller', 'Inception is one of the most unique films I’ve seen. The concept is brilliant, and the execution is near perfect.'),
+    (4, 10, 4, 'Visually stunning and complex', 'The visuals are amazing, and the plot keeps you thinking. However, it’s a bit confusing at times.'),
+    (6, 10, 5, 'A cinematic masterpiece', 'Nolan created a mind-blowing experience with Inception. It’s the perfect blend of story and spectacle.'),
+    (3, 11, 4, 'Inspirational sports drama', 'Field of Dreams is a feel-good movie with heart. It taps into the magic of baseball and the importance of dreams.');
+
 
     INSERT OR REPLACE INTO game_reviews
         (user_id, media_id, rating, summary, text)

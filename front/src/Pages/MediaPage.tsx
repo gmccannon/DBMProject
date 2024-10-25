@@ -45,7 +45,7 @@ const SearchInput = styled.input`
 
 const OrderSelect = styled.select`
     font-family: 'Courier New';
-    width: 7%; /* Match width with SearchInput */
+    width: 9%; /* Match width with SearchInput */
     padding: 10px;
     font-size: 16px;
     border: 1px solid #ccc;
@@ -132,8 +132,13 @@ const MediaPage: React.FC<MediaPageProps> = ({mediaType}): React.JSX.Element => 
                     value={order} 
                     onChange={(e) => setOrder(e.target.value)}
                 >
+                    {/* NOTE: what is placed in the value tag here is what goes into the sql query after ORDER
+                    thus, specify the exact column name to order and append (space) desc if nessessary */}
                     <OrderOption value="title">title</OrderOption>
-                    <OrderOption value="release_date">release</OrderOption>
+                    <OrderOption value="rating desc">rating(high)</OrderOption>
+                    <OrderOption value="rating">rating(low)</OrderOption>
+                    <OrderOption value="release_date desc">release(new)</OrderOption>
+                    <OrderOption value="release_date">release(old)</OrderOption>
                 </OrderSelect>
             </HeaderContainer>
             {/* Media Area*/}
