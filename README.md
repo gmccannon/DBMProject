@@ -5,7 +5,7 @@ Node, React, SQLite, Express, Flask, Scikit-Learn
 
 ## To-do list
 ### Part 2
-- [ ] Create a global sql sequence
+- [ ] Create a sequence for media and reviews
 - [ ] QoL
   - [ ] Pagination for media and reviews
   - [ ] API to fetch and add more data
