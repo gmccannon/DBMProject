@@ -5,9 +5,12 @@ Node, React, SQLite, Express, Flask, Scikit-Learn
 
 ## To-do list
 ### Part 2
+- [ ] Clean up code base
+  - [ ] Move external component functions to a server actions file, and disambiguate the names
+  - [ ] Move CSS code
 - [ ] Create a sequence for media and reviews
 - [ ] QoL
-  - [ ] Pagination for media and reviews
+  - [x] Pagination for media and reviews
   - [ ] API to fetch and add more data
 - [ ] Users Page
   - [ ] Design UI/UX for profile page
