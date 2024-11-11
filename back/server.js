@@ -267,7 +267,6 @@ app.get('/user_review', (req, res) => {
  * @access  Public
  */
 app.get('/user_favorite', (req, res) => {
-    // TODO return ture if the user favorited the media
     try {
         const mediaID = req.query.mediaID.toLocaleLowerCase() || '';
         const userID = req.query.userID.toLocaleLowerCase() || '';
@@ -298,9 +297,13 @@ app.get('/user_favorite', (req, res) => {
  */
 app.post('/add_favorite', (req, res) => {
     try {
-        const mediaID = req.body.mediaID.toLowerCase() || '';
-        const userID = req.body.userID.toLowerCase() || '';
+        const mediaID = req.body.mediaID || '';
+        const userID = req.body.userID || '';
         const columnName = 'fav_' + req.body.mediaType.toLowerCase().slice(0, -1) + '_id';
+
+        console.log("Received mediaID:", mediaID);
+        console.log("Received userID:", userID);
+        console.log("Column Name:", columnName);
 
         const validColumns = ['fav_movie_id', 'fav_show_id', 'fav_book_id', 'fav_game_id'];
         if (!validColumns.includes(columnName)) {
@@ -330,7 +333,7 @@ app.post('/add_favorite', (req, res) => {
  */
 app.post('/remove_favorite', (req, res) => {
     try {
-        const userID = req.body.userID.toLowerCase() || '';
+        const userID = req.body.userID || '';
         const columnName = 'fav_' + req.body.mediaType.toLowerCase().slice(0, -1) + '_id';
 
         console.log("Received userID:", userID);

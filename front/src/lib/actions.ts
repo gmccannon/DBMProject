@@ -72,6 +72,33 @@ export const fetchIfFavorited = async (userID: number, mediaNumber: string, medi
   return response.data;
 };
 
+// function to see if the user has already favorited based on the media type, media ID, and user ID
+export const addFavorite = async (userID: number, mediaNumber: string, mediaType: string): Promise<void> => {
+  const response: AxiosResponse = await axios.post('http://localhost:3001/add_favorite', {
+    userID: userID,
+    mediaID: mediaNumber,
+    mediaType: mediaType,
+  });
+
+  if (!response) {
+    throw new Error('Failed to check review status');
+  }
+};
+
+// function to delete a review from the database
+export const removeFavorite = async (userID: number, mediaType: string): Promise<void> => {
+  // access the database endpoint
+  const response: AxiosResponse = await axios.post(`http://localhost:3001/remove_favorite`, {
+      userID: userID,
+      mediaType: mediaType,
+  });
+
+  // handle response error
+  if (!response) {
+      throw new Error('Failed to delete review');
+  }
+};
+
 // Function to fetch media card data based on search query, type, and order
 export const fetchMediaCardData = async (query: string, table: string, order: string): Promise<Media[]> => {
     // access the database endpoint

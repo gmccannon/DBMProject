@@ -6,7 +6,7 @@ import axios, { AxiosResponse } from 'axios';
 import Rating from '@mui/material/Rating';
 import UploadReviewForm from '../Components/UploadReviewForm';
 import { Pagination } from '@mui/material';
-import { fetchIfFavorited, fetchIfReviewed, fetchMediaData, fetchMediaReviewData } from '../lib/actions';
+import { addFavorite, removeFavorite, fetchIfFavorited, fetchIfReviewed, fetchMediaData, fetchMediaReviewData } from '../lib/actions';
 
 const Container = styled.div`
   display: flex;
@@ -90,6 +90,19 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
       }
     }
   }, [mediaNumber, mediaType, userID, showForm, alreadyFavorited]);
+
+  const handleFavoriteClick = async () => {
+    if (userID && mediaNumber) {
+      if (alreadyFavorited) {
+        await removeFavorite(userID, mediaType);
+        setAlreadyFavorited(false);
+      }
+      else {
+        await addFavorite(userID, mediaNumber, mediaType);
+        setAlreadyFavorited(true);
+      }
+    }
+  }
 
   // function to toggle the visibility of the form
   const handleShowForm = () => {
@@ -198,6 +211,7 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
 
         {/* Right Column: Genre, Creator, Release Date */}
         <RightColumn>
+          <button onClick={handleFavoriteClick}>{alreadyFavorited && <h3>Unfavorite</h3> || <h3>Favorite</h3>}</button>
           {media && <Info>Title: {media.title}</Info>}
           {media && <Info>Creator: {media.maker}</Info>}
           {media?.release_date && (
@@ -214,7 +228,7 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
       </Container>
     </div>
 
-    <h1 style={{ fontFamily: 'Courier New', textAlign: 'center', fontWeight: 100}}>reviews {alreadyFavorited.toString()}</h1>
+    <h1 style={{ fontFamily: 'Courier New', textAlign: 'center', fontWeight: 100}}>reviews</h1>
 
     {/* Open review form prompt */}
     {!userID &&
