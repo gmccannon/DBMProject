@@ -13,6 +13,7 @@ interface MediaReview {
     userID: string;
     title: string;
     username: string;
+    posted_on: string;
 }
 
 interface User {

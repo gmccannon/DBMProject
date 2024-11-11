@@ -11,11 +11,13 @@ const UserCard = ({ user }: { user: User }) => {
     };
 
     return (
-        <div>
-            <h1>{user.username}</h1>
-            <button onClick={() => handleNavToUser(user.id)}>
-                {user.id}
-            </button>
+        <div onClick={() => handleNavToUser(user.id)}>
+            <hr style={{ width: '60%', margin: '0 auto', border: '.5px solid #000' }} />
+            <div style={{ paddingLeft: '25%', maxWidth: '50%', wordWrap: 'break-word' }}>
+                <h3 style={{ fontFamily: 'Courier New', fontWeight: 500 }}>{user.username}</h3>
+                <h2 style={{ fontFamily: 'Courier New', fontWeight: 800 }}>{user.bio}</h2>
+                <h4 style={{ fontFamily: 'Courier New', fontWeight: 600 }}>{user.joined_on}</h4>
+            </div>         
         </div>
     )
 }
