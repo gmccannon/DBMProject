@@ -15,7 +15,6 @@ Node, React, SQLite, Express, Flask, Scikit-Learn
   - [ ] Design UI/UX for profile page
   - [ ] Design UI/UX for users page
   - [x] Add a way to add favorites
-  - [ ] Add a way to view other users favorites
   - [ ] Add a way to view other users activity
 - [ ] Recommendation system
   - [ ] Collect data for initial matrix
