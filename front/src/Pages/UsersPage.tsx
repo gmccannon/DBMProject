@@ -2,6 +2,16 @@ import React, { useContext, useEffect, useState } from 'react'
 import { getUsers } from '../lib/actions';
 import UserCard from '../Components/UserCard';
 import { AuthContext } from '../Components/AuthContext';
+import styled from 'styled-components';
+
+const Title = styled.h1`
+    font-family: 'Courier New';
+    font-size: 32px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+`;
 
 const UsersPage = () => {
     const {userID} = useContext(AuthContext); 
@@ -30,7 +40,7 @@ const UsersPage = () => {
 
     return (
         <div>
-            <h1>Users page</h1>
+            <Title>all users</Title>
             {users && users
             .filter(user => user.id !== userID) // filter out the current user
             .map(user => (

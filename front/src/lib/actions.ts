@@ -55,6 +55,23 @@ export const fetchIfReviewed = async (userID: number, mediaNumber: string, media
     return response.data;
 };
 
+// function to see if the user has already favorited based on the media type, media ID, and user ID
+export const fetchIfFavorited = async (userID: number, mediaNumber: string, mediaType: string): Promise<boolean> => {
+  const response: AxiosResponse = await axios.get('http://localhost:3001/user_favorite', {
+    params: {
+      userID: userID,
+      mediaID: mediaNumber,
+      mediaType: mediaType,
+    }
+  });
+
+  if (!response) {
+    throw new Error('Failed to check review status');
+  }
+
+  return response.data;
+};
+
 // Function to fetch media card data based on search query, type, and order
 export const fetchMediaCardData = async (query: string, table: string, order: string): Promise<Media[]> => {
     // access the database endpoint

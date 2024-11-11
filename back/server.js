@@ -261,6 +261,103 @@ app.get('/user_review', (req, res) => {
     }
 });
 
+/**
+ * @route   GET /user_favorite
+ * @desc    Return if a user has favorited a specific media
+ * @access  Public
+ */
+app.get('/user_favorite', (req, res) => {
+    // TODO return ture if the user favorited the media
+    try {
+        const mediaID = req.query.mediaID.toLocaleLowerCase() || '';
+        const userID = req.query.userID.toLocaleLowerCase() || '';
+        const columnName = 'fav_' + req.query.mediaType.toLowerCase().slice(0, -1) + '_id' || '';
+
+        const validColumns = ['fav_movie_id', 'fav_show_id', 'fav_book_id', 'fav_game_id'];
+        if (!validColumns.includes(columnName)) {
+            return res.status(400).send('Invalid table name');
+        }
+
+        const sql = `SELECT ${columnName}
+                     FROM users
+                     WHERE id = ?`;
+        const result = db.prepare(sql).all(userID);
+
+        const hasFavorited = result.length > 0 && result[0][columnName] == mediaID; // Check if the user has favorited
+        res.json(hasFavorited); // Send back true or false
+    } catch (error) {
+        console.error('Ind Error:', error);
+        res.status(500).send('Error checking for favorite.');
+    }
+});
+
+/**
+ * @route   POST /add_favorite
+ * @desc    Add or update a user favorite
+ * @access  Public
+ */
+app.post('/add_favorite', (req, res) => {
+    try {
+        const mediaID = req.body.mediaID.toLowerCase() || '';
+        const userID = req.body.userID.toLowerCase() || '';
+        const columnName = 'fav_' + req.body.mediaType.toLowerCase().slice(0, -1) + '_id';
+
+        const validColumns = ['fav_movie_id', 'fav_show_id', 'fav_book_id', 'fav_game_id'];
+        if (!validColumns.includes(columnName)) {
+            return res.status(400).send('Invalid media type');
+        }
+
+        const sql = `UPDATE users SET ${columnName} = ? WHERE id = ?`;
+        const result = db.prepare(sql).run(mediaID, userID);
+
+        // Check if the update was successful
+        if (result.changes === 0) {
+            return res.status(500).send('Error: No rows were updated. Please check the user ID and try again.');
+        }
+
+        // Return success
+        res.status(201).json({ message: 'Favorite added/updated successfully' });
+    } catch (error) {
+        console.error('Server Error:', error.message);
+        res.status(500).send('Error adding favorite.');
+    }
+});
+
+/**
+ * @route   POST /remove_favorite
+ * @desc    Remove a user favorite
+ * @access  Public
+ */
+app.post('/remove_favorite', (req, res) => {
+    try {
+        const userID = req.body.userID.toLowerCase() || '';
+        const columnName = 'fav_' + req.body.mediaType.toLowerCase().slice(0, -1) + '_id';
+
+        console.log("Received userID:", userID);
+        console.log("Column Name:", columnName);
+
+        const validColumns = ['fav_movie_id', 'fav_show_id', 'fav_book_id', 'fav_game_id'];
+        if (!validColumns.includes(columnName)) {
+            return res.status(400).send('Invalid media type');
+        }
+
+        const sql = `UPDATE users SET ${columnName} = NULL WHERE id = ?`;
+        const result = db.prepare(sql).run(userID);
+
+        console.log("Database update result:", result);
+
+        // Check if the update was successful
+        if (result.changes === 0) {
+            return res.status(500).send('Error: No rows were updated. Please check the user ID and try again.');
+        }
+
+        // Return success
+        res.status(201).json({ message: 'Favorite removed successfully' });
+    } catch (error) {
+        console.error('Server Error:', error.message);
+        res.status(500).send('Error adding favorite.');
+    }
+});
 
 /**
  * @route   POST /uploadreview
