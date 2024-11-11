@@ -4,7 +4,9 @@ import { Link, useParams } from 'react-router-dom';
 import { AuthContext } from '../Components/AuthContext';
 import axios, { AxiosResponse } from 'axios';
 import Rating from '@mui/material/Rating';
-import UploadReviewForm from '../Components/UploadReviewForm'
+import UploadReviewForm from '../Components/UploadReviewForm';
+import { Pagination } from '@mui/material';
+import { fetchIfReviewed, fetchMediaData, fetchMediaReviewData } from '../lib/actions';
 
 const Container = styled.div`
   display: flex;
@@ -46,7 +48,6 @@ const Image = styled.img`
   max-height: 600px; /* Maximum height */
 `;
 
-
 const Info = styled.h1`
   font-family: 'Courier New';
   font-size: 1.5vw;
@@ -55,60 +56,6 @@ const Info = styled.h1`
   text-align: left; /* Left-align the text in the right column */
 `;
 
-// function to get media from the database based on the specificed mediaType (table) and its specific ID
-const fetchMediaData = async (table: string, mediaNumber: string): Promise<Media> => {
-  // access the database endpoint
-  const response: AxiosResponse = await axios.get('http://localhost:3001/ind', {
-    params: {
-      table: table,
-      search: mediaNumber,
-    }
-  });
-  
-  // handle response error
-  if (!response) {
-    throw new Error('Failed to fetch media');
-  }
-
-  // returns a single Media
-  return await response.data;
-};
-
-// function to get media from the database based on the specificed mediaType (table) and its specific ID
-const fetchMediaReviewData = async (mediaID: string, mediaType: string): Promise<MediaReview[]> => {
-  // access the database endpoint
-  const response: AxiosResponse = await axios.get('http://localhost:3001/review', {
-    params: {
-      mediaID: mediaID,
-      mediaType: mediaType,
-    }
-  });
-  
-  // handle response error
-  if (!response) {
-    throw new Error('Failed to fetch media');
-  }
-
-  // returns a single Media
-  return await response.data;
-};
-
-const fetchIfReviewed = async (userID: number, mediaNumber: string, mediaType: string): Promise<boolean> => {
-  const response: AxiosResponse = await axios.get('http://localhost:3001/user_review', {
-    params: {
-      userID: userID,
-      mediaID: mediaNumber,
-      mediaType: mediaType,
-    }
-  });
-
-  if (!response) {
-    throw new Error('Failed to check review status');
-  }
-
-  return response.data;
-}
-
 const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Element => {
   // grab info for the media number from the URL and the current user ID
   const { mediaNumber } = useParams<string>();
@@ -116,11 +63,20 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
 
   // states
   const [media, setMedia] = useState<Media>();
-  const [mediaReviews, setMediaReviews] = useState<MediaReview[]>();
+  const [mediaReviews, setMediaReviews] = useState<MediaReview[]>([]);
   const [showForm, setShowForm] = useState<Boolean>(false);
   const [alreadyReviewed, setAlreadyReviewed] = useState<boolean>(false);
   const [loading, setLoading] = useState<Boolean>(true);
   const [error, setError] = useState<Error | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Calculate the total number of pages and get the items for the current page
+  const itemsPerPage = 4;
+  const totalPages = Math.ceil(mediaReviews.length / itemsPerPage);
+  const currentReviews = mediaReviews.slice(
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage
+  );
 
   // Fetch media on initial load, and when searchQuery or mediaType (page) changes
   useEffect((): void => {
@@ -187,13 +143,18 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
         if (data) {  // Check if array has any elements
           setMediaReviews(data);    // Set the first item in the array
         } else {
-          setMediaReviews(undefined);  // Handle case where no results are returned
+          setMediaReviews([]);  // Handle case where no results are returned
         }
     } catch (err: unknown) {
         setError(err instanceof Error ? err : new Error('An unknown error occurred'));
     } finally {
         setLoading(false);
     }
+  };
+
+  // Handle page change
+  const handlePageChange = (event: any, value: React.SetStateAction<number>) => {
+    setCurrentPage(value);
   };
 
   // Function to determine image path based on mediaType and mediaNumber
@@ -262,7 +223,14 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
     <div style={{ marginBottom: '30px' }}></div>
 
     {/* Reviews */}
-    {mediaReviews && mediaReviews.map(mediaReview => (
+    {currentReviews?.length > 0 &&<Pagination
+      count={totalPages}
+      page={currentPage}
+      onChange={handlePageChange}
+      shape="rounded"
+      style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px', fontFamily: 'Courier New' }}
+    />}
+    {currentReviews && currentReviews.map(mediaReview => (
       <>
         <hr style={{ width: '60%', margin: '0 auto', border: '.5px solid #000' }} />
         <div style={{ paddingLeft: '25%', maxWidth: '50%', wordWrap: 'break-word' }}>
@@ -273,7 +241,7 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
         </div>
       </>
       ))}
-    {mediaReviews?.length == 0 && <h2 style={{ fontFamily: 'Courier New', textAlign: 'center', fontWeight: 100 }}>no reviews yet</h2>}
+    {currentReviews?.length == 0 && <h2 style={{ fontFamily: 'Courier New', textAlign: 'center', fontWeight: 100 }}>no reviews yet</h2>}
 
     {/* Add padding at bottom of page*/}
     <div style={{ marginBottom: '120px' }}></div>

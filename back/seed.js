@@ -77,7 +77,7 @@ db.exec(`
         text VARCHAR NOT NULL,
         PRIMARY KEY (user_id, media_id), -- Composite primary key to ensure a user can only review a game once
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE, -- Delete reviews if user is deleted
-        FOREIGN KEY (media_id) REFERENCES games(id) ON DELETE CASCADE -- Delete reviews if game is deleted
+        FOREIGN KEY (media_id) REFERENCES games(id) ON DELETE CASCAD E -- Delete reviews if game is deleted
     );
 
     CREATE TABLE movie_reviews (

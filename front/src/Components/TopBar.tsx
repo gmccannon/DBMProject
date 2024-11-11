@@ -38,6 +38,10 @@ const ProfileButton = styled(Button)`
   margin-left: auto; // Push the profile/login button to the right
 `;
 
+const UsersButton = styled(Button)`
+  margin-right: auto; // Push the users button to the left
+`;
+
 // helper function for the button label
 const getButtonLabel = (path: string): string => {
   switch (path) {
@@ -84,9 +88,17 @@ const TopBar: React.FC = () => {
     navigate('/profile');
   };
 
+    // function to navigate to users page
+    const handleUsersClick = (): void => {
+      navigate('/users');
+    };
+
   return (
     <TopBarContainer>
-      {/* All buttons in a single container */}
+      <UsersButton onClick={handleUsersClick}>
+        social
+      </UsersButton>
+      {/* All of the media buttons */}
       <ButtonContainer>
         {paths.map((path: string, index: number) => (
           <Button

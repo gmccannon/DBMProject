@@ -1,45 +1,14 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Rating from '@mui/material/Rating';
 import Button from '@mui/material/Button';
-import axios, { AxiosResponse } from 'axios';
 import { AuthContext } from './AuthContext';
 import { Link, useParams } from 'react-router-dom';
 
-// function to upload review to the database
-const uploadReview = async (endpoint: string, mediaNumber: string, userID: number, rating: number, summary: string, text: string, mediaType: string): Promise<void> => {
-    // access the database endpoint
-    const response: AxiosResponse = await axios.post(`http://localhost:3001/${endpoint}`, {
-        mediaID: mediaNumber,
-        userID: userID,
-        rating: rating,
-        summary: summary,
-        text: text,
-        mediaType: mediaType,
-    });
+import { deleteReview, uploadReview } from '../lib/actions';
 
-    // handle response error
-    if (!response) {
-        throw new Error('Failed to fetch media');
-    }
-};
-
-// function to delete a review from the database
-const deleteReview = async (mediaNumber: string, userID: number, mediaType: string): Promise<void> => {
-    // access the database endpoint
-    const response: AxiosResponse = await axios.post(`http://localhost:3001/delete_review`, {
-        mediaID: mediaNumber,
-        userID: userID,
-        mediaType: mediaType,
-    });
-
-    // handle response error
-    if (!response) {
-        throw new Error('Failed to delete review');
-    }
-};
-
+// Note: endpoint can be uploadreview or editreview
 const UploadReviewForm: React.FC<FormComponentProps> = ({ endpoint, onFormSubmit, mediaType }) => {
     // grab info for the media number from the URL and the current user ID
     const { mediaNumber } = useParams<string>();
@@ -173,7 +142,7 @@ const UploadReviewForm: React.FC<FormComponentProps> = ({ endpoint, onFormSubmit
             </div>
         </Box>
         <p style={{ fontFamily: 'Courier New', textAlign: 'center' }}>
-            {endpoint == "editreview" && <Link to="#" onClick={handleDelete}>or delete your review</Link>}
+            {endpoint === "editreview" && <Link to="#" onClick={handleDelete}>or delete your review</Link>}
             <br />
         </p>
         </>

@@ -391,6 +391,59 @@ app.post('/delete_review', (req, res) => {
     }
 });
 
+/**
+ * @route   GET /get_users
+ * @desc    Retrieve all users and their info
+ * @access  Public
+ */
+app.get('/get_users', (req, res) => {
+    try {
+
+        // construct the query
+        const sql = `SELECT 
+        id, username, bio, joined_on, fav_game_id, fav_book_id, fav_show_id, fav_movie_id, fav_genre_id
+        FROM users`;
+        const users = db.prepare(sql).all();
+
+        // send back database query as json
+        res.setHeader('Content-Type', 'application/json');
+        res.send(users);
+    } catch (error) {
+        console.error('Get users error:', error);
+        res.status(500).send('Error searching for users');
+    }
+});
+
+/**
+ * @route   GET /get_user_by_id
+ * @desc    Retrieve a user by their ID
+ * @access  Public
+ */
+app.get('/get_user_by_id', (req, res) => {
+    try {
+        const { userID } = req.query; // Retrieve userID from req.query
+
+        if (!userID) {
+            return res.status(400).json({ error: "UserID is required" });
+        }
+
+        // construct the query
+        const sql = `SELECT 
+        id, username, bio, joined_on, fav_game_id, fav_book_id, fav_show_id, fav_movie_id, fav_genre_id
+        FROM users
+        WHERE id = ?`;
+        const user = db.prepare(sql).all(userID);
+
+        // send back database query as json
+        res.setHeader('Content-Type', 'application/json');
+        res.json(user[0]);
+    } catch (error) {
+        console.error('Get users error:', error);
+        res.status(500).send('Error searching for users');
+    }
+});
+
+
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
 });

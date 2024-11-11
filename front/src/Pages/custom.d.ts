@@ -14,3 +14,15 @@ interface MediaReview {
     title: string;
     username: string;
 }
+
+interface User {
+    id: number;
+    username: string;
+    bio: number;
+    joined_on: string;
+    fav_game: number;
+    fav_book: number;
+    fav_movie: number;
+    fav_show: number;
+    fav_genre: number;
+}
