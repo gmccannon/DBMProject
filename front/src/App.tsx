@@ -9,6 +9,8 @@ import MediaReviewPage from './Pages/MediaReviewpage';
 import Login from "./Pages/LoginPage";
 import Register from "./Pages/RegisterPage";
 import ProfilePage from './Pages/ProfilePage';
+import UsersPage from './Pages/UsersPage';
+import UserInfoPage from './Pages/UserInfoPage';
 import ProtectedRoute from "./Components/ProtectedRoute";  // used to ensure the user is logged in 
 
 function App() {
@@ -31,6 +33,9 @@ function App() {
               <Route path="/Shows/:mediaNumber" element={<MediaReviewPage mediaType={"Shows"} />} />
               <Route path="/Books/:mediaNumber" element={<MediaReviewPage mediaType={"Books"} />} />
               <Route path="/Games/:mediaNumber" element={<MediaReviewPage mediaType={"Games"} />} />
+
+              <Route path="/users" element={<UsersPage />} />
+              <Route path="/users/:URLUserID" element={<UserInfoPage />} />
 
           </Routes>
       </BrowserRouter>
