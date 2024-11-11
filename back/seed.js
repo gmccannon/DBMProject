@@ -75,9 +75,10 @@ db.exec(`
         rating REAL NOT NULL CHECK (rating BETWEEN 0.5 AND 5), -- Rating must be between 1 and 5
         summary VARCHAR,
         text VARCHAR NOT NULL,
+        posted_on DATE DEFAULT CURRENT_DATE,
         PRIMARY KEY (user_id, media_id), -- Composite primary key to ensure a user can only review a game once
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE, -- Delete reviews if user is deleted
-        FOREIGN KEY (media_id) REFERENCES games(id) ON DELETE CASCAD E -- Delete reviews if game is deleted
+        FOREIGN KEY (media_id) REFERENCES games(id) ON DELETE CASCADE -- Delete reviews if game is deleted
     );
 
     CREATE TABLE movie_reviews (
@@ -86,6 +87,7 @@ db.exec(`
         rating REAL NOT NULL CHECK (rating BETWEEN 0.5 AND 5), -- Rating must be between 1 and 5
         summary VARCHAR,
         text VARCHAR NOT NULL,
+        posted_on DATE DEFAULT CURRENT_DATE,
         PRIMARY KEY (user_id, media_id), -- Composite primary key to ensure a user can only review a movie once
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE, -- Delete reviews if user is deleted
         FOREIGN KEY (media_id) REFERENCES movies(id) ON DELETE CASCADE -- Delete reviews if movie is deleted
@@ -97,6 +99,7 @@ db.exec(`
         rating REAL NOT NULL CHECK (rating BETWEEN 0.5 AND 5.0), -- Rating must be between 0.5 and 5.0
         summary VARCHAR,
         text VARCHAR NOT NULL,
+        posted_on DATE DEFAULT CURRENT_DATE,
         PRIMARY KEY (user_id, media_id), -- Composite primary key to ensure a user can only review a show once
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE, -- Delete reviews if user is deleted
         FOREIGN KEY (media_id) REFERENCES shows(id) ON DELETE CASCADE -- Delete reviews if show is deleted
@@ -108,6 +111,7 @@ db.exec(`
         rating REAL NOT NULL CHECK (rating BETWEEN 0.5 AND 5), -- Rating must be between 1 and 5
         summary VARCHAR,
         text VARCHAR NOT NULL,
+        posted_on DATE DEFAULT CURRENT_DATE,
         PRIMARY KEY (user_id, media_id), -- Composite primary key to ensure a user can only review a book once
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE, -- Delete reviews if user is deleted
         FOREIGN KEY (media_id) REFERENCES books(id) ON DELETE CASCADE -- Delete reviews if book is deleted
@@ -173,16 +177,16 @@ db.exec(`
         ('Dark Souls 3', 'FromSoftware', '2016-03-24', 1, 'PC', true);
 
     INSERT OR REPLACE INTO users
-        (id, username, password)
+        (id, username, password, bio)
     VALUES 
-        (1, 'george1', '123'),
-        (2, 'george2', '123'),
-        (3, 'george3', '123'),
-        (4, 'george4', '123'),
-        (5, 'george5', '123'),
-        (6, 'george6', '123'),
-        (7, 'george7', '123'),
-        (8, 'george8', '123');
+        (1, 'Harambe', '123', 'Tech enthusiast, movie lover.'),
+        (2, 'Guru99', '123', 'Game developer, avid reader.'),
+        (3, 'BookishBri', '123', 'Bookworm with a passion for films.'),
+        (4, 'PixelPioneer', '123', 'Gamer by day, movie buff by night.'),
+        (5, 'ShowSeeker', '123', 'Always exploring new shows and games.'),
+        (6, 'CaptianPicard', '123', 'Music lover, passionate about sci-fi books.'),
+        (7, 'FilmBuff', '123', 'Hobbyist photographer, show fanatic.'),
+        (8, 'NickBosa', '123', 'Game addict, movie critic.');
 
     INSERT OR REPLACE INTO book_reviews
         (user_id, media_id, rating, summary, text)

@@ -234,7 +234,7 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
       <>
         <hr style={{ width: '60%', margin: '0 auto', border: '.5px solid #000' }} />
         <div style={{ paddingLeft: '25%', maxWidth: '50%', wordWrap: 'break-word' }}>
-          <h3 style={{ fontFamily: 'Courier New', fontWeight: 500 }}>posted by {mediaReview.username}</h3>
+          <h3 style={{ fontFamily: 'Courier New', fontWeight: 500 }}>posted by {mediaReview.username} on {mediaReview.posted_on}</h3>
           <Rating value={mediaReview.rating} precision={0.25} readOnly />
           <h2 style={{ fontFamily: 'Courier New', fontWeight: 800 }}>{mediaReview.summary}</h2>
           <h4 style={{ fontFamily: 'Courier New', fontWeight: 600 }}>{mediaReview.text}</h4>

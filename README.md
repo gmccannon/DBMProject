@@ -9,7 +9,8 @@ Node, React, SQLite, Express, Flask, Scikit-Learn
 - [ ] API to fetch and add more data
 - [ ] Misc
   - [x] Pagination for media and reviews
-  - [ ] Add upload dates to reviews
+  - [x] Add upload dates to reviews
+  - [ ] Add navigation where you would expect it
 - [ ] Social System
   - [ ] Design UI/UX for profile page
   - [ ] Design UI/UX for users page

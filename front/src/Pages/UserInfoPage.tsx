@@ -13,7 +13,7 @@ const UserInfoPage = () => {
         }
     }, [URLUserID]);
 
-    // Function to retrieve the user by ID
+    // function to retrieve the user by ID
     const fetchUsers = async (): Promise<void> => {
         try {
             const numURLUserID = Number(URLUserID);
