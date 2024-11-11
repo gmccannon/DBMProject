@@ -6,7 +6,7 @@ import axios, { AxiosResponse } from 'axios';
 import Rating from '@mui/material/Rating';
 import UploadReviewForm from '../Components/UploadReviewForm';
 import { Pagination } from '@mui/material';
-import { fetchIfReviewed, fetchMediaData, fetchMediaReviewData } from '../lib/actions';
+import { addFavorite, removeFavorite, fetchIfFavorited, fetchIfReviewed, fetchMediaData, fetchMediaReviewData } from '../lib/actions';
 
 const Container = styled.div`
   display: flex;
@@ -66,9 +66,10 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
   const [mediaReviews, setMediaReviews] = useState<MediaReview[]>([]);
   const [showForm, setShowForm] = useState<Boolean>(false);
   const [alreadyReviewed, setAlreadyReviewed] = useState<boolean>(false);
+  const [alreadyFavorited, setAlreadyFavorited] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState<Boolean>(true);
   const [error, setError] = useState<Error | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
 
   // Calculate the total number of pages and get the items for the current page
   const itemsPerPage = 4;
@@ -85,9 +86,23 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
       fetchMediaReviews(mediaNumber, mediaType);
       if (userID) {
         checkIfReviewed(userID, mediaNumber, mediaType);
+        checkIfFavorited(userID, mediaNumber, mediaType);
       }
     }
-  }, [mediaNumber, mediaType, userID, showForm]);
+  }, [mediaNumber, mediaType, userID, showForm, alreadyFavorited]);
+
+  const handleFavoriteClick = async () => {
+    if (userID && mediaNumber) {
+      if (alreadyFavorited) {
+        await removeFavorite(userID, mediaType);
+        setAlreadyFavorited(false);
+      }
+      else {
+        await addFavorite(userID, mediaNumber, mediaType);
+        setAlreadyFavorited(true);
+      }
+    }
+  }
 
   // function to toggle the visibility of the form
   const handleShowForm = () => {
@@ -112,7 +127,23 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
     } finally {
         setLoading(false);
     }
-  }
+  };
+
+  // function to see if the user has already favorited the media, then update the state
+  const checkIfFavorited = async (userID: number, mediaNumber: string, mediaType: string): Promise<void> => {
+    try {
+      const alreadyFavorited: boolean = await fetchIfFavorited(userID, mediaNumber, mediaType);
+      if (alreadyFavorited) {
+        setAlreadyFavorited(true);
+      } else {
+        setAlreadyFavorited(false);
+      }
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err : new Error('An unknown error occurred'));
+    } finally {
+        setLoading(false);
+    }
+  };
 
   // function to update states based on info from the database
   // queried with mediaNumber (from the URL), and the mediaType
@@ -180,6 +211,7 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
 
         {/* Right Column: Genre, Creator, Release Date */}
         <RightColumn>
+          <button onClick={handleFavoriteClick}>{alreadyFavorited && <h3>Unfavorite</h3> || <h3>Favorite</h3>}</button>
           {media && <Info>Title: {media.title}</Info>}
           {media && <Info>Creator: {media.maker}</Info>}
           {media?.release_date && (

@@ -95,7 +95,11 @@ const TopBar: React.FC = () => {
 
   return (
     <TopBarContainer>
-      <UsersButton onClick={handleUsersClick}>
+      <UsersButton onClick={handleUsersClick}
+        style={{
+          textDecoration: activetab === '/users' ? 'underline' : 'none',
+          textDecorationColor: activetab === '/users' ? 'rgb(173, 216, 230)' : 'none', // Light blue underline for active tab
+        }}>
         social
       </UsersButton>
       {/* All of the media buttons */}

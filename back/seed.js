@@ -177,16 +177,16 @@ db.exec(`
         ('Dark Souls 3', 'FromSoftware', '2016-03-24', 1, 'PC', true);
 
     INSERT OR REPLACE INTO users
-        (id, username, password, bio)
+        (id, username, password, bio, fav_movie_id)
     VALUES 
-        (1, 'Harambe', '123', 'Tech enthusiast, movie lover.'),
-        (2, 'Guru99', '123', 'Game developer, avid reader.'),
-        (3, 'BookishBri', '123', 'Bookworm with a passion for films.'),
-        (4, 'PixelPioneer', '123', 'Gamer by day, movie buff by night.'),
-        (5, 'ShowSeeker', '123', 'Always exploring new shows and games.'),
-        (6, 'CaptianPicard', '123', 'Music lover, passionate about sci-fi books.'),
-        (7, 'FilmBuff', '123', 'Hobbyist photographer, show fanatic.'),
-        (8, 'NickBosa', '123', 'Game addict, movie critic.');
+        (1, 'Harambe', '123', 'Tech enthusiast, movie lover.', 2),
+        (2, 'Guru99', '123', 'Game developer, avid reader.', 2),
+        (3, 'BookishBri', '123', 'Bookworm with a passion for films.', 3),
+        (4, 'PixelPioneer', '123', 'Gamer by day, movie buff by night.', 4),
+        (5, 'ShowSeeker', '123', 'Always exploring new shows and games.', 5),
+        (6, 'CaptianPicard', '123', 'Music lover, passionate about sci-fi books.', 6),
+        (7, 'FilmBuff', '123', 'Hobbyist photographer, show fanatic.', 7),
+        (8, 'NickBosa', '123', 'Game addict, movie critic.', 8);
 
     INSERT OR REPLACE INTO book_reviews
         (user_id, media_id, rating, summary, text)
