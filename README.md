@@ -14,7 +14,7 @@ Node, React, SQLite, Express, Flask, Scikit-Learn
 - [ ] Social System
   - [ ] Design UI/UX for profile page
   - [ ] Design UI/UX for users page
-  - [ ] Add a way to add favorites
+  - [x] Add a way to add favorites
   - [ ] Add a way to view other users favorites
   - [ ] Add a way to view other users activity
 - [ ] Recommendation system
