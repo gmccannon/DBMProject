@@ -514,11 +514,6 @@ app.get('/get_users', (req, res) => {
     }
 });
 
-/**
- * @route   GET /get_user_by_id
- * @desc    Retrieve a user by their ID
- * @access  Public
- */
 app.get('/get_user_by_id', (req, res) => {
     try {
         const { userID } = req.query; // Retrieve userID from req.query
@@ -527,22 +522,106 @@ app.get('/get_user_by_id', (req, res) => {
             return res.status(400).json({ error: "UserID is required" });
         }
 
-        // construct the query
-        const sql = `SELECT 
-        id, username, bio, joined_on, fav_game_id, fav_book_id, fav_show_id, fav_movie_id, fav_genre_id
-        FROM users
-        WHERE id = ?`;
-        const user = db.prepare(sql).all(userID);
+        // Construct the query
+        const sql = `
+SELECT 
+    u.id AS user_id, 
+    u.username, 
+    u.bio, 
+    u.joined_on, 
+    games.title AS fav_game_title,
+    books.title AS fav_book_title,
+    shows.title AS fav_show_title,
+    movies.title AS fav_movie_title,
+    u.fav_genre_id,
+    r.media_type,
+    r.media_id,
+    r.rating,
+    r.summary,
+    r.text,
+    r.posted_on,
+    CASE
+        WHEN r.media_type = 'game' THEN g.title
+        WHEN r.media_type = 'movie' THEN m.title
+        WHEN r.media_type = 'show' THEN s.title
+        WHEN r.media_type = 'book' THEN b.title
+        ELSE NULL
+    END AS media_title
+FROM users u
+LEFT JOIN games ON u.fav_game_id = games.id
+LEFT JOIN books ON u.fav_book_id = books.id
+LEFT JOIN shows ON u.fav_show_id = shows.id
+LEFT JOIN movies ON u.fav_movie_id = movies.id
+LEFT JOIN (
+    SELECT DISTINCT user_id, media_type, media_id, rating, summary, text, posted_on 
+    FROM (
+        SELECT user_id, 'game' AS media_type, media_id, rating, summary, text, posted_on 
+        FROM game_reviews
+        UNION ALL
+        SELECT user_id, 'movie' AS media_type, media_id, rating, summary, text, posted_on 
+        FROM movie_reviews
+        UNION ALL
+        SELECT user_id, 'show' AS media_type, media_id, rating, summary, text, posted_on 
+        FROM show_reviews
+        UNION ALL
+        SELECT user_id, 'book' AS media_type, media_id, rating, summary, text, posted_on 
+        FROM book_reviews
+    ) r_reviews
+) r ON u.id = r.user_id
+LEFT JOIN games g ON r.media_type = 'game' AND r.media_id = g.id
+LEFT JOIN movies m ON r.media_type = 'movie' AND r.media_id = m.id
+LEFT JOIN shows s ON r.media_type = 'show' AND r.media_id = s.id
+LEFT JOIN books b ON r.media_type = 'book' AND r.media_id = b.id
+WHERE u.id = ?
+ORDER BY r.posted_on DESC
 
-        // send back database query as json
+        `;
+
+        const userResults = db.prepare(sql).all(userID);
+
+        if (userResults.length === 0) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Create the user object
+        const user = {
+            id: userResults[0].user_id,
+            username: userResults[0].username,
+            bio: userResults[0].bio,
+            joined_on: userResults[0].joined_on,
+            fav_game_title: userResults[0].fav_game_title,
+            fav_book_title: userResults[0].fav_book_title,
+            fav_show_title: userResults[0].fav_show_title,
+            fav_movie_title: userResults[0].fav_movie_title,
+            fav_genre_id: userResults[0].fav_genre_id,
+            reviews: []
+        };
+
+        // Group reviews into an array for the user
+        userResults.forEach((row) => {
+            if (row.media_type && row.media_title) {
+                user.reviews.push({
+                    media_type: row.media_type,
+                    media_title: row.media_title,
+                    rating: row.rating,
+                    summary: row.summary,
+                    text: row.text,
+                    posted_on: row.posted_on
+                });
+            }
+        });
+
+        // Send the user data as a response
         res.setHeader('Content-Type', 'application/json');
-        res.json(user[0]);
+        res.json(user);
+
+        console.log(user)
+
     } catch (error) {
         console.error('Get users error:', error);
         res.status(500).send('Error searching for users');
     }
 });
-
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
