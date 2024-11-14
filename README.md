@@ -5,8 +5,6 @@ Node, React, SQLite, Express, Flask, Scikit-Learn
 
 ## To-do list
 ### Part 2
-- [ ] Create a sequence for media and reviews
-- [ ] API to fetch and add more data
 - [ ] Misc
   - [x] Pagination for media and reviews
   - [x] Add upload dates to reviews
@@ -18,6 +16,7 @@ Node, React, SQLite, Express, Flask, Scikit-Learn
   - [ ] Style profile page
   - [ ] Style users page
 - [ ] Recommendation system
+  - [ ] API to fetch and add more data
   - [ ] Collect data for initial matrix
   - [ ] Flask server to interact with db
   - [ ] Calculate recommendations
