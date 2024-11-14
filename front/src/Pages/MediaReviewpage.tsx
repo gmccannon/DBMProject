@@ -2,11 +2,13 @@ import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link, useParams } from 'react-router-dom';
 import { AuthContext } from '../Components/AuthContext';
-import axios, { AxiosResponse } from 'axios';
 import Rating from '@mui/material/Rating';
 import UploadReviewForm from '../Components/UploadReviewForm';
-import { Pagination } from '@mui/material';
+import { Button, Pagination } from '@mui/material';
 import { addFavorite, removeFavorite, fetchIfFavorited, fetchIfReviewed, fetchMediaData, fetchMediaReviewData } from '../lib/actions';
+
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import HeartBrokenIcon from '@mui/icons-material/HeartBroken';
 
 const Container = styled.div`
   display: flex;
@@ -91,6 +93,7 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
     }
   }, [mediaNumber, mediaType, userID, showForm, alreadyFavorited]);
 
+  // function to handle a favorite button click (either add or remove favorite based on original state)
   const handleFavoriteClick = async () => {
     if (userID && mediaNumber) {
       if (alreadyFavorited) {
@@ -211,7 +214,20 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
 
         {/* Right Column: Genre, Creator, Release Date */}
         <RightColumn>
-          <button onClick={handleFavoriteClick}>{alreadyFavorited && <h3>Unfavorite</h3> || <h3>Favorite</h3>}</button>
+          {alreadyFavorited && <h4 style={{ fontFamily: 'Courier New', color: 'black', textAlign: 'center', marginBottom: -2 }}>you favorited this item</h4>}
+          <Button variant="text" onClick={handleFavoriteClick} sx={{ color: 'black', fontFamily: 'Courier New' }}>
+            {alreadyFavorited ? (
+              <>
+                <HeartBrokenIcon sx={{ color: 'red' }} />
+                <h3 style={{ fontFamily: 'Courier New', color: 'black', marginLeft: '8px', textTransform: 'lowercase' }}>Unfavorite</h3>
+              </>
+            ) : (
+              <>
+                <FavoriteIcon sx={{ color: 'red' }} />
+                <h3 style={{ fontFamily: 'Courier New', color: 'black', marginLeft: '8px', textTransform: 'lowercase' }}>Favorite</h3>
+              </>
+            )}
+          </Button>
           {media && <Info>Title: {media.title}</Info>}
           {media && <Info>Creator: {media.maker}</Info>}
           {media?.release_date && (
