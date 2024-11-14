@@ -12,10 +12,11 @@ Node, React, SQLite, Express, Flask, Scikit-Learn
   - [x] Add upload dates to reviews
   - [ ] Add navigation where you would expect it
 - [ ] Social System
-  - [ ] Design UI/UX for profile page
-  - [ ] Design UI/UX for users page
   - [x] Add a way to add favorites
-  - [ ] Add a way to view other users activity
+  - [x] Add a way to view other users activity
+  - [ ] Add search bar for users
+  - [ ] Style profile page
+  - [ ] Style users page
 - [ ] Recommendation system
   - [ ] Collect data for initial matrix
   - [ ] Flask server to interact with db
