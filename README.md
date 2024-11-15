@@ -13,8 +13,8 @@ Node, React, SQLite, Express, Flask, Scikit-Learn
   - [x] Add a way to add favorites
   - [x] Add a way to view other users activity
   - [ ] Add search bar for users
-  - [ ] Style profile page
-  - [ ] Style users page
+  - [x] Style profile page
+  - [x] Style users page
 - [ ] Recommendation system
   - [ ] API to fetch and add more data
   - [ ] Collect data for initial matrix
