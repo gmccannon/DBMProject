@@ -13,9 +13,16 @@ const Title = styled.h1`
     text-align: center;
 `;
 
+// Container to hold both search input and drop-down
+const SearchContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+`;
+
+// Styled search input
 const SearchInput = styled.input`
-    display: block;
-    margin: 0 auto 20px auto;
     padding: 10px;
     width: 50%;
     font-size: 16px;
@@ -23,11 +30,23 @@ const SearchInput = styled.input`
     border-radius: 4px;
 `;
 
+// Styled drop-down select
+const SelectCategory = styled.select`
+    margin-left: 10px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    cursor: pointer;
+`;
+
 const UsersPage = () => {
     const { userID } = useContext(AuthContext);
 
     const [users, setUsers] = useState<User[] | null>(null);
     const [searchTerm, setSearchTerm] = useState<string>('');
+    const [searchCategory, setSearchCategory] = useState<string>('name'); // Default category
 
     // Fetch users on initial load
     useEffect((): void => {
@@ -54,21 +73,41 @@ const UsersPage = () => {
         setSearchTerm(e.target.value);
     };
 
-    // Filter users based on search term
-    const filteredUsers = users?.filter(user =>
-        user.id !== userID &&
-        user.username.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    // Handle category selection changes
+    const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSearchCategory(e.target.value);
+    };
+
+    // Filter users based on search term and category (Functionality to be implemented)
+    const filteredUsers = users?.filter(user => {
+        if (user.id === userID) return false; // Exclude current user
+
+        // Placeholder for category-based filtering
+        // Example (to be implemented):
+        // if (searchCategory === 'email') {
+        //     return user.email.toLowerCase().includes(searchTerm.toLowerCase());
+        // }
+
+        // Default to username search
+        return user.username.toLowerCase().includes(searchTerm.toLowerCase());
+    });
 
     return (
         <div>
             <Title>All Users</Title>
-            <SearchInput
-                type="text"
-                placeholder="Search users by username..."
-                value={searchTerm}
-                onChange={handleSearchChange}
-            />
+            <SearchContainer>
+                <SearchInput
+                    type="text"
+                    placeholder="Search bar..."
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                />
+                <SelectCategory value={searchCategory} onChange={handleCategoryChange}>
+                    <option value="username">name</option>
+                    <option value="email">reviewed</option>
+                    {/* Add more categories as needed */}
+                </SelectCategory>
+            </SearchContainer>
             {filteredUsers && filteredUsers.length > 0 ? (
                 filteredUsers.map(user => (
                     <UserCard user={user} key={user.id} />
