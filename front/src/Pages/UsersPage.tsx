@@ -19,6 +19,7 @@ const SearchContainer = styled.div`
     justify-content: center;
     align-items: center;
     margin-bottom: 20px;
+    flex-wrap: wrap; /* Ensures responsiveness on smaller screens */
 `;
 
 // Styled search input
@@ -28,6 +29,11 @@ const SearchInput = styled.input`
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 4px;
+
+    @media (max-width: 600px) {
+        width: 100%;
+        margin-bottom: 10px;
+    }
 `;
 
 // Styled drop-down select
@@ -39,6 +45,11 @@ const SelectCategory = styled.select`
     border-radius: 4px;
     background-color: #fff;
     cursor: pointer;
+
+    @media (max-width: 600px) {
+        margin-left: 0;
+        width: 100%;
+    }
 `;
 
 const UsersPage = () => {
@@ -46,7 +57,7 @@ const UsersPage = () => {
 
     const [users, setUsers] = useState<User[] | null>(null);
     const [searchTerm, setSearchTerm] = useState<string>('');
-    const [searchCategory, setSearchCategory] = useState<string>('name'); // Default category
+    const [searchCategory, setSearchCategory] = useState<string>('username'); // Default category
 
     // Fetch users on initial load
     useEffect((): void => {
@@ -56,9 +67,9 @@ const UsersPage = () => {
     // Function to retrieve all of the users
     const fetchUsers = async (): Promise<void> => {
         try {
-            const users = await getUsers();
-            if (users) {
-                setUsers(users);
+            const fetchedUsers = await getUsers();
+            if (fetchedUsers) {
+                setUsers(fetchedUsers);
             } else {
                 setUsers(null);
             }
@@ -76,20 +87,44 @@ const UsersPage = () => {
     // Handle category selection changes
     const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSearchCategory(e.target.value);
+        setSearchTerm(''); // Optional: Clear search term when category changes
     };
 
-    // Filter users based on search term and category (Functionality to be implemented)
+    // Update placeholder based on selected category
+    const getPlaceholder = (): string => {
+        switch (searchCategory) {
+            case 'username':
+                return "Search users by username...";
+            case 'bio':
+                return "Search users by bio...";
+            case 'reviewed':
+                return "Search users by reviews..."; // Placeholder for future functionality
+            default:
+                return "Search users...";
+        }
+    };
+
+    // Filter users based on search term and category
     const filteredUsers = users?.filter(user => {
         if (user.id === userID) return false; // Exclude current user
 
-        // Placeholder for category-based filtering
-        // Example (to be implemented):
-        // if (searchCategory === 'email') {
-        //     return user.email.toLowerCase().includes(searchTerm.toLowerCase());
-        // }
+        if (!searchTerm.trim()) return true; // If search term is empty, include all users
 
-        // Default to username search
-        return user.username.toLowerCase().includes(searchTerm.toLowerCase());
+        const lowerCaseSearchTerm = searchTerm.toLowerCase();
+
+        switch (searchCategory) {
+            case 'username':
+                return user.username.toLowerCase().includes(lowerCaseSearchTerm);
+            case 'bio':
+                return user.bio && user.bio.toString().toLowerCase().includes(lowerCaseSearchTerm);
+            case 'reviewed':
+                // Placeholder: Implement review-based search in the future
+                // Example:
+                // return user.reviews.some(review => review.content.toLowerCase().includes(lowerCaseSearchTerm));
+                return true; // Temporarily include all users
+            default:
+                return user.username.toLowerCase().includes(lowerCaseSearchTerm);
+        }
     });
 
     return (
@@ -98,13 +133,14 @@ const UsersPage = () => {
             <SearchContainer>
                 <SearchInput
                     type="text"
-                    placeholder="Search bar..."
+                    placeholder={getPlaceholder()}
                     value={searchTerm}
                     onChange={handleSearchChange}
                 />
                 <SelectCategory value={searchCategory} onChange={handleCategoryChange}>
-                    <option value="username">name</option>
-                    <option value="email">reviewed</option>
+                    <option value="username">Username</option>
+                    <option value="bio">Bio</option>
+                    <option value="reviewed">Reviewed</option>
                     {/* Add more categories as needed */}
                 </SelectCategory>
             </SearchContainer>
