@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react';
 import { getUsers } from '../lib/actions';
 import UserCard from '../Components/UserCard';
 import { AuthContext } from '../Components/AuthContext';
@@ -13,41 +13,73 @@ const Title = styled.h1`
     text-align: center;
 `;
 
-const UsersPage = () => {
-    const {userID} = useContext(AuthContext); 
-    
-    const [users, setUsers] = useState<User[] | null>(null);
+const SearchInput = styled.input`
+    display: block;
+    margin: 0 auto 20px auto;
+    padding: 10px;
+    width: 50%;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+`;
 
-    // Fetch media on initial load, and if users change
+const UsersPage = () => {
+    const { userID } = useContext(AuthContext);
+
+    const [users, setUsers] = useState<User[] | null>(null);
+    const [searchTerm, setSearchTerm] = useState<string>('');
+
+    // Fetch users on initial load
     useEffect((): void => {
         fetchUsers();
-    }, [users]);
+    }, []); // Empty dependency array to prevent infinite loop
 
-    // function to retrieve all of the users
+    // Function to retrieve all of the users
     const fetchUsers = async (): Promise<void> => {
         try {
             const users = await getUsers();
-            if (users) { 
+            if (users) {
                 setUsers(users);
             } else {
                 setUsers(null);
             }
-            } 
-        catch (err: unknown) {
-            
+        } catch (err: unknown) {
+            console.error("Error fetching users:", err);
+            setUsers(null);
         }
     };
 
+    // Handle search input changes
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchTerm(e.target.value);
+    };
+
+    // Filter users based on search term
+    const filteredUsers = users?.filter(user =>
+        user.id !== userID &&
+        user.username.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
         <div>
-            <Title>all users</Title>
-            {users && users
-            .filter(user => user.id !== userID) // filter out the current user
-            .map(user => (
-                <UserCard user={user} key={user.id} />
-            ))}
+            <Title>All Users</Title>
+            <SearchInput
+                type="text"
+                placeholder="Search users by username..."
+                value={searchTerm}
+                onChange={handleSearchChange}
+            />
+            {filteredUsers && filteredUsers.length > 0 ? (
+                filteredUsers.map(user => (
+                    <UserCard user={user} key={user.id} />
+                ))
+            ) : (
+                <p style={{ textAlign: 'center', fontFamily: 'Courier New' }}>
+                    No users found.
+                </p>
+            )}
         </div>
-    )
+    );
 }
 
-export default UsersPage
+export default UsersPage;
