@@ -22,4 +22,4 @@ Node, React, SQLite, Express, Flask, Scikit-Learn
   - [ ] Calculate recommendations
   - [ ] Add recommendations to profile page
   - [ ] Add "users also liked" to media page
-  - [ ] Suggest other users
+  - [ ] Suggest other users with similar interests
