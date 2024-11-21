@@ -9,10 +9,10 @@ Node, React, SQLite, Express, Flask, Scikit-Learn
   - [x] Pagination for media and reviews
   - [x] Add upload dates to reviews
   - [ ] Add navigation where you would expect it
-- [ ] Social System
+- [x] Social System
   - [x] Add a way to add favorites
   - [x] Add a way to view other users activity
-  - [ ] Add search bar for users
+  - [x] Add search bar for users
   - [x] Style profile page
   - [x] Style users page
 - [ ] Recommendation system
@@ -22,4 +22,4 @@ Node, React, SQLite, Express, Flask, Scikit-Learn
   - [ ] Calculate recommendations
   - [ ] Add recommendations to profile page
   - [ ] Add "users also liked" to media page
-  - [ ] Suggest other users
+  - [ ] Suggest other users with similar interests
