@@ -2,6 +2,8 @@ import express, { raw } from 'express';
 import cors from 'cors';
 import Database from 'better-sqlite3';
 import jwt from 'jsonwebtoken';
+import recommendationEngine from './recommendationEngine.js';
+
 
 const app = express();
 const db = new Database('database.db');
@@ -53,6 +55,30 @@ const authenticateToken = (req, res, next) => {
         next();
     });
 };
+
+
+/**
+ * @route   GET /recommendations
+ * @desc    Get recommended media items for the authenticated user
+ * @access  Protected
+ */
+app.get('/recommendations', authenticateToken, (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        // Generate recommendations
+        const recommendedMedia = recommendationEngine.getRecommendationsForUser(userId, 10);
+
+        if (recommendedMedia.length === 0) {
+            return res.status(200).json({ message: 'No recommendations available at this time.' });
+        }
+
+        res.json({ recommendations: recommendedMedia });
+    } catch (error) {
+        console.error('Recommendations Error:', error);
+        res.status(500).json({ message: 'Error generating recommendations.' });
+    }
+});
 
 // === Routes ===
 /**
