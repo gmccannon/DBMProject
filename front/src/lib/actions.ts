@@ -186,3 +186,18 @@ export const getUserByID = async (userID: number): Promise<User> => {
       throw error;
   }
 };
+
+export const getRecommendations = async (token: string): Promise<Media[]> => {
+    const response = await axios.get('http://localhost:3001/recommendations', {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    if (!response.data || !response.data.recommendations) {
+        throw new Error('Failed to fetch recommendations');
+    }
+    return response.data.recommendations;
+};
+
+
+

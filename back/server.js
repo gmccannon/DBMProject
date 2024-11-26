@@ -70,9 +70,10 @@ app.get('/recommendations', authenticateToken, (req, res) => {
         const recommendedMedia = recommendationEngine.getRecommendationsForUser(userId, 10);
 
         if (recommendedMedia.length === 0) {
+            console.log("No rec");
             return res.status(200).json({ message: 'No recommendations available at this time.' });
         }
-
+        console.log("Recommendations" + recommendedMedia);
         res.json({ recommendations: recommendedMedia });
     } catch (error) {
         console.error('Recommendations Error:', error);
@@ -173,9 +174,6 @@ app.get('/getmedia', (req, res) => {
         // query the database, (use wildcard so that an empty parameter returns all)
         const mediaItems = db.prepare(sql).all(`%${searchQuery}%`, `%${searchQuery}%`);
 
-        // debug log
-        console.log(mediaItems)
-
         // send back database query as json 
         res.setHeader('Content-Type', 'application/json');
         res.send(JSON.stringify(mediaItems));
@@ -244,9 +242,6 @@ app.get('/review', (req, res) => {
                      WHERE media_id = ?
                      ORDER BY rating DESC`;
         const mediaItem = db.prepare(sql).all(mediaID);
-
-        // debug log
-        console.log(mediaItem)
 
         // send back database query as json
         // return one, more, or no items
@@ -326,10 +321,6 @@ app.post('/add_favorite', (req, res) => {
         const mediaID = req.body.mediaID || '';
         const userID = req.body.userID || '';
         const columnName = 'fav_' + req.body.mediaType.toLowerCase().slice(0, -1) + '_id';
-
-        console.log("Received mediaID:", mediaID);
-        console.log("Received userID:", userID);
-        console.log("Column Name:", columnName);
 
         const validColumns = ['fav_movie_id', 'fav_show_id', 'fav_book_id', 'fav_game_id'];
         if (!validColumns.includes(columnName)) {
@@ -640,8 +631,6 @@ ORDER BY r.posted_on DESC
         // Send the user data as a response
         res.setHeader('Content-Type', 'application/json');
         res.json(user);
-
-        console.log(user)
 
     } catch (error) {
         console.error('Get users error:', error);
