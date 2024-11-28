@@ -73,7 +73,6 @@ app.get('/recommendations', authenticateToken, (req, res) => {
             console.log("No rec");
             return res.status(200).json({ message: 'No recommendations available at this time.' });
         }
-        console.log("Recommendations" + recommendedMedia);
         res.json({ recommendations: recommendedMedia });
     } catch (error) {
         console.error('Recommendations Error:', error);
@@ -541,57 +540,56 @@ app.get('/get_user_by_id', (req, res) => {
 
         // Construct the query
         const sql = `
-SELECT 
-    u.id AS user_id, 
-    u.username, 
-    u.bio, 
-    u.joined_on, 
-    games.title AS fav_game_title,
-    books.title AS fav_book_title,
-    shows.title AS fav_show_title,
-    movies.title AS fav_movie_title,
-    u.fav_genre_id,
-    r.media_type,
-    r.media_id,
-    r.rating,
-    r.summary,
-    r.text,
-    r.posted_on,
-    CASE
-        WHEN r.media_type = 'game' THEN g.title
-        WHEN r.media_type = 'movie' THEN m.title
-        WHEN r.media_type = 'show' THEN s.title
-        WHEN r.media_type = 'book' THEN b.title
-        ELSE NULL
-    END AS media_title
-FROM users u
-LEFT JOIN games ON u.fav_game_id = games.id
-LEFT JOIN books ON u.fav_book_id = books.id
-LEFT JOIN shows ON u.fav_show_id = shows.id
-LEFT JOIN movies ON u.fav_movie_id = movies.id
-LEFT JOIN (
-    SELECT DISTINCT user_id, media_type, media_id, rating, summary, text, posted_on 
-    FROM (
-        SELECT user_id, 'game' AS media_type, media_id, rating, summary, text, posted_on 
-        FROM game_reviews
-        UNION ALL
-        SELECT user_id, 'movie' AS media_type, media_id, rating, summary, text, posted_on 
-        FROM movie_reviews
-        UNION ALL
-        SELECT user_id, 'show' AS media_type, media_id, rating, summary, text, posted_on 
-        FROM show_reviews
-        UNION ALL
-        SELECT user_id, 'book' AS media_type, media_id, rating, summary, text, posted_on 
-        FROM book_reviews
-    ) r_reviews
-) r ON u.id = r.user_id
-LEFT JOIN games g ON r.media_type = 'game' AND r.media_id = g.id
-LEFT JOIN movies m ON r.media_type = 'movie' AND r.media_id = m.id
-LEFT JOIN shows s ON r.media_type = 'show' AND r.media_id = s.id
-LEFT JOIN books b ON r.media_type = 'book' AND r.media_id = b.id
-WHERE u.id = ?
-ORDER BY r.posted_on DESC
-
+            SELECT 
+                u.id AS user_id, 
+                u.username, 
+                u.bio, 
+                u.joined_on, 
+                games.title AS fav_game_title,
+                books.title AS fav_book_title,
+                shows.title AS fav_show_title,
+                movies.title AS fav_movie_title,
+                u.fav_genre_id,
+                r.media_type,
+                r.media_id,
+                r.rating,
+                r.summary,
+                r.text,
+                r.posted_on,
+                CASE
+                    WHEN r.media_type = 'game' THEN g.title
+                    WHEN r.media_type = 'movie' THEN m.title
+                    WHEN r.media_type = 'show' THEN s.title
+                    WHEN r.media_type = 'book' THEN b.title
+                    ELSE NULL
+                END AS media_title
+            FROM users u
+            LEFT JOIN games ON u.fav_game_id = games.id
+            LEFT JOIN books ON u.fav_book_id = books.id
+            LEFT JOIN shows ON u.fav_show_id = shows.id
+            LEFT JOIN movies ON u.fav_movie_id = movies.id
+            LEFT JOIN (
+                SELECT DISTINCT user_id, media_type, media_id, rating, summary, text, posted_on 
+                FROM (
+                    SELECT user_id, 'game' AS media_type, media_id, rating, summary, text, posted_on 
+                    FROM game_reviews
+                    UNION ALL
+                    SELECT user_id, 'movie' AS media_type, media_id, rating, summary, text, posted_on 
+                    FROM movie_reviews
+                    UNION ALL
+                    SELECT user_id, 'show' AS media_type, media_id, rating, summary, text, posted_on 
+                    FROM show_reviews
+                    UNION ALL
+                    SELECT user_id, 'book' AS media_type, media_id, rating, summary, text, posted_on 
+                    FROM book_reviews
+                ) r_reviews
+            ) r ON u.id = r.user_id
+            LEFT JOIN games g ON r.media_type = 'game' AND r.media_id = g.id
+            LEFT JOIN movies m ON r.media_type = 'movie' AND r.media_id = m.id
+            LEFT JOIN shows s ON r.media_type = 'show' AND r.media_id = s.id
+            LEFT JOIN books b ON r.media_type = 'book' AND r.media_id = b.id
+            WHERE u.id = ?
+            ORDER BY r.posted_on DESC
         `;
 
         const userResults = db.prepare(sql).all(userID);

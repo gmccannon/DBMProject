@@ -130,6 +130,11 @@ const fetchMediaDetails = (mediaKeys) => {
 
     mediaKeys.forEach(mediaKey => {
         const [mediaType, mediaId] = mediaKey.split('_');
+        if (!mediaType || !mediaId) {
+            console.error(`Invalid mediaKey format: ${mediaKey}`);
+            return; // Skip invalid keys
+        }
+
         let table = '';
         switch (mediaType) {
             case 'game':
@@ -145,13 +150,16 @@ const fetchMediaDetails = (mediaKeys) => {
                 table = 'books';
                 break;
             default:
-                return; // Unknown media type
+                console.error(`Unknown mediaType: ${mediaType}`);
+                return; // Skip unknown media types
         }
 
         const stmt = db.prepare(`SELECT * FROM ${table} WHERE id = ?`);
-        const mediaItem = stmt.get(parseInt(mediaId));
+        const mediaItem = stmt.get(parseInt(mediaId, 10));
         if (mediaItem) {
             mediaDetails.push({ mediaType, ...mediaItem });
+        } else {
+            console.warn(`Media item not found: type=${mediaType}, id=${mediaId}`);
         }
     });
 

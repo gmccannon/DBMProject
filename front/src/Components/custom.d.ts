@@ -1,5 +1,6 @@
 //custom.d.ts
 interface Media {
+    mediaType: any;
     genre: string;
     id: number;
     image: string;
@@ -9,6 +10,7 @@ interface Media {
     maker?: string;
     rating?: number;
     media_type: string;
+    mediaType: string;
 }
 
 

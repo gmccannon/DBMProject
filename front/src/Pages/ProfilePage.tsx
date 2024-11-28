@@ -31,30 +31,19 @@ const ProfilePage: React.FC = () => {
         }
     }, [userID]);
 
+    // Helper function to pluralize and capitalize the mediaType
+    const formatMediaType = (type: string) => {
+        if (type === 'show') return 'Shows'; // Handle special case for 'show'
+        return type.charAt(0).toUpperCase() + type.slice(1) + 's'; // Capitalize and pluralize
+    };
+
     const fetchUserData = async (): Promise<void> => {
         try {
             const numUserID = Number(userID);
 
             if (!isNaN(numUserID)) {
                 const userData = await getUserByID(numUserID);
-
-                // Remove duplicate reviews
-                const uniqueReviews = userData.reviews.reduce(
-                    (unique: Review[], review: Review) => {
-                        const isDuplicate = unique.some(
-                            (r) =>
-                                r.media_id === review.media_id &&
-                                r.media_type === review.media_type
-                        );
-                        if (!isDuplicate) {
-                            unique.push(review);
-                        }
-                        return unique;
-                    },
-                    []
-                );
-
-                setUser({ ...userData, reviews: uniqueReviews });
+                setUser({ ...userData, reviews: userData.reviews });
             } else {
                 console.error('Invalid user ID');
                 setUser(null);
@@ -205,7 +194,7 @@ const ProfilePage: React.FC = () => {
                                     <MediaCard
                                         key={mediaItem.id}
                                         content={mediaItem}
-                                        mediaType={mediaItem.media_type}
+                                        mediaType={formatMediaType(mediaItem.mediaType)}
                                     />
                                 ))}
                             </div>
