@@ -14,7 +14,7 @@ app.use(express.json());
 
 // JWT Configuration
 const JWT_SECRET = 'e4c4ac567ad9dd8b9a752f4ead74b53910874790830b9dec0611b20e3f230f598518ce91a356921ae8e252fa5fe6f34bbef04b32d9975a9fb15e0ce38ce60c6d'; // Replace with a strong, unique key
-const JWT_EXPIRES_IN = '1h'; // Token expiration time
+const JWT_EXPIRES_IN = '7d'; // Token expiration time (7 days)
 
 // CORS Configuration
 const CORS_ORIGIN = 'http://localhost:3000'; // frontend's URL
