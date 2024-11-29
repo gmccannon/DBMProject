@@ -62,7 +62,9 @@ const MediaCard: React.FC<MediaCardProps> = ({ content, mediaType }) => {
             {content.title && <Title>{content.title}</Title>}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 {content.maker && <Maker>{content.maker}</Maker>}
-                {content.maker && <Rating style={{ marginRight: '10px' }}value={content.rating} precision={0.25} readOnly />}
+                {content.rating && content.rating !== 0 && (
+                    <Rating style={{ marginRight: '10px' }} value={content.rating} precision={0.25} readOnly />
+                )}
             </div>
 
 

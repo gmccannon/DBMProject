@@ -2,6 +2,8 @@ import express, { raw } from 'express';
 import cors from 'cors';
 import Database from 'better-sqlite3';
 import jwt from 'jsonwebtoken';
+import recommendationEngine from './recommendationEngine.js';
+
 
 const app = express();
 const db = new Database('database.db');
@@ -12,7 +14,7 @@ app.use(express.json());
 
 // JWT Configuration
 const JWT_SECRET = 'e4c4ac567ad9dd8b9a752f4ead74b53910874790830b9dec0611b20e3f230f598518ce91a356921ae8e252fa5fe6f34bbef04b32d9975a9fb15e0ce38ce60c6d'; // Replace with a strong, unique key
-const JWT_EXPIRES_IN = '1h'; // Token expiration time
+const JWT_EXPIRES_IN = '7d'; // Token expiration time (7 days)
 
 // CORS Configuration
 const CORS_ORIGIN = 'http://localhost:3000'; // frontend's URL
@@ -53,6 +55,30 @@ const authenticateToken = (req, res, next) => {
         next();
     });
 };
+
+
+/**
+ * @route   GET /recommendations
+ * @desc    Get recommended media items for the authenticated user
+ * @access  Protected
+ */
+app.get('/recommendations', authenticateToken, (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        // Generate recommendations
+        const recommendedMedia = recommendationEngine.getRecommendationsForUser(userId, 10);
+
+        if (recommendedMedia.length === 0) {
+            console.log("No rec");
+            return res.status(200).json({ message: 'No recommendations available at this time.' });
+        }
+        res.json({ recommendations: recommendedMedia });
+    } catch (error) {
+        console.error('Recommendations Error:', error);
+        res.status(500).json({ message: 'Error generating recommendations.' });
+    }
+});
 
 // === Routes ===
 /**
@@ -147,9 +173,6 @@ app.get('/getmedia', (req, res) => {
         // query the database, (use wildcard so that an empty parameter returns all)
         const mediaItems = db.prepare(sql).all(`%${searchQuery}%`, `%${searchQuery}%`);
 
-        // debug log
-        console.log(mediaItems)
-
         // send back database query as json 
         res.setHeader('Content-Type', 'application/json');
         res.send(JSON.stringify(mediaItems));
@@ -218,9 +241,6 @@ app.get('/review', (req, res) => {
                      WHERE media_id = ?
                      ORDER BY rating DESC`;
         const mediaItem = db.prepare(sql).all(mediaID);
-
-        // debug log
-        console.log(mediaItem)
 
         // send back database query as json
         // return one, more, or no items
@@ -300,10 +320,6 @@ app.post('/add_favorite', (req, res) => {
         const mediaID = req.body.mediaID || '';
         const userID = req.body.userID || '';
         const columnName = 'fav_' + req.body.mediaType.toLowerCase().slice(0, -1) + '_id';
-
-        console.log("Received mediaID:", mediaID);
-        console.log("Received userID:", userID);
-        console.log("Column Name:", columnName);
 
         const validColumns = ['fav_movie_id', 'fav_show_id', 'fav_book_id', 'fav_game_id'];
         if (!validColumns.includes(columnName)) {
@@ -524,57 +540,56 @@ app.get('/get_user_by_id', (req, res) => {
 
         // Construct the query
         const sql = `
-SELECT 
-    u.id AS user_id, 
-    u.username, 
-    u.bio, 
-    u.joined_on, 
-    games.title AS fav_game_title,
-    books.title AS fav_book_title,
-    shows.title AS fav_show_title,
-    movies.title AS fav_movie_title,
-    u.fav_genre_id,
-    r.media_type,
-    r.media_id,
-    r.rating,
-    r.summary,
-    r.text,
-    r.posted_on,
-    CASE
-        WHEN r.media_type = 'game' THEN g.title
-        WHEN r.media_type = 'movie' THEN m.title
-        WHEN r.media_type = 'show' THEN s.title
-        WHEN r.media_type = 'book' THEN b.title
-        ELSE NULL
-    END AS media_title
-FROM users u
-LEFT JOIN games ON u.fav_game_id = games.id
-LEFT JOIN books ON u.fav_book_id = books.id
-LEFT JOIN shows ON u.fav_show_id = shows.id
-LEFT JOIN movies ON u.fav_movie_id = movies.id
-LEFT JOIN (
-    SELECT DISTINCT user_id, media_type, media_id, rating, summary, text, posted_on 
-    FROM (
-        SELECT user_id, 'game' AS media_type, media_id, rating, summary, text, posted_on 
-        FROM game_reviews
-        UNION ALL
-        SELECT user_id, 'movie' AS media_type, media_id, rating, summary, text, posted_on 
-        FROM movie_reviews
-        UNION ALL
-        SELECT user_id, 'show' AS media_type, media_id, rating, summary, text, posted_on 
-        FROM show_reviews
-        UNION ALL
-        SELECT user_id, 'book' AS media_type, media_id, rating, summary, text, posted_on 
-        FROM book_reviews
-    ) r_reviews
-) r ON u.id = r.user_id
-LEFT JOIN games g ON r.media_type = 'game' AND r.media_id = g.id
-LEFT JOIN movies m ON r.media_type = 'movie' AND r.media_id = m.id
-LEFT JOIN shows s ON r.media_type = 'show' AND r.media_id = s.id
-LEFT JOIN books b ON r.media_type = 'book' AND r.media_id = b.id
-WHERE u.id = ?
-ORDER BY r.posted_on DESC
-
+            SELECT 
+                u.id AS user_id, 
+                u.username, 
+                u.bio, 
+                u.joined_on, 
+                games.title AS fav_game_title,
+                books.title AS fav_book_title,
+                shows.title AS fav_show_title,
+                movies.title AS fav_movie_title,
+                u.fav_genre_id,
+                r.media_type,
+                r.media_id,
+                r.rating,
+                r.summary,
+                r.text,
+                r.posted_on,
+                CASE
+                    WHEN r.media_type = 'game' THEN g.title
+                    WHEN r.media_type = 'movie' THEN m.title
+                    WHEN r.media_type = 'show' THEN s.title
+                    WHEN r.media_type = 'book' THEN b.title
+                    ELSE NULL
+                END AS media_title
+            FROM users u
+            LEFT JOIN games ON u.fav_game_id = games.id
+            LEFT JOIN books ON u.fav_book_id = books.id
+            LEFT JOIN shows ON u.fav_show_id = shows.id
+            LEFT JOIN movies ON u.fav_movie_id = movies.id
+            LEFT JOIN (
+                SELECT DISTINCT user_id, media_type, media_id, rating, summary, text, posted_on 
+                FROM (
+                    SELECT user_id, 'game' AS media_type, media_id, rating, summary, text, posted_on 
+                    FROM game_reviews
+                    UNION ALL
+                    SELECT user_id, 'movie' AS media_type, media_id, rating, summary, text, posted_on 
+                    FROM movie_reviews
+                    UNION ALL
+                    SELECT user_id, 'show' AS media_type, media_id, rating, summary, text, posted_on 
+                    FROM show_reviews
+                    UNION ALL
+                    SELECT user_id, 'book' AS media_type, media_id, rating, summary, text, posted_on 
+                    FROM book_reviews
+                ) r_reviews
+            ) r ON u.id = r.user_id
+            LEFT JOIN games g ON r.media_type = 'game' AND r.media_id = g.id
+            LEFT JOIN movies m ON r.media_type = 'movie' AND r.media_id = m.id
+            LEFT JOIN shows s ON r.media_type = 'show' AND r.media_id = s.id
+            LEFT JOIN books b ON r.media_type = 'book' AND r.media_id = b.id
+            WHERE u.id = ?
+            ORDER BY r.posted_on DESC
         `;
 
         const userResults = db.prepare(sql).all(userID);
@@ -614,8 +629,6 @@ ORDER BY r.posted_on DESC
         // Send the user data as a response
         res.setHeader('Content-Type', 'application/json');
         res.json(user);
-
-        console.log(user)
 
     } catch (error) {
         console.error('Get users error:', error);

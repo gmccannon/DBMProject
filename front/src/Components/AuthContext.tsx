@@ -1,11 +1,12 @@
 // src/Components/AuthContext.tsx
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
-import { jwtDecode } from 'jwt-decode'; // Named import
+import { jwtDecode } from 'jwt-decode';
 
 interface AuthContextType {
     isAuthenticated: boolean;
     username: string | null;
     userID: number | null;
+    token: string | null; // Added this line
     login: (token: string) => void;
     logout: () => void;
 }
@@ -26,18 +27,19 @@ export const AuthContext = createContext<AuthContextType>({
     isAuthenticated: false,
     username: null,
     userID: null,
-    login: () => {},  
+    token: null, // Added this line
+    login: () => {},
     logout: () => {},
 });
 
-// Component that manages authentication state (e.g., whether a user is logged in or not) 
+// Component that manages authentication state (e.g., whether a user is logged in or not)
 // Provides access to `login` and `logout` functions and user information (username, userID)
-// State is updated on page load (via useEffect) and when the login or logout functions are invoked
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-    // States for authentication, username, and userID
+    // States for authentication, username, userID, and token
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const [username, setUsername] = useState<string | null>(null);
     const [userID, setUserID] = useState<number | null>(null);
+    const [token, setToken] = useState<string | null>(null);
 
     // On page load, check if a token exists in localStorage and update the state accordingly
     useEffect(() => {
@@ -49,19 +51,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 setUsername(decoded.username);
                 setUserID(decoded.id);
                 setIsAuthenticated(true);
+                setToken(token);
                 console.log('Token valid. Username:', decoded.username);
             } catch (error) {
                 console.error('Invalid token on load:', error);
                 setIsAuthenticated(false);
                 setUsername(null);
                 setUserID(null);
+                setToken(null);
             }
         } else {
             console.log('No token found in localStorage.');
         }
     }, []);
 
-    // function to handle login, sets authentaction state to true
+    // Function to handle login, sets authentication state to true
     const login = (token: string) => {
         console.log('Attempting to login with token:', token);
         localStorage.setItem('token', token);
@@ -70,28 +74,31 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             setUsername(decoded.username);
             setUserID(decoded.id);
             setIsAuthenticated(true);
+            setToken(token);
             console.log('Login successful. Username:', decoded.username);
         } catch (error) {
             console.error('Invalid token:', error);
             setIsAuthenticated(false);
             setUsername(null);
             setUserID(null);
+            setToken(null);
         }
     };
 
-    // function to handle logout, sets authentaction state to false
+    // Function to handle logout, sets authentication state to false
     const logout = () => {
         console.log('Logging out...');
         localStorage.removeItem('token');
         setIsAuthenticated(false);
         setUsername(null);
         setUserID(null);
+        setToken(null);
     };
 
-    // The provider passes the authentication state (isAuthenticated, username, userID)
+    // The provider passes the authentication state (isAuthenticated, username, userID, token)
     // and the login/logout functions to any child component that consumes the AuthContext
     return (
-        <AuthContext.Provider value={{ isAuthenticated, username, userID, login, logout }}>
+        <AuthContext.Provider value={{ isAuthenticated, username, userID, token, login, logout }}>
             {children}
         </AuthContext.Provider>
     );
