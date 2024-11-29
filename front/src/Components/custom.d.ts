@@ -25,6 +25,11 @@ interface FormComponentProps {
     mediaType: string;
 }
 
+interface ChangeBioFormComponentProps {
+    onFormSubmit: () => void;
+    currentBio: string;
+}
+
 interface Review {
     userID: number;
     title: string;

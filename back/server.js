@@ -636,6 +636,39 @@ app.get('/get_user_by_id', (req, res) => {
     }
 });
 
+/**
+ * @route   POST /change_bio
+ * @desc    Change a uses bio given their ID
+ * @access  Public
+ */
+app.post('/change_bio', (req, res) => {
+    try {
+        const { userID, text } = req.body; // Destructure from req.body
+
+        // Validate the input
+        if (!userID || !text) {
+            return res.status(400).send('All fields are required.');
+        }
+
+        // Construct the query
+        const sql = `UPDATE users SET bio = ? WHERE id = ?`;
+
+        // Execute the query
+        const result = db.prepare(sql).run(text, userID);
+
+        // Check if the update was successful
+        if (result.changes === 0) {
+            return res.status(404).send('User not found or bio unchanged.');
+        }
+
+        // Return success
+        res.status(200).json({ message: 'Bio changed successfully' });
+    } catch (error) {
+        console.error('Error changing bio:', error.message);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
 });
