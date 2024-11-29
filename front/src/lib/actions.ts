@@ -199,5 +199,19 @@ export const getRecommendations = async (token: string): Promise<Media[]> => {
     return response.data.recommendations;
 };
 
+// function to change the user's bio
+export const changeBio = async (userID: number, text: string): Promise<void> => {
+  // access the database endpoint (endpoint can be uploadreview or editreview)
+  const response: AxiosResponse = await axios.post(`http://localhost:3001/change_bio`, {
+      userID: userID,
+      text: text,
+  });
+
+  // handle response error
+  if (!response) {
+      throw new Error('Failed to fetch media');
+  }
+};
+
 
 

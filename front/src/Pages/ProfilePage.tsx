@@ -3,16 +3,19 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../Components/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { getUserByID, getRecommendations } from '../lib/actions';
 import { Box, Button, Rating } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import MediaCard from '../Components/MediaCard';
+import ChangeBioForm from '../Components/ChangBioForm';
 
 const ProfilePage: React.FC = () => {
     const { userID, logout, token } = useContext(AuthContext);
 
     const [user, setUser] = useState<User | null>(null);
     const [recommendations, setRecommendations] = useState<Media[]>([]);
+    const [showChangeBioForm, setShowChangeBioForm] = useState<Boolean>(true);
 
     // Use navigation method from react router
     const navigate = useNavigate();
@@ -29,7 +32,16 @@ const ProfilePage: React.FC = () => {
             fetchUserData();
             fetchRecommendations();
         }
-    }, [userID]);
+    }, [userID, showChangeBioForm]);
+
+    // function to toggle the visibility of the change bio form
+    const handleShowChangeBioForm = () => {
+        if (showChangeBioForm) {
+            setShowChangeBioForm(false);
+        } else {
+            setShowChangeBioForm(true);
+        }
+    }
 
     // Helper function to pluralize and capitalize the mediaType
     const formatMediaType = (type: string) => {
@@ -114,6 +126,12 @@ const ProfilePage: React.FC = () => {
                     >
                         Bio: {user.bio}
                     </p>
+                    <p style={{ fontFamily: 'Courier New', textAlign: 'center'}}> 
+                        <Link to="#"  onClick={handleShowChangeBioForm}> {!showChangeBioForm ? "edit your bio" : "close form"}</Link><br/>
+                    </p>
+                    
+                    {/* Form */}
+                    {showChangeBioForm && <ChangeBioForm onFormSubmit={handleShowChangeBioForm} currentBio={user.bio} />}
                     <p
                         style={{
                             fontFamily: 'Courier New',
