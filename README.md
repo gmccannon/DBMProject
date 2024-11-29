@@ -9,7 +9,7 @@ Node, React, SQLite, Express, Flask, Scikit-Learn
   - [x] Pagination for media and reviews
   - [x] Add upload dates to reviews
   - [ ] Add navigation where you would expect it
-  - [ ] Add ability to edit bio
+  - [x] Add ability to edit bio
 - [x] Social System
   - [x] Add a way to add favorites
   - [x] Add a way to view other users activity
