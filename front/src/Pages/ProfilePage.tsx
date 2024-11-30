@@ -143,7 +143,7 @@ const ProfilePage: React.FC = () => {
                     </p>
 
                     {/* Display Favorite Media */}
-                    <div style={{ marginTop: 60 }}>
+                    { (user.fav_game_title || user.fav_book_title || user.fav_show_title || user.fav_movie_title) && <div style={{ marginTop: 60 }}>
                         <h2
                             style={{
                                 fontFamily: 'Courier New',
@@ -186,7 +186,7 @@ const ProfilePage: React.FC = () => {
                                 </h2>
                             )}
                         </div>
-                    </div>
+                    </div>}
 
                     {/* Display Recommendations */}
                     <div>
@@ -288,7 +288,7 @@ const ProfilePage: React.FC = () => {
                                 ))}
                             </ul>
                         ) : (
-                            <p style={{ fontFamily: 'Courier New', textAlign: 'center' }}>No reviews yet...</p>
+                            <p style={{ fontFamily: 'Courier New', textAlign: 'center' }}>no reviews yet...</p>
                         )}
                     </div>
                 </div>

@@ -237,5 +237,19 @@ export const changeBio = async (userID: number, text: string): Promise<void> => 
   }
 };
 
-
-
+export const fetchAverageRatingData = async (mediaID: string, mediaType: string) => {
+  try {
+      // Make the GET request with axios
+      const response = await axios.get(`http://localhost:3001/average-rating`, {
+          params: {
+              mediaType: mediaType,
+              mediaId: mediaID
+          }
+      });
+      // Return the average rating from the response
+      return response.data.averageRating;
+  } catch (error) {
+      console.error('Error fetching average rating:', error);
+      return 0.0; // Return 0 if there is an error
+  }
+};

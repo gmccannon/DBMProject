@@ -712,6 +712,63 @@ app.post('/change_bio', (req, res) => {
     }
 });
 
+// Function to get the average rating for a specific media type (movie, game, show, or book)
+function getAverageRatingForMediaPastWeek(mediaType, mediaId) {
+    let tableName;
+    let mediaColumn;
+
+    // Map media type to the appropriate table and column
+    switch (mediaType) {
+        case 'Movies':
+            tableName = 'movie_reviews';
+            mediaColumn = 'media_id';
+            break;
+        case 'Games':
+            tableName = 'game_reviews';
+            mediaColumn = 'media_id';
+            break;
+        case 'Shows':
+            tableName = 'show_reviews';
+            mediaColumn = 'media_id';
+            break;
+        case 'Books':
+            tableName = 'book_reviews';
+            mediaColumn = 'media_id';
+            break;
+        default:
+            throw new Error('Invalid media type');
+    }
+
+    // Prepare the dynamic SQL query
+    const stmt = db.prepare(`
+        SELECT AVG(rating) AS average_rating
+        FROM ${tableName}
+        WHERE ${mediaColumn} = ? AND posted_on >= DATE('now', '-7 days')
+    `);
+
+    // Execute the query with the mediaId as a parameter
+    const row = stmt.get(mediaId);
+
+    // Return the average rating or 0.0 if no reviews are found
+    return row ? row.average_rating : 0.0;
+}
+
+// Define the API endpoint to fetch average rating for a specific media
+app.get('/average-rating', (req, res) => {
+    const { mediaType, mediaId } = req.query; // Get mediaType and mediaId from query parameters
+
+    if (!mediaType || !mediaId) {
+        return res.status(400).json({ error: 'mediaType and mediaId are required' });
+    }
+
+    try {
+        const averageRating = getAverageRatingForMediaPastWeek(mediaType, parseInt(mediaId));
+        res.json({ averageRating });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
 });
