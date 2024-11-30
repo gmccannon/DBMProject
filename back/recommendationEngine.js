@@ -166,6 +166,28 @@ const fetchMediaDetails = (mediaKeys) => {
     return mediaDetails;
 };
 
+// Utility to fetch three random media items
+const fetchRandomMedia = () => {
+    const queries = [
+        "SELECT id, 'game' AS media_type FROM games ORDER BY RANDOM() LIMIT 1",
+        "SELECT id, 'movie' AS media_type FROM movies ORDER BY RANDOM() LIMIT 1",
+        "SELECT id, 'show' AS media_type FROM shows ORDER BY RANDOM() LIMIT 1",
+        "SELECT id, 'book' AS media_type FROM books ORDER BY RANDOM() LIMIT 1"
+    ];
+
+    const randomMedia = queries.map(query => {
+        const media = db.prepare(query).get();
+        if (media) {
+            const stmt = db.prepare(`SELECT * FROM ${media.media_type}s WHERE id = ?`);
+            const mediaDetails = stmt.get(media.id);
+            return { mediaType: media.media_type, ...mediaDetails };
+        }
+        return null;
+    });
+
+    return randomMedia.filter(Boolean); // Filter out null results
+};
+
 /**
  * Main function to get recommendations for a user.
  * @param {number} userId
@@ -175,7 +197,12 @@ const fetchMediaDetails = (mediaKeys) => {
 const getRecommendationsForUser = (userId, topN = 10) => {
     const userRatings = getUserRatings();
     const recommendedMediaKeys = generateRecommendations(userId, userRatings, topN);
-    const recommendedMedia = fetchMediaDetails(recommendedMediaKeys);
+    let recommendedMedia = fetchMediaDetails(recommendedMediaKeys);
+
+    if (recommendedMedia.length === 0) {
+        recommendedMedia = fetchRandomMedia();
+    }
+
     return recommendedMedia;
 };
 

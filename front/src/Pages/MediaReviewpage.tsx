@@ -195,7 +195,6 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
     setLoading(true);
     try {
         const data = await fetchMediaReviewData(mediaNumber, mediaType);
-        console.log('Fetched media data:', data);  // Log the response here
         if (data) {  // Check if array has any elements
           setMediaReviews(data);    // Set the first item in the array
         } else {
@@ -218,8 +217,6 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
     // Images are stored in public/images/{mediaType}{content.id}.jpg
     return `/images/${mediaType}${mediaNumber}.jpg`;
   };
-
-  console.log('Found these recommendations:', JSON.stringify(similarMedia, null, 2));
 
   return (
   <>
