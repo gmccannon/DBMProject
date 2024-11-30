@@ -160,13 +160,13 @@ const UsersPage = () => {
     const getPlaceholder = (): string => {
         switch (searchCategory) {
             case 'username':
-                return "Search users by username...";
+                return "search users by username...";
             case 'bio':
-                return "Search users by bio...";
+                return "search users by bio...";
             case 'reviewed':
-                return "Search users by reviewed media...";
+                return "search users by reviewed media...";
             default:
-                return "Search users...";
+                return "search users...";
         }
     };
 
@@ -209,12 +209,17 @@ const UsersPage = () => {
                     placeholder={getPlaceholder()}
                     value={searchTerm}
                     onChange={handleSearchChange}
+                    style={{ width: '30%', fontFamily: 'Courier New' }}
                 />
                 <label htmlFor="search-category" style={{ display: 'none' }}>Search Category</label>
-                <SelectCategory id="search-category" value={searchCategory} onChange={handleCategoryChange}>
-                    <option value="username">Username</option>
-                    <option value="bio">Bio</option>
-                    <option value="reviewed">Reviewed</option>
+                <SelectCategory id="search-category" 
+                    value={searchCategory} 
+                    onChange={handleCategoryChange}
+                    style={{ fontFamily: 'Courier New' }}
+                >
+                    <option value="username">username</option>
+                    <option value="bio">bio</option>
+                    <option value="reviewed">reviewed</option>
                     {/* Add more categories as needed */}
                 </SelectCategory>
             </SearchContainer>

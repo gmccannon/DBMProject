@@ -292,7 +292,7 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
               style={{ fontFamily: 'Courier New', fontWeight: 100, fontStyle: 'italic', cursor: 'pointer' }} 
               onClick={() => window.location.href = `/${similarMedia.mediaType.charAt(0).toUpperCase() + similarMedia.mediaType.slice(1) + 's'}/${similarMedia.id}`}
             >
-              {similarMedia.title}
+              {similarMedia.title} ({similarMedia.mediaType})
             </h3>
           ))}
         </RightColumn>
