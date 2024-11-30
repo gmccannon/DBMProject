@@ -3,6 +3,7 @@ import cors from 'cors';
 import Database from 'better-sqlite3';
 import jwt from 'jsonwebtoken';
 import recommendationEngine from './recommendationEngine.js';
+import similarMediaEngine from './similarMediaEngine.js';
 
 
 const app = express();
@@ -80,7 +81,49 @@ app.get('/recommendations', authenticateToken, (req, res) => {
     }
 });
 
-// === Routes ===
+/**
+ * @route   GET /similar_media
+ * @desc    Get similar media
+ * @access  Public
+ */
+app.get('/similar_media', (req, res) => {
+    console.log('Endpoint /similar_media - Query:', req.query); // Debug log
+    try {
+        let { mediaType, mediaID } = req.query;
+
+        if (!mediaType || !mediaID) {
+            return res.status(400).json({ message: 'Both mediaType and mediaID are required.' });
+        }
+
+        const mediaIDInt = parseInt(mediaID, 10);
+        if (isNaN(mediaIDInt)) {
+            return res.status(400).json({ message: 'mediaID must be a valid integer.' });
+        }
+
+        const normalizedMediaType = {
+            Shows: 'show',
+            Movies: 'movie',
+            Books: 'book',
+            Games: 'game',
+        }[mediaType];
+
+        if (!normalizedMediaType) {
+            return res.status(400).json({ message: 'Invalid mediaType provided.' });
+        }
+
+        const similarMedia = similarMediaEngine.getUsersAlsoLiked(normalizedMediaType, mediaIDInt);
+
+        if (similarMedia.length === 0) {
+            return res.status(200).json({ message: 'No similar media found.' });
+        }
+
+        res.json({ recommendations: similarMedia });
+    } catch (error) {
+        console.error('Error fetching similar media:', error);
+        res.status(500).json({ message: 'An error occurred while fetching similar media.' });
+    }
+});
+
 /**
  * @route   POST /register
  * @desc    Register a new user

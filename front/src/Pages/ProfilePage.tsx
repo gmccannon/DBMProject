@@ -15,7 +15,7 @@ const ProfilePage: React.FC = () => {
 
     const [user, setUser] = useState<User | null>(null);
     const [recommendations, setRecommendations] = useState<Media[]>([]);
-    const [showChangeBioForm, setShowChangeBioForm] = useState<Boolean>(true);
+    const [showChangeBioForm, setShowChangeBioForm] = useState<Boolean>(false);
 
     // Use navigation method from react router
     const navigate = useNavigate();
@@ -129,7 +129,7 @@ const ProfilePage: React.FC = () => {
                     <p style={{ fontFamily: 'Courier New', textAlign: 'center'}}> 
                         <Link to="#"  onClick={handleShowChangeBioForm}> {!showChangeBioForm ? "edit your bio" : "close form"}</Link><br/>
                     </p>
-                    
+
                     {/* Form */}
                     {showChangeBioForm && <ChangeBioForm onFormSubmit={handleShowChangeBioForm} currentBio={user.bio} />}
                     <p
