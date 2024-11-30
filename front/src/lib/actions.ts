@@ -199,6 +199,30 @@ export const getRecommendations = async (token: string): Promise<Media[]> => {
     return response.data.recommendations;
 };
 
+// function to get similar media
+export const fetchSimilarMediaData = async (mediaType: string, mediaID: string): Promise<Media[]> => {
+  console.log('Handler fetchSimilarMediaData - mediaType:', mediaType, 'mediaID:', mediaID); // Debug log
+  try {
+      const response = await axios.get('http://localhost:3001/similar_media', {
+          params: {
+              mediaType: mediaType,
+              mediaID: mediaID,
+          },
+      });
+
+      console.log('Response from API:', response.data); // Debug log
+
+      if (!response.data || !response.data.recommendations) {
+          throw new Error('Failed to fetch similar media');
+      }
+
+      return response.data.recommendations;
+  } catch (error) {
+      console.error('Error fetching similar media:', error);
+      throw new Error('An error occurred while fetching similar media.');
+  }
+};
+
 // function to change the user's bio
 export const changeBio = async (userID: number, text: string): Promise<void> => {
   // access the database endpoint (endpoint can be uploadreview or editreview)

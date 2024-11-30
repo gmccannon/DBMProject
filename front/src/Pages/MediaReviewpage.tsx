@@ -5,7 +5,7 @@ import { AuthContext } from '../Components/AuthContext';
 import Rating from '@mui/material/Rating';
 import UploadReviewForm from '../Components/UploadReviewForm';
 import { Button, Pagination } from '@mui/material';
-import { addFavorite, removeFavorite, fetchIfFavorited, fetchIfReviewed, fetchMediaData, fetchMediaReviewData } from '../lib/actions';
+import { addFavorite, removeFavorite, fetchIfFavorited, fetchIfReviewed, fetchMediaData, fetchMediaReviewData, fetchSimilarMediaData } from '../lib/actions';
 
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import HeartBrokenIcon from '@mui/icons-material/HeartBroken';
@@ -66,6 +66,7 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
   // states
   const [media, setMedia] = useState<Media>();
   const [mediaReviews, setMediaReviews] = useState<MediaReview[]>([]);
+  const [similarMedia, setSimilarMedia] = useState<Media[]>([]);
   const [showForm, setShowForm] = useState<Boolean>(false);
   const [alreadyReviewed, setAlreadyReviewed] = useState<boolean>(false);
   const [alreadyFavorited, setAlreadyFavorited] = useState<boolean>(false);
@@ -86,6 +87,7 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
     if (mediaNumber) {
       fetchMedia(mediaType, mediaNumber);
       fetchMediaReviews(mediaNumber, mediaType);
+      fetchSimilarMedia(mediaNumber, mediaType);
       if (userID) {
         checkIfReviewed(userID, mediaNumber, mediaType);
         checkIfFavorited(userID, mediaNumber, mediaType);
@@ -115,6 +117,26 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
       setShowForm(true);
     }
   }
+
+  // function to update states based on info from the database
+  const fetchSimilarMedia = async (mediaNumber: string, mediaType: string, ): Promise<void> => {
+    console.log('React fetchSimilarMedia - mediaType:', mediaType, 'mediaNumber:', mediaNumber); // Debug log
+    setLoading(true);
+    try {
+        const data = await fetchSimilarMediaData(mediaType, mediaNumber);
+        console.log('Fetched media data:', data); // Debug log
+        if (data) {
+            setSimilarMedia(data);
+        } else {
+            setSimilarMedia([]);
+        }
+    } catch (err: unknown) {
+        setError(err instanceof Error ? err : new Error('An unknown error occurred'));
+    } finally {
+        setLoading(false);
+    }
+};
+
 
   // function to see if the user has already written a review, then update the state
   const checkIfReviewed = async (userID: number, mediaNumber: string, mediaType: string): Promise<void> => {
@@ -197,6 +219,8 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
     return `/images/${mediaType}${mediaNumber}.jpg`;
   };
 
+  console.log('Found these recommendations:', JSON.stringify(similarMedia, null, 2));
+
   return (
   <>
     <div>
@@ -240,6 +264,17 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
             </Info>
           )}
           {media && <Info>Genre: {media.genre}</Info>}
+          {'\b'}
+          {<h2 style={{ fontFamily: 'Courier New', fontWeight: 100}}>Users who liked this also liked...</h2>}
+          {similarMedia && similarMedia.map((similarMedia, index) => (
+            <h3 
+              key={index} 
+              style={{ fontFamily: 'Courier New', fontWeight: 100, fontStyle: 'italic', cursor: 'pointer' }} 
+              onClick={() => window.location.href = `/${similarMedia.mediaType.charAt(0).toUpperCase() + similarMedia.mediaType.slice(1) + 's'}/${similarMedia.id}`}
+            >
+              {similarMedia.title}
+            </h3>
+          ))}
         </RightColumn>
       </Container>
     </div>
