@@ -138,55 +138,6 @@ db.exec(`
         ('Fiction'),
         ('Comedy');
 
-    INSERT OR REPLACE INTO books
-        (title, maker, release_date, genre_id, word_count, best_seller)
-    VALUES 
-        ('Don Quixote', 'Miguel de Cervantes', '1605-01-16', 4, 383748, true),
-        ('For Whom the Bell Tolls', 'Ernest Hemingway', '1940-10-21', 5, 174106, true),
-        ('The Lord of the Rings', 'J.R.R. Tolkien', '1954-07-29', 1, 455125, true),
-        ('Nineteen Eighty-Four', 'George Orwell', '1949-06-08', 5, 88442, true),
-        ('Animal Farm', 'George Orwell', '1945-08-17', 5, 29966, true),
-        ('The Hobbit', 'J.R.R. Tolkien', '1937-09-21', 1, 95022, true),
-        ('The Old Man and the Sea', 'Ernest Hemingway', '1952-09-01', 5, 26925, true),
-        ('Fahrenheit 451', 'Ray Bradbury', '1953-10-19', 5, 46411, true),
-        ('The Sun Also Rises', 'Ernest Hemingway', '1926-10-22', 5, 102707, true),
-        ('One Hundred Years of Solitude', 'Gabriel García Márquez', '1967-05-30', 5, 41781, true),
-        ('War and Peace', 'Leo Tolstoy', '1869-01-01', 5, 587287, true),
-        ('A Farewell to Arms', 'Ernest Hemingway', '1929-09-27', 5, 75000, true),
-        ('The Chronicles of Narnia', 'C.S. Lewis', '1950-10-16', 1, 167593, true);
-
-    INSERT OR REPLACE INTO movies
-        (title, maker, release_date, genre_id, duration, oscar_winner)
-    VALUES 
-        ('The Lord of the Rings: The Return of the King', 'Peter Jackson', '2003-12-17', 1, 201, true),
-        ('The Departed', 'Martin Scorsese', '2006-10-06', 3, 151, true),
-        ('The Lord of the Rings: The Fellowship of the Ring', 'Peter Jackson', '2001-12-19', 1, 178, true),
-        ('The Lord of the Rings: The Two Towers', 'Peter Jackson', '2002-12-18', 1, 179, true),
-        ('No Country for Old Men', 'Ethan Coen', '2007-11-21', 3, 122, true),
-        ('The Shawshank Redemption', 'Frank Darabont', '1994-09-23', 3, 142, true),
-        ('The Good, the Bad and the Ugly', 'Sergio Leone', '1966-12-23', 4, 178, true),
-        ('Rain Man', 'Barry Levinson', '1988-12-16', 6, 133, true),
-        ('Catch Me If You Can', 'Steven Spielberg', '2002-12-25', 4, 141, false),
-        ('Inception', 'Christopher Nolan', '2010-07-16', 5, 148, false),
-        ('Field of Dreams', 'Phil Robinson', '1989-04-21', 5, 107, true);
-
-    INSERT OR REPLACE INTO shows
-        (title, maker, release_date, genre_id, episodes, emmy_winner)
-    VALUES 
-        ('Breaking Bad', 'Vince Gilligan', '2008-01-20', 3, 62, true),
-        ('Better Call Saul', 'Vince Gilligan', '2015-02-08', 3, 63, false),
-        ('Star Trek: The Next Generation', 'Gene Roddenberry', '1987-09-28', 2, 178, true),
-        ('The West Wing', 'Aaron Sorkin', '1999-09-22', 3, 154, true),
-        ('The Wire', 'David Simon', '2002-06-02', 3, 60, false),
-        ('House', 'David Shore', '2004-11-16', 3, 177, true),
-        ('Chernobyl', 'Craig Mazin', '2019-05-06', 3, 5, true),
-        ('The Sopranos', 'David Chase', '1999-01-10', 3, 86, true);
-
-    INSERT OR REPLACE INTO games
-        (title, maker, release_date, genre_id, platform, multiplayer)
-    VALUES 
-        ('Dark Souls 3', 'FromSoftware', '2016-03-24', 1, 'PC', true);
-
     INSERT OR REPLACE INTO users
         (id, username, password, bio, fav_game_id, fav_book_id, fav_movie_id, fav_show_id, fav_genre_id)
     VALUES 
@@ -213,6 +164,22 @@ db.exec(`
 
 
 
+    INSERT OR REPLACE INTO books
+        (title, maker, release_date, genre_id, word_count, best_seller)
+    VALUES 
+        ('Don Quixote', 'Miguel de Cervantes', '1605-01-16', 4, 383748, true),
+        ('For Whom the Bell Tolls', 'Ernest Hemingway', '1940-10-21', 5, 174106, true),
+        ('The Lord of the Rings', 'J.R.R. Tolkien', '1954-07-29', 1, 455125, true),
+        ('Nineteen Eighty-Four', 'George Orwell', '1949-06-08', 5, 88442, true),
+        ('Animal Farm', 'George Orwell', '1945-08-17', 5, 29966, true),
+        ('The Hobbit', 'J.R.R. Tolkien', '1937-09-21', 1, 95022, true),
+        ('The Old Man and the Sea', 'Ernest Hemingway', '1952-09-01', 5, 26925, true),
+        ('Fahrenheit 451', 'Ray Bradbury', '1953-10-19', 5, 46411, true),
+        ('The Sun Also Rises', 'Ernest Hemingway', '1926-10-22', 5, 102707, true),
+        ('One Hundred Years of Solitude', 'Gabriel García Márquez', '1967-05-30', 5, 41781, true),
+        ('War and Peace', 'Leo Tolstoy', '1869-01-01', 5, 587287, true),
+        ('A Farewell to Arms', 'Ernest Hemingway', '1929-09-27', 5, 75000, true),
+        ('The Chronicles of Narnia', 'C.S. Lewis', '1950-10-16', 1, 167593, true);
 
     INSERT OR REPLACE INTO book_reviews
         (user_id, media_id, rating, summary, text)
@@ -230,6 +197,23 @@ db.exec(`
         (18, 4, 4.0, 'Thought-provoking', 'Offers deep insights into human nature.'),
         (19, 1, 4.5, 'A must-read', 'Essential reading for any literature lover.'),
         (20, 5, 4.0, 'Exciting and fun', 'An entertaining adventure that keeps you hooked.');
+
+
+
+    INSERT OR REPLACE INTO movies
+        (title, maker, release_date, genre_id, duration, oscar_winner)
+    VALUES 
+        ('The Lord of the Rings: The Return of the King', 'Peter Jackson', '2003-12-17', 1, 201, true),
+        ('The Departed', 'Martin Scorsese', '2006-10-06', 3, 151, true),
+        ('The Lord of the Rings: The Fellowship of the Ring', 'Peter Jackson', '2001-12-19', 1, 178, true),
+        ('The Lord of the Rings: The Two Towers', 'Peter Jackson', '2002-12-18', 1, 179, true),
+        ('No Country for Old Men', 'Ethan Coen', '2007-11-21', 3, 122, true),
+        ('The Shawshank Redemption', 'Frank Darabont', '1994-09-23', 3, 142, true),
+        ('The Good, the Bad and the Ugly', 'Sergio Leone', '1966-12-23', 4, 178, true),
+        ('Rain Man', 'Barry Levinson', '1988-12-16', 6, 133, true),
+        ('Catch Me If You Can', 'Steven Spielberg', '2002-12-25', 4, 141, false),
+        ('Inception', 'Christopher Nolan', '2010-07-16', 5, 148, false),
+        ('Field of Dreams', 'Phil Robinson', '1989-04-21', 5, 107, true);
 
     INSERT OR REPLACE INTO movie_reviews
         (user_id, media_id, rating, summary, text)
@@ -282,22 +266,18 @@ db.exec(`
         (20, 2, 5, 'Incredible performances and direction', 'Scorsese’s direction in The Departed is incredible. It’s thrilling from start to finish and one of his best films.');
 
 
-    INSERT OR REPLACE INTO game_reviews
-        (user_id, media_id, rating, summary, text)
+
+    INSERT OR REPLACE INTO shows
+        (title, maker, release_date, genre_id, episodes, emmy_winner)
     VALUES 
-        (1, 1, 5, 'Good', 'This was a good game'),
-        (9, 1, 4.5, 'Challenging and rewarding', 'Dark Souls 3 offers a tough but fair challenge with deep lore.'),
-        (10, 1, 3.0, 'Good but difficult', 'The game is well-designed but can be frustratingly hard at times.'),
-        (11, 1, 5.0, 'Masterpiece', 'An exceptional game with stunning graphics and gameplay.'),
-        (12, 1, 4.0, 'Fun and engaging', 'Enjoyed every moment of Dark Souls 3, despite its difficulty.'),
-        (13, 1, 5.0, 'Exceptional experience', 'One of the best games I''ve ever played. Highly recommend!'),
-        (14, 1, 4.0, 'Great mechanics', 'The combat system is smooth and enjoyable.'),
-        (15, 1, 3.5, 'Good but repetitive', 'Fun gameplay but some elements feel repetitive.'),
-        (16, 1, 5.0, 'Thrilling adventure', 'Embarking on quests in Dark Souls 3 is exhilarating.'),
-        (17, 1, 4.5, 'Immersive world', 'The game world is incredibly immersive and detailed.'),
-        (18, 1, 4.0, 'Challenging gameplay', 'Requires strategy and skill, which makes victories satisfying.'),
-        (19, 1, 5.0, 'Top-notch design', 'The level design and enemy variety are outstanding.'),
-        (20, 1, 4.5, 'Highly recommended', 'If you enjoy challenging games, Dark Souls 3 is a must-play.');
+        ('Breaking Bad', 'Vince Gilligan', '2008-01-20', 3, 62, true),
+        ('Better Call Saul', 'Vince Gilligan', '2015-02-08', 3, 63, false),
+        ('Star Trek: The Next Generation', 'Gene Roddenberry', '1987-09-28', 2, 178, true),
+        ('The West Wing', 'Aaron Sorkin', '1999-09-22', 3, 154, true),
+        ('The Wire', 'David Simon', '2002-06-02', 3, 60, false),
+        ('House', 'David Shore', '2004-11-16', 3, 177, true),
+        ('Chernobyl', 'Craig Mazin', '2019-05-06', 3, 5, true),
+        ('The Sopranos', 'David Chase', '1999-01-10', 3, 86, true);
 
     INSERT OR REPLACE INTO show_reviews
         (user_id, media_id, rating, summary, text)
@@ -322,5 +302,29 @@ db.exec(`
         (18, 2, 4.5, 'Excellent character arcs', 'Better Call Saul masterfully develops its characters over time.'),
         (19, 3, 5.0, 'Timeless and influential', 'Star Trek: The Next Generation continues to inspire with its vision.'),
         (20, 4, 4.0, 'Inspirational and political', 'The West Wing offers a compelling look into the workings of the White House.');
+
+
+
+    INSERT OR REPLACE INTO games
+        (title, maker, release_date, genre_id, platform, multiplayer)
+    VALUES 
+        ('Dark Souls 3', 'FromSoftware', '2016-03-24', 1, 'PC', true);
+
+    INSERT OR REPLACE INTO game_reviews
+        (user_id, media_id, rating, summary, text)
+    VALUES 
+        (1, 1, 5, 'Good', 'This was a good game'),
+        (9, 1, 4.5, 'Challenging and rewarding', 'Dark Souls 3 offers a tough but fair challenge with deep lore.'),
+        (10, 1, 3.0, 'Good but difficult', 'The game is well-designed but can be frustratingly hard at times.'),
+        (11, 1, 5.0, 'Masterpiece', 'An exceptional game with stunning graphics and gameplay.'),
+        (12, 1, 4.0, 'Fun and engaging', 'Enjoyed every moment of Dark Souls 3, despite its difficulty.'),
+        (13, 1, 5.0, 'Exceptional experience', 'One of the best games I''ve ever played. Highly recommend!'),
+        (14, 1, 4.0, 'Great mechanics', 'The combat system is smooth and enjoyable.'),
+        (15, 1, 3.5, 'Good but repetitive', 'Fun gameplay but some elements feel repetitive.'),
+        (16, 1, 5.0, 'Thrilling adventure', 'Embarking on quests in Dark Souls 3 is exhilarating.'),
+        (17, 1, 4.5, 'Immersive world', 'The game world is incredibly immersive and detailed.'),
+        (18, 1, 4.0, 'Challenging gameplay', 'Requires strategy and skill, which makes victories satisfying.'),
+        (19, 1, 5.0, 'Top-notch design', 'The level design and enemy variety are outstanding.'),
+        (20, 1, 4.5, 'Highly recommended', 'If you enjoy challenging games, Dark Souls 3 is a must-play.');
 
 `);

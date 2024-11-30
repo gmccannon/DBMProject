@@ -288,7 +288,7 @@ const ProfilePage: React.FC = () => {
                                 ))}
                             </ul>
                         ) : (
-                            <p>No reviews yet.</p>
+                            <p style={{ fontFamily: 'Courier New', textAlign: 'center' }}>No reviews yet...</p>
                         )}
                     </div>
                 </div>
