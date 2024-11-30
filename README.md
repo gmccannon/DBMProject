@@ -6,6 +6,7 @@ Node, React, SQLite, Express, Flask, Scikit-Learn
 ## To-do list
 ### Part 2
 - [ ] API to fetch and add more data
+- [ ] Add a stored procedure
 - [x] Social System
   - [x] Add a way to add favorites
   - [x] Add a way to view other users activity
