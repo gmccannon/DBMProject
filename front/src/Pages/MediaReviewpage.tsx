@@ -255,17 +255,17 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
 
         {/* Right Column: Genre, Creator, Release Date */}
         <RightColumn>
-          {alreadyFavorited && <h4 style={{ fontFamily: 'Courier New', color: 'black', textAlign: 'center', marginBottom: -2 }}>you favorited this item</h4>}
+          {alreadyFavorited && <h4 style={{ fontFamily: 'Courier New', color: 'black', textAlign: 'center', marginBottom: -2, textTransform: 'lowercase'}}>you favorited this {mediaType.slice(0, -1)}</h4>}
           <Button variant="text" onClick={handleFavoriteClick} sx={{ color: 'black', fontFamily: 'Courier New' }}>
             {alreadyFavorited ? (
               <>
                 <HeartBrokenIcon sx={{ color: 'red' }} />
-                <h3 style={{ fontFamily: 'Courier New', color: 'black', marginLeft: '8px', textTransform: 'lowercase' }}>Unfavorite</h3>
+                <h3 style={{ fontFamily: 'Courier New', color: 'black', marginLeft: '8px', textTransform: 'lowercase' }}>unfavorite</h3>
               </>
             ) : (
               <>
                 <FavoriteIcon sx={{ color: 'red' }} />
-                <h3 style={{ fontFamily: 'Courier New', color: 'black', marginLeft: '8px', textTransform: 'lowercase' }}>Favorite</h3>
+                <h3 style={{ fontFamily: 'Courier New', color: 'black', marginLeft: '8px', textTransform: 'lowercase' }}>favorite this {mediaType.slice(0, -1)}</h3>
               </>
             )}
           </Button>
@@ -282,7 +282,7 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
           )}
           {media && <Info>Genre: {media.genre}</Info>}
           {'\b'}
-          {<h2 style={{ fontFamily: 'Courier New', fontWeight: 100}}>recent ratings (past week)</h2>}
+          {<h2 style={{ fontFamily: 'Courier New', fontWeight: 100}}>ratings (past week)</h2>}
           <Rating value={averageRating} precision={0.25} readOnly />
           {'\b'}
           {<h2 style={{ fontFamily: 'Courier New', fontWeight: 100}}>Users who liked this also liked...</h2>}
