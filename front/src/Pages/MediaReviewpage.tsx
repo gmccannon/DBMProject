@@ -5,7 +5,7 @@ import { AuthContext } from '../Components/AuthContext';
 import Rating from '@mui/material/Rating';
 import UploadReviewForm from '../Components/UploadReviewForm';
 import { Button, Pagination } from '@mui/material';
-import { addFavorite, removeFavorite, fetchIfFavorited, fetchIfReviewed, fetchMediaData, fetchMediaReviewData, fetchSimilarMediaData } from '../lib/actions';
+import { addFavorite, removeFavorite, fetchIfFavorited, fetchIfReviewed, fetchMediaData, fetchMediaReviewData, fetchSimilarMediaData, fetchAverageRatingData } from '../lib/actions';
 
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import HeartBrokenIcon from '@mui/icons-material/HeartBroken';
@@ -67,6 +67,7 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
   const [media, setMedia] = useState<Media>();
   const [mediaReviews, setMediaReviews] = useState<MediaReview[]>([]);
   const [similarMedia, setSimilarMedia] = useState<Media[]>([]);
+  const [averageRating, setAverageRating] = useState<number>(0);
   const [showForm, setShowForm] = useState<Boolean>(false);
   const [alreadyReviewed, setAlreadyReviewed] = useState<boolean>(false);
   const [alreadyFavorited, setAlreadyFavorited] = useState<boolean>(false);
@@ -88,6 +89,7 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
       fetchMedia(mediaType, mediaNumber);
       fetchMediaReviews(mediaNumber, mediaType);
       fetchSimilarMedia(mediaNumber, mediaType);
+      fetchAverageRating(mediaNumber, mediaType);
       if (userID) {
         checkIfReviewed(userID, mediaNumber, mediaType);
         checkIfFavorited(userID, mediaNumber, mediaType);
@@ -207,6 +209,24 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
     }
   };
 
+  // function to update the state of all of the reviews for the current media
+  // queried with mediaNumber (from the URL), and the mediaType
+  const fetchAverageRating = async (mediaNumber: string, mediaType: string): Promise<any> => {
+    setLoading(true);
+    try {
+        const rating = await fetchAverageRatingData(mediaNumber, mediaType);
+        if (rating) {
+          setAverageRating(rating);  
+        } else {
+          setAverageRating(0);  // Handle case where no results are returned
+        }
+    } catch (err: unknown) {
+        setError(err instanceof Error ? err : new Error('An unknown error occurred'));
+    } finally {
+        setLoading(false);
+    }
+  };
+
   // Handle page change
   const handlePageChange = (event: any, value: React.SetStateAction<number>) => {
     setCurrentPage(value);
@@ -261,6 +281,9 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
             </Info>
           )}
           {media && <Info>Genre: {media.genre}</Info>}
+          {'\b'}
+          {<h2 style={{ fontFamily: 'Courier New', fontWeight: 100}}>recent ratings (past week)</h2>}
+          <Rating value={averageRating} precision={0.25} readOnly />
           {'\b'}
           {<h2 style={{ fontFamily: 'Courier New', fontWeight: 100}}>Users who liked this also liked...</h2>}
           {similarMedia && similarMedia.map((similarMedia, index) => (
