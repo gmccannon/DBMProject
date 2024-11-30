@@ -21,5 +21,5 @@ Node, React, SQLite, Express, Flask, Scikit-Learn
   - [x] Collect data for initial matrix
   - [x] Calculate user recommendations
   - [x] Add recommendations to profile page
-  - [ ] Calculate "users also liked"
-  - [ ] Add "users also liked" to media page
+  - [x] Calculate "users also liked"
+  - [x] Add "users also liked" to media page
