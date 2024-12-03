@@ -4,6 +4,7 @@ import Database from 'better-sqlite3';
 import jwt from 'jsonwebtoken';
 import recommendationEngine from './recommendationEngine.js';
 import similarMediaEngine from './similarMediaEngine.js';
+import {log} from "winston";
 
 const app = express();
 const db = new Database('database.db');
@@ -56,6 +57,43 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
+/**
+ * @route   GET /imdb_ratings
+ * @desc    Retrieve IMDb ratings for movies and shows in the database
+ * @access  Public
+ */
+app.get('/imdb_ratings', (req, res) => {
+    try {
+        // SQL query to get movies with IMDb ratings
+        const moviesSql = `
+            SELECT movies.*, IMDbRatings.average_rating AS imdb_rating, IMDbRatings.num_votes AS imdb_votes
+            FROM movies
+            LEFT JOIN IMDbTitles ON LOWER(movies.title) = LOWER(IMDbTitles.primary_title) OR LOWER(movies.title) = LOWER(IMDbTitles.original_title)
+            LEFT JOIN IMDbRatings ON IMDbTitles.tconst = IMDbRatings.tconst
+        `;
+        const moviesWithRatings = db.prepare(moviesSql).all();
+
+        // SQL query to get shows with IMDb ratings
+        const showsSql = `
+            SELECT shows.*, IMDbRatings.average_rating AS imdb_rating, IMDbRatings.num_votes AS imdb_votes
+            FROM shows
+            LEFT JOIN IMDbTitles ON LOWER(shows.title) = LOWER(IMDbTitles.primary_title) OR LOWER(shows.title) = LOWER(IMDbTitles.original_title)
+            LEFT JOIN IMDbRatings ON IMDbTitles.tconst = IMDbRatings.tconst
+        `;
+        const showsWithRatings = db.prepare(showsSql).all();
+
+        console.log(showsWithRatings);
+        console.log(moviesWithRatings);
+        // Return the movies and shows with their IMDb ratings
+        res.json({
+            movies: moviesWithRatings,
+            shows: showsWithRatings,
+        });
+    } catch (error) {
+        console.error('Error fetching IMDb ratings:', error);
+        res.status(500).json({ message: 'An error occurred while fetching IMDb ratings.' });
+    }
+});
 
 /**
  * @route   GET /recommendations
