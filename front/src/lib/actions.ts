@@ -253,3 +253,18 @@ export const fetchAverageRatingData = async (mediaID: string, mediaType: string)
       return 0.0; // Return 0 if there is an error
   }
 };
+
+export const fetchIMDBRatingData = async (mediaType: string, mediaID: string): Promise<{ imdb_rating: number; imdb_votes: number } | null> => {
+    try {
+        const response = await fetch(`http://localhost:3001/imdb_rating?mediaType=${encodeURIComponent(mediaType)}&mediaID=${encodeURIComponent(mediaID)}`);
+        if (!response.ok) {
+            console.error('Failed to fetch IMDb rating:', response.statusText);
+            return null;
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching IMDb rating:', error);
+        return null;
+    }
+};
