@@ -5,7 +5,17 @@ import { AuthContext } from '../Components/AuthContext';
 import Rating from '@mui/material/Rating';
 import UploadReviewForm from '../Components/UploadReviewForm';
 import { Button, Pagination } from '@mui/material';
-import { addFavorite, removeFavorite, fetchIfFavorited, fetchIfReviewed, fetchMediaData, fetchMediaReviewData, fetchSimilarMediaData, fetchAverageRatingData } from '../lib/actions';
+import {
+  addFavorite,
+  removeFavorite,
+  fetchIfFavorited,
+  fetchIfReviewed,
+  fetchMediaData,
+  fetchMediaReviewData,
+  fetchSimilarMediaData,
+  fetchAverageRatingData,
+  fetchIMDBRatingData // Import the new action
+} from '../lib/actions';
 
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import HeartBrokenIcon from '@mui/icons-material/HeartBroken';
@@ -58,16 +68,18 @@ const Info = styled.h1`
   text-align: left; /* Left-align the text in the right column */
 `;
 
+
 const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Element => {
   // grab info for the media number from the URL and the current user ID
   const { mediaNumber } = useParams<string>();
-  const {userID} = useContext(AuthContext); 
+  const {userID} = useContext(AuthContext);
 
   // states
   const [media, setMedia] = useState<Media>();
   const [mediaReviews, setMediaReviews] = useState<MediaReview[]>([]);
   const [similarMedia, setSimilarMedia] = useState<Media[]>([]);
   const [averageRating, setAverageRating] = useState<number>(0);
+  const [imdbRating, setIMDBRating] = useState<{ imdb_rating: number; imdb_votes: number } | null>(null); // New state for IMDb rating
   const [showForm, setShowForm] = useState<Boolean>(false);
   const [alreadyReviewed, setAlreadyReviewed] = useState<boolean>(false);
   const [alreadyFavorited, setAlreadyFavorited] = useState<boolean>(false);
@@ -90,6 +102,7 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
       fetchMediaReviews(mediaNumber, mediaType);
       fetchSimilarMedia(mediaNumber, mediaType);
       fetchAverageRating(mediaNumber, mediaType);
+      fetchIMDBRating(mediaType, mediaNumber); // Fetch IMDb rating
       if (userID) {
         checkIfReviewed(userID, mediaNumber, mediaType);
         checkIfFavorited(userID, mediaNumber, mediaType);
@@ -125,19 +138,19 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
     console.log('React fetchSimilarMedia - mediaType:', mediaType, 'mediaNumber:', mediaNumber); // Debug log
     setLoading(true);
     try {
-        const data = await fetchSimilarMediaData(mediaType, mediaNumber);
-        console.log('Fetched media data:', data); // Debug log
-        if (data) {
-            setSimilarMedia(data);
-        } else {
-            setSimilarMedia([]);
-        }
+      const data = await fetchSimilarMediaData(mediaType, mediaNumber);
+      console.log('Fetched media data:', data); // Debug log
+      if (data) {
+        setSimilarMedia(data);
+      } else {
+        setSimilarMedia([]);
+      }
     } catch (err: unknown) {
-        setError(err instanceof Error ? err : new Error('An unknown error occurred'));
+      setError(err instanceof Error ? err : new Error('An unknown error occurred'));
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-};
+  };
 
 
   // function to see if the user has already written a review, then update the state
@@ -152,7 +165,7 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
     } catch (err: unknown) {
       setError(err instanceof Error ? err : new Error('An unknown error occurred'));
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
   };
 
@@ -168,7 +181,7 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
     } catch (err: unknown) {
       setError(err instanceof Error ? err : new Error('An unknown error occurred'));
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
   };
 
@@ -177,17 +190,17 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
   const fetchMedia = async (mediaType: string, mediaNumber: string): Promise<void> => {
     setLoading(true);
     try {
-        const data = await fetchMediaData(mediaType, mediaNumber);
-        console.log('Fetched media data:', data);  // Log the response here
-        if (data) {  // Check if array has any elements
-          setMedia(data);    // Set the first item in the array
-        } else {
-          setMedia(undefined);  // Handle case where no results are returned
-        }
+      const data = await fetchMediaData(mediaType, mediaNumber);
+      console.log('Fetched media data:', data);  // Log the response here
+      if (data) {  // Check if array has any elements
+        setMedia(data);    // Set the first item in the array
+      } else {
+        setMedia(undefined);  // Handle case where no results are returned
+      }
     } catch (err: unknown) {
-        setError(err instanceof Error ? err : new Error('An unknown error occurred'));
+      setError(err instanceof Error ? err : new Error('An unknown error occurred'));
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
   };
 
@@ -196,34 +209,49 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
   const fetchMediaReviews = async (mediaNumber: string, mediaType: string): Promise<void> => {
     setLoading(true);
     try {
-        const data = await fetchMediaReviewData(mediaNumber, mediaType);
-        if (data) {  // Check if array has any elements
-          setMediaReviews(data);    // Set the first item in the array
-        } else {
-          setMediaReviews([]);  // Handle case where no results are returned
-        }
+      const data = await fetchMediaReviewData(mediaNumber, mediaType);
+      if (data) {  // Check if array has any elements
+        setMediaReviews(data);    // Set the first item in the array
+      } else {
+        setMediaReviews([]);  // Handle case where no results are returned
+      }
     } catch (err: unknown) {
-        setError(err instanceof Error ? err : new Error('An unknown error occurred'));
+      setError(err instanceof Error ? err : new Error('An unknown error occurred'));
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
   };
 
-  // function to update the state of all of the reviews for the current media
-  // queried with mediaNumber (from the URL), and the mediaType
+  // function to update the state of average rating for the current media
   const fetchAverageRating = async (mediaNumber: string, mediaType: string): Promise<any> => {
     setLoading(true);
     try {
-        const rating = await fetchAverageRatingData(mediaNumber, mediaType);
-        if (rating) {
-          setAverageRating(rating);  
-        } else {
-          setAverageRating(0);  // Handle case where no results are returned
-        }
+      const rating = await fetchAverageRatingData(mediaNumber, mediaType);
+      if (rating) {
+        setAverageRating(rating);
+      } else {
+        setAverageRating(0);  // Handle case where no results are returned
+      }
     } catch (err: unknown) {
-        setError(err instanceof Error ? err : new Error('An unknown error occurred'));
+      setError(err instanceof Error ? err : new Error('An unknown error occurred'));
     } finally {
-        setLoading(false);
+      setLoading(false);
+    }
+  };
+
+  // New function to fetch IMDb rating
+  const fetchIMDBRating = async (mediaType: string, mediaNumber: string): Promise<void> => {
+    try {
+      const data = await fetchIMDBRatingData(mediaType, mediaNumber);
+      if (data) {
+        setIMDBRating(data);
+      } else {
+        setIMDBRating(null);
+      }
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err : new Error('An unknown error occurred'));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -239,116 +267,126 @@ const MediaReviewPage: React.FC<MediaReviewPageProps> = ({mediaType}): JSX.Eleme
   };
 
   return (
-  <>
-    <div>
-      {/* Two-column layout */}
-      <Container>
-        {/* Left Column: Title and Image */}
-        <LeftColumn>
-          {media && (
-            <Title>
-              media {'>'} {mediaType.toLowerCase()} {'>'} {media.title}
-            </Title>
-          )}
-          <Image src={getImagePath()} alt="Image not found" />
-        </LeftColumn>
-
-        {/* Right Column: Genre, Creator, Release Date */}
-        <RightColumn>
-          {alreadyFavorited && <h4 style={{ fontFamily: 'Courier New', color: 'black', textAlign: 'center', marginBottom: -2, textTransform: 'lowercase'}}>you favorited this {mediaType.slice(0, -1)}</h4>}
-          <Button variant="text" onClick={handleFavoriteClick} sx={{ color: 'black', fontFamily: 'Courier New' }}>
-            {alreadyFavorited ? (
-              <>
-                <HeartBrokenIcon sx={{ color: 'red' }} />
-                <h3 style={{ fontFamily: 'Courier New', color: 'black', marginLeft: '8px', textTransform: 'lowercase' }}>unfavorite</h3>
-              </>
-            ) : (
-              <>
-                <FavoriteIcon sx={{ color: 'red' }} />
-                <h3 style={{ fontFamily: 'Courier New', color: 'black', marginLeft: '8px', textTransform: 'lowercase' }}>favorite this {mediaType.slice(0, -1)}</h3>
-              </>
-            )}
-          </Button>
-          {media && <Info>Title: {media.title}</Info>}
-          {media && <Info>Creator: {media.maker}</Info>}
-          {media?.release_date && (
-            <Info>
-              Release Date: {new Date(media.release_date).toLocaleDateString("en-US", {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-              })}
-            </Info>
-          )}
-          {media && <Info>Genre: {media.genre}</Info>}
-          {'\b'}
-          {<h2 style={{ fontFamily: 'Courier New', fontWeight: 100}}>ratings (past week)</h2>}
-          <Rating value={averageRating} precision={0.25} readOnly />
-          {'\b'}
-          {<h2 style={{ fontFamily: 'Courier New', fontWeight: 100}}>Users who liked this also liked...</h2>}
-          {similarMedia && similarMedia.map((similarMedia, index) => (
-            <h3 
-              key={index} 
-              style={{ fontFamily: 'Courier New', fontWeight: 100, fontStyle: 'italic', cursor: 'pointer' }} 
-              onClick={() => window.location.href = `/${similarMedia.mediaType.charAt(0).toUpperCase() + similarMedia.mediaType.slice(1) + 's'}/${similarMedia.id}`}
-            >
-              {similarMedia.title}
-            </h3>
-          ))}
-        </RightColumn>
-      </Container>
-    </div>
-
-    <h1 style={{ fontFamily: 'Courier New', textAlign: 'center', fontWeight: 100}}>reviews</h1>
-
-    {/* Open review form prompt */}
-    {!userID &&
-        <p style={{ fontFamily: 'Courier New', textAlign: 'center'}}> 
-          <Link style={{ fontFamily: 'Courier New', fontWeight: 500}} to={'/login'}>Login to write a review<br/></Link>
-        </p>
-        }
-    {userID && !alreadyReviewed && (
-      <p style={{ fontFamily: 'Courier New', textAlign: 'center'}}> 
-        <Link to="#"  onClick={handleShowForm}> {!showForm ? "write a review" : "close form"}</Link><br/>
-      </p>
-    )}
-    {userID && alreadyReviewed && (
-      <p style={{ fontFamily: 'Courier New', textAlign: 'center'}}>{!showForm && "you have already reviewed this "} 
-        <Link to="#"  onClick={handleShowForm}> {!showForm ? "edit your review" : "close form"}</Link><br/>
-      </p>
-    )}
-
-    {/* Form */}
-    {showForm && !alreadyReviewed && <UploadReviewForm endpoint={"uploadreview"} onFormSubmit={handleShowForm} mediaType={mediaType}/>}
-    {showForm && alreadyReviewed && <UploadReviewForm endpoint={"editreview"} onFormSubmit={handleShowForm} mediaType={mediaType}/>}
-
-    {/* Add padding below the form */}
-    <div style={{ marginBottom: '30px' }}></div>
-
-    {/* Reviews */}
-    {currentReviews?.length > 0 &&<Pagination
-      count={totalPages}
-      page={currentPage}
-      onChange={handlePageChange}
-      shape="rounded"
-      style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px', fontFamily: 'Courier New' }}
-    />}
-    {currentReviews && currentReviews.map(mediaReview => (
       <>
-        <hr style={{ width: '60%', margin: '0 auto', border: '.5px solid #000' }} />
-        <div style={{ paddingLeft: '25%', maxWidth: '50%', wordWrap: 'break-word' }}>
-          <h3 style={{ fontFamily: 'Courier New', fontWeight: 500 }}>posted by {mediaReview.username} on {mediaReview.posted_on}</h3>
-          <Rating value={mediaReview.rating} precision={0.25} readOnly />
-          <h2 style={{ fontFamily: 'Courier New', fontWeight: 800 }}>{mediaReview.summary}</h2>
-          <h4 style={{ fontFamily: 'Courier New', fontWeight: 600 }}>{mediaReview.text}</h4>
-        </div>
-      </>
-      ))}
-    {currentReviews?.length == 0 && <h2 style={{ fontFamily: 'Courier New', textAlign: 'center', fontWeight: 100 }}>no reviews yet</h2>}
+        <div>
+          {/* Two-column layout */}
+          <Container>
+            {/* Left Column: Title and Image */}
+            <LeftColumn>
+              {media && (
+                  <Title>
+                    media {'>'} {mediaType.toLowerCase()} {'>'} {media.title}
+                  </Title>
+              )}
+              <Image src={getImagePath()} alt="Image not found" />
+            </LeftColumn>
 
-    {/* Add padding at bottom of page*/}
-    <div style={{ marginBottom: '120px' }}></div>
-  </> 
+            {/* Right Column: Genre, Creator, Release Date, IMDb Rating */}
+            <RightColumn>
+              {alreadyFavorited && <h4 style={{ fontFamily: 'Courier New', color: 'black', textAlign: 'center', marginBottom: -2, textTransform: 'lowercase'}}>you favorited this {mediaType.slice(0, -1)}</h4>}
+              <Button variant="text" onClick={handleFavoriteClick} sx={{ color: 'black', fontFamily: 'Courier New' }}>
+                {alreadyFavorited ? (
+                    <>
+                      <HeartBrokenIcon sx={{ color: 'red' }} />
+                      <h3 style={{ fontFamily: 'Courier New', color: 'black', marginLeft: '8px', textTransform: 'lowercase' }}>unfavorite</h3>
+                    </>
+                ) : (
+                    <>
+                      <FavoriteIcon sx={{ color: 'red' }} />
+                      <h3 style={{ fontFamily: 'Courier New', color: 'black', marginLeft: '8px', textTransform: 'lowercase' }}>favorite this {mediaType.slice(0, -1)}</h3>
+                    </>
+                )}
+              </Button>
+              {media && <Info>Title: {media.title}</Info>}
+              {media && <Info>Creator: {media.maker}</Info>}
+              {media?.release_date && (
+                  <Info>
+                    Release Date: {new Date(media.release_date).toLocaleDateString("en-US", {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                  </Info>
+              )}
+              {media && <Info>Genre: {media.genre}</Info>}
+              {'\b'}
+              {<h2 style={{ fontFamily: 'Courier New', fontWeight: 100}}>Ratings (Past Week)</h2>}
+              <Rating value={averageRating} precision={0.25} readOnly />
+
+              {/* Display IMDb Rating */}
+              {imdbRating && (
+                  <>
+                    <h2 style={{ fontFamily: 'Courier New', fontWeight: 100}}>IMDb Rating</h2>
+                    <Rating value={imdbRating.imdb_rating} precision={0.1} readOnly />
+                    <p style={{ fontFamily: 'Courier New', fontSize: '0.9em' }}>{imdbRating.imdb_votes} votes</p>
+                  </>
+              )}
+
+              {'\b'}
+              {<h2 style={{ fontFamily: 'Courier New', fontWeight: 100}}>Users who liked this also liked...</h2>}
+              {similarMedia && similarMedia.map((similarMedia, index) => (
+                  <h3
+                      key={index}
+                      style={{ fontFamily: 'Courier New', fontWeight: 100, fontStyle: 'italic', cursor: 'pointer' }}
+                      onClick={() => window.location.href = `/${similarMedia.mediaType.charAt(0).toUpperCase() + similarMedia.mediaType.slice(1) + 's'}/${similarMedia.id}`}
+                  >
+                    {similarMedia.title}
+                  </h3>
+              ))}
+            </RightColumn>
+          </Container>
+        </div>
+
+        <h1 style={{ fontFamily: 'Courier New', textAlign: 'center', fontWeight: 100}}>Reviews</h1>
+
+        {/* Open review form prompt */}
+        {!userID &&
+            <p style={{ fontFamily: 'Courier New', textAlign: 'center'}}>
+              <Link style={{ fontFamily: 'Courier New', fontWeight: 500}} to={'/login'}>Login to write a review<br/></Link>
+            </p>
+        }
+        {userID && !alreadyReviewed && (
+            <p style={{ fontFamily: 'Courier New', textAlign: 'center'}}>
+              <Link to="#"  onClick={handleShowForm}> {!showForm ? "Write a review" : "Close form"}</Link><br/>
+            </p>
+        )}
+        {userID && alreadyReviewed && (
+            <p style={{ fontFamily: 'Courier New', textAlign: 'center'}}>{!showForm && "You have already reviewed this "}
+              <Link to="#"  onClick={handleShowForm}> {!showForm ? "Edit your review" : "Close form"}</Link><br/>
+            </p>
+        )}
+
+        {/* Form */}
+        {showForm && !alreadyReviewed && <UploadReviewForm endpoint={"uploadreview"} onFormSubmit={handleShowForm} mediaType={mediaType}/>}
+        {showForm && alreadyReviewed && <UploadReviewForm endpoint={"editreview"} onFormSubmit={handleShowForm} mediaType={mediaType}/>}
+
+        {/* Add padding below the form */}
+        <div style={{ marginBottom: '30px' }}></div>
+
+        {/* Reviews */}
+        {currentReviews?.length > 0 &&<Pagination
+            count={totalPages}
+            page={currentPage}
+            onChange={handlePageChange}
+            shape="rounded"
+            style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px', fontFamily: 'Courier New' }}
+        />}
+        {currentReviews && currentReviews.map((mediaReview, index) => (
+            <React.Fragment key={index}>
+              <hr style={{ width: '60%', margin: '0 auto', border: '.5px solid #000' }} />
+              <div style={{ paddingLeft: '25%', maxWidth: '50%', wordWrap: 'break-word' }}>
+                <h3 style={{ fontFamily: 'Courier New', fontWeight: 500 }}>Posted by {mediaReview.username} on {new Date(mediaReview.posted_on).toLocaleDateString()}</h3>
+                <Rating value={mediaReview.rating} precision={0.25} readOnly />
+                <h2 style={{ fontFamily: 'Courier New', fontWeight: 800 }}>{mediaReview.summary}</h2>
+                <h4 style={{ fontFamily: 'Courier New', fontWeight: 600 }}>{mediaReview.text}</h4>
+              </div>
+            </React.Fragment>
+        ))}
+        {currentReviews?.length === 0 && <h2 style={{ fontFamily: 'Courier New', textAlign: 'center', fontWeight: 100 }}>No reviews yet</h2>}
+
+        {/* Add padding at bottom of page*/}
+        <div style={{ marginBottom: '120px' }}></div>
+      </>
   );
 }
 

@@ -4,7 +4,6 @@ import Database from 'better-sqlite3';
 import jwt from 'jsonwebtoken';
 import recommendationEngine from './recommendationEngine.js';
 import similarMediaEngine from './similarMediaEngine.js';
-import {log} from "winston";
 
 const app = express();
 const db = new Database('database.db');
@@ -58,42 +57,68 @@ const authenticateToken = (req, res, next) => {
 };
 
 /**
- * @route   GET /imdb_ratings
- * @desc    Retrieve IMDb ratings for movies and shows in the database
+ * @route   GET /imdb_rating
+ * @desc    Retrieve IMDb rating for a specific media item
  * @access  Public
  */
-app.get('/imdb_ratings', (req, res) => {
+app.get('/imdb_rating', (req, res) => {
     try {
-        // SQL query to get movies with IMDb ratings
-        const moviesSql = `
-            SELECT movies.*, IMDbRatings.average_rating AS imdb_rating, IMDbRatings.num_votes AS imdb_votes
-            FROM movies
-            LEFT JOIN IMDbTitles ON LOWER(movies.title) = LOWER(IMDbTitles.primary_title) OR LOWER(movies.title) = LOWER(IMDbTitles.original_title)
-            LEFT JOIN IMDbRatings ON IMDbTitles.tconst = IMDbRatings.tconst
-        `;
-        const moviesWithRatings = db.prepare(moviesSql).all();
+        const { mediaType, mediaID } = req.query;
 
-        // SQL query to get shows with IMDb ratings
-        const showsSql = `
-            SELECT shows.*, IMDbRatings.average_rating AS imdb_rating, IMDbRatings.num_votes AS imdb_votes
-            FROM shows
-            LEFT JOIN IMDbTitles ON LOWER(shows.title) = LOWER(IMDbTitles.primary_title) OR LOWER(shows.title) = LOWER(IMDbTitles.original_title)
-            LEFT JOIN IMDbRatings ON IMDbTitles.tconst = IMDbRatings.tconst
-        `;
-        const showsWithRatings = db.prepare(showsSql).all();
+        if (!mediaType || !mediaID) {
+            return res.status(400).json({ message: 'mediaType and mediaID are required.' });
+        }
 
-        console.log(showsWithRatings);
-        console.log(moviesWithRatings);
-        // Return the movies and shows with their IMDb ratings
+        const mediaIDInt = parseInt(mediaID, 10);
+        if (isNaN(mediaIDInt)) {
+            return res.status(400).json({ message: 'mediaID must be a valid integer.' });
+        }
+        console.log('mediaType', mediaType, "n" );
+        let title;
+        if (mediaType.toLowerCase() === 'movies') {
+            // Fetch movie title from movies table
+            const movie = db.prepare('SELECT title FROM movies WHERE id = ?').get(mediaIDInt);
+            if (!movie) {
+                return res.status(404).json({ message: 'Movie not found.' });
+            }
+            title = movie.title;
+        } else if (mediaType.toLowerCase() === 'shows') {
+            // Fetch show title from shows table
+            const show = db.prepare('SELECT title FROM shows WHERE id = ?').get(mediaIDInt);
+            if (!show) {
+                return res.status(404).json({ message: 'Show not found.' });
+            }
+            title = show.title;
+        } else {
+            return res.status(400).json({ message: 'Invalid mediaType. Must be "Movies" or "Shows".' });
+        }
+
+        // Fetch IMDb rating by matching title (case-insensitive)
+        const imdbSql = `
+            SELECT IMDbRatings.average_rating AS imdb_rating, IMDbRatings.num_votes AS imdb_votes
+            FROM IMDbTitles
+                     LEFT JOIN IMDbRatings ON IMDbTitles.tconst = IMDbRatings.tconst
+            WHERE LOWER(IMDbTitles.primary_title) = LOWER(?) OR LOWER(IMDbTitles.original_title) = LOWER(?)
+                LIMIT 1
+        `;
+        const imdbData = db.prepare(imdbSql).get(title, title);
+
+        if (!imdbData || imdbData.imdb_rating === null) {
+            return res.status(404).json({ message: 'IMDb rating not found for this media.' });
+        }
+
+
+        console.log("ImdbRatings", imdbData.imdb_rating/2);
         res.json({
-            movies: moviesWithRatings,
-            shows: showsWithRatings,
+            imdb_rating: imdbData.imdb_rating / 2,
+            imdb_votes: imdbData.imdb_votes,
         });
     } catch (error) {
-        console.error('Error fetching IMDb ratings:', error);
-        res.status(500).json({ message: 'An error occurred while fetching IMDb ratings.' });
+        console.error('Error fetching IMDb rating:', error);
+        res.status(500).json({ message: 'An error occurred while fetching IMDb rating.' });
     }
 });
+
 
 /**
  * @route   GET /recommendations
