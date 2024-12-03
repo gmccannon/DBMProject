@@ -5,7 +5,7 @@ Node, React, SQLite, Express, Flask, Scikit-Learn
 
 ## To-do list
 ### Part 2
-- [ ] API to fetch and add more data
+- [x] API to fetch and add more data - https://developer.imdb.com/non-commercial-datasets/
 - [x] Add a stored procedure
 - [x] Social System
   - [x] Add a way to add favorites
