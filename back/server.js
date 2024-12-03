@@ -73,7 +73,7 @@ app.get('/imdb_rating', (req, res) => {
         if (isNaN(mediaIDInt)) {
             return res.status(400).json({ message: 'mediaID must be a valid integer.' });
         }
-        console.log('mediaType', mediaType, "n" );
+
         let title;
         if (mediaType.toLowerCase() === 'movies') {
             // Fetch movie title from movies table
