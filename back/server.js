@@ -107,7 +107,7 @@ app.get('/imdb_rating', (req, res) => {
             return res.status(404).json({ message: 'IMDb rating not found for this media.' });
         }
 
-
+        // Divided by 2 because IMDb uses a 10 point scale and we use a 5
         console.log("ImdbRatings", imdbData.imdb_rating/2);
         res.json({
             imdb_rating: imdbData.imdb_rating / 2,
