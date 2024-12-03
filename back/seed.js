@@ -128,6 +128,20 @@ db.exec(`
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE, -- Delete reviews if user is deleted
         FOREIGN KEY (media_id) REFERENCES books(id) ON DELETE CASCADE -- Delete reviews if book is deleted
     );
+
+    CREATE TABLE IMDbTitles (
+        tconst VARCHAR(20) PRIMARY KEY,
+        primary_title VARCHAR(255) NOT NULL,
+        original_title VARCHAR(255) NOT NULL
+    );
+
+    CREATE TABLE IMDbRatings (
+        tconst VARCHAR(20) PRIMARY KEY,
+        average_rating DECIMAL(3,1) CHECK (average_rating >= 0.0 AND average_rating <= 10.0),
+        num_votes INTEGER CHECK (num_votes >= 0),
+        FOREIGN KEY (tconst) REFERENCES IMDbTitles(tconst) ON DELETE CASCADE
+    );
+
 `);
 
 //Add data
