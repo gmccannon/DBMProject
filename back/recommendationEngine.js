@@ -166,26 +166,35 @@ const fetchMediaDetails = (mediaKeys) => {
     return mediaDetails;
 };
 
-// Utility to fetch three random media items
-const fetchRandomMedia = () => {
+/**
+ * Utility to fetch three random media items excluding reviewed ones.
+ * @param {Set} reviewedMediaIds - Set of media keys reviewed by the user (e.g., "game_1").
+ * @returns {Array} List of random media items not reviewed by the user.
+ */
+const fetchRandomMedia = (reviewedMediaIds) => {
     const queries = [
-        "SELECT id, 'game' AS media_type FROM games ORDER BY RANDOM() LIMIT 1",
-        "SELECT id, 'movie' AS media_type FROM movies ORDER BY RANDOM() LIMIT 1",
-        "SELECT id, 'show' AS media_type FROM shows ORDER BY RANDOM() LIMIT 1",
-        "SELECT id, 'book' AS media_type FROM books ORDER BY RANDOM() LIMIT 1"
+        "SELECT id, 'game' AS media_type FROM games ORDER BY RANDOM()",
+        "SELECT id, 'movie' AS media_type FROM movies ORDER BY RANDOM()",
+        "SELECT id, 'show' AS media_type FROM shows ORDER BY RANDOM()",
+        "SELECT id, 'book' AS media_type FROM books ORDER BY RANDOM()"
     ];
 
     const randomMedia = queries.map(query => {
-        const media = db.prepare(query).get();
-        if (media) {
-            const stmt = db.prepare(`SELECT * FROM ${media.media_type}s WHERE id = ?`);
-            const mediaDetails = stmt.get(media.id);
-            return { mediaType: media.media_type, ...mediaDetails };
-        }
-        return null;
+        const media = db.prepare(query).all(); // Fetch all random media for filtering.
+        return media.find(item => {
+            const mediaKey = `${item.media_type}_${item.id}`;
+            return !reviewedMediaIds.has(mediaKey); // Exclude reviewed media.
+        });
     });
 
-    return randomMedia.filter(Boolean); // Filter out null results
+    const mediaDetails = randomMedia
+        .filter(Boolean) // Filter out null results.
+        .map(media => {
+            const stmt = db.prepare(`SELECT * FROM ${media.media_type}s WHERE id = ?`);
+            return { mediaType: media.media_type, ...stmt.get(media.id) };
+        });
+
+    return mediaDetails;
 };
 
 /**
@@ -196,15 +205,19 @@ const fetchRandomMedia = () => {
  */
 const getRecommendationsForUser = (userId, topN = 10) => {
     const userRatings = getUserRatings();
+    const reviewedMediaIds = new Set(userRatings.get(userId)?.keys() || []);
+
     const recommendedMediaKeys = generateRecommendations(userId, userRatings, topN);
     let recommendedMedia = fetchMediaDetails(recommendedMediaKeys);
 
+    // if no recommendations are returned, just recommend 3 random ones the user has not reviewed yet
     if (recommendedMedia.length === 0) {
-        recommendedMedia = fetchRandomMedia();
+        recommendedMedia = fetchRandomMedia(reviewedMediaIds);
     }
 
     return recommendedMedia;
 };
+
 
 export default {
     getRecommendationsForUser
